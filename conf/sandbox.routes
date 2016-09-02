@@ -1,0 +1,3 @@
+# microservice specific routes
+
+GET        /tax-calc/tax-expenditure-breakdown/:taxYear        uk.gov.hmrc.taxcalc.controllers.SandboxTaxExpenditureBreakdownController.taxExpenditureCategoryBreakdown(taxYear: Int, journeyId: Option[String])

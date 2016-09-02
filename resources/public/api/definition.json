@@ -1,0 +1,37 @@
+{
+  "scopes":[
+    {
+      "key":"read:personal-income",
+      "name":"Execute your-tax-calculator call",
+      "description":"Your Tax Calculator"
+    }
+  ],
+  "api":{
+    "name":"Your Tax Calculator",
+    "description":"The API for viewing the tax expenditure breakdown for a tax period",
+    "context":"your-tax-calculator",
+    "requiresTrust": true,
+    "versions":[
+      {
+        "version":"1.0",
+        "status":"PUBLISHED",
+        "endpoints":[
+          {
+            "uriPattern":"/tax-calc/tax-expenditure-breakdown ",
+            "endpointName":"Tax Expenditure Breakdown ",
+            "method":"GET",
+            "authType":"NONE",
+            "throttlingTier":"UNLIMITED",
+            "scope":"read:personal-income",
+            "queryParameters": [
+              {
+                "name": "journeyId",
+                "required": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

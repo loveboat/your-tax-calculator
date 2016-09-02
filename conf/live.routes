@@ -1,0 +1,4 @@
+# microservice specific routes
+
+GET        /tax-calc/tax-expenditure-breakdown/:taxYear        uk.gov.hmrc.taxcalc.controllers.LiveTaxExpenditureBreakdownController.taxExpenditureCategoryBreakdown(taxYear: Int, journeyId: Option[String])
+

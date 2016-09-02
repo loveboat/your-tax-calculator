@@ -1,0 +1,6 @@
+1000:uk.gov.hmrc.play.health.HealthPlugin
+4000:com.kenshoo.play.metrics.MetricsPlugin
+5000:uk.hmrc.msasync.plugin.MicroServiceAsyncPlugin
+
+
+
