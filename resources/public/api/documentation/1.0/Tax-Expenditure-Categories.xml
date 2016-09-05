@@ -1,0 +1,80 @@
+<endpoint>
+  <name>Tax Expenditure Categories</name>
+  <description>The tax expenditure categories for a tax year</description>
+  <section id="resource">
+    <title>Resource</title>
+    <resource>GET /tax-calc/tax-expenditure-categories</resource>
+  </section>
+  <section id="path-parameters">
+    <title>Path Parameters</title>
+    <table>
+      <headings>
+        <cell>Name</cell>
+        <cell>Type</cell>
+        <cell>Example</cell>
+        <cell>Description</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell><code></code></cell>
+          <cell><code></code></cell>
+          <cell><code></code></cell>
+          <cell></cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+  <section id="authorisation">
+    <title>Authorisation</title>
+    <authorisation>
+      <type>NONE</type>
+      <scope>read:your-tax-calculator</scope>
+    </authorisation>
+  </section>
+  <section id="content-types">
+    <title>Accepted Media Types</title>
+    <list>
+      <item>
+        <code>application/vnd.hmrc.1.0+json</code>
+      </item>
+    </list>
+  </section>
+  <section id="sample-response">
+    <title>Response</title>
+    <httpStatus>200 (OK)</httpStatus>
+    <json><![CDATA[["General public services","Defense","Public order and safety","Economic affairs","Environment protection"]]></json>
+    <table>
+      <headings>
+        <cell>Name</cell>
+        <cell>Type</cell>
+        <cell>Example</cell>
+        <cell>Description</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell><code>categories</code></cell>
+          <cell><code>Seq[String]</code></cell>
+          <cell><code></code></cell>
+          <cell>Sequence of Categories.</cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+  <section id="error-responses">
+    <title>Error Scenarios</title>
+    <table>
+      <headings>
+        <cell>Error Scenario</cell>
+        <cell>HTTP Status</cell>
+        <cell>Code</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell>Invalid NINO</cell>
+          <cell><code>400 (Bad Request)</code></cell>
+          <cell><code>NO_TOKEN</code></cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+</endpoint>

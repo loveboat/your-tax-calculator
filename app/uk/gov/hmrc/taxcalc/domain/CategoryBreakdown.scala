@@ -22,6 +22,7 @@ case class CategoryBreakdown(categoryBreakdown: Seq[Category], expenditureOnServ
 
 case class Category(category: String, allocation: BigDecimal ,subCategory: Seq[Category])
 
+case class CategoryUsage(category: String, allocation: BigDecimal, subCategory: Seq[CategoryUsage], percentage: BigDecimal)
 
 object CategoryBreakdown {
 
@@ -32,3 +33,8 @@ object CategoryBreakdown {
 object Category {
   implicit val format = Json.format[Category]
 }
+
+object CategoryUsage {
+  implicit val format = Json.format[CategoryUsage]
+}
+

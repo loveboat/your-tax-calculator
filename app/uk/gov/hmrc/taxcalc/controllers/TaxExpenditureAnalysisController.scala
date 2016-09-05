@@ -35,6 +35,26 @@ trait TaxExpenditureBreakdownController extends BaseController with ErrorHandlin
       }
     }
   }
+
+  def taxExpenditureCategories(taxYear: Int, journeyId: Option[String] = None) = Action.async{
+    implicit request => {
+      errorWrapper{
+        service.taxExpenditureCategories(taxYear).map{
+          response => Ok(Json.toJson(response))
+        }
+      }
+    }
+  }
+
+  def taxExpenditureCategoryPercentage(taxYear: Int, journeyId: Option[String] = None) = Action.async {
+    implicit request => {
+      errorWrapper{
+        service.taxExpenditureCategoryPercentage(taxYear).map{
+          response => Ok(Json.toJson(response))
+        }
+      }
+    }
+  }
 }
 
 object  LiveTaxExpenditureBreakdownController extends TaxExpenditureBreakdownController {

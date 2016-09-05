@@ -1,0 +1,102 @@
+<endpoint>
+  <name>Tax Expenditure Category Percentage</name>
+  <description>The tax expenditure category percentage for a tax year</description>
+  <section id="resource">
+    <title>Resource</title>
+    <resource>GET /tax-calc/tax-expenditure-category-percentage</resource>
+  </section>
+  <section id="path-parameters">
+    <title>Path Parameters</title>
+    <table>
+      <headings>
+        <cell>Name</cell>
+        <cell>Type</cell>
+        <cell>Example</cell>
+        <cell>Description</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell><code></code></cell>
+          <cell><code></code></cell>
+          <cell><code></code></cell>
+          <cell></cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+  <section id="authorisation">
+    <title>Authorisation</title>
+    <authorisation>
+      <type>NONE</type>
+      <scope>read:your-tax-calculator</scope>
+    </authorisation>
+  </section>
+  <section id="content-types">
+    <title>Accepted Media Types</title>
+    <list>
+      <item>
+        <code>application/vnd.hmrc.1.0+json</code>
+      </item>
+    </list>
+  </section>
+  <section id="sample-response">
+    <title>Response</title>
+    <httpStatus>200 (OK)</httpStatus>
+    <json><![CDATA[{
+  "category-breakdown": [
+    {
+      "category": "General public services",
+      "allocation": 58708000.00,
+      "sub-category": [
+        {
+          "category": "Executive and legislative organs, financial and fiscal affairs, external affairs",
+          "allocation": 10101000.00,
+          "sub-category": [],
+          "percentage": 1.45
+        },
+        {
+          "category": "Foreign economic aid",
+          "allocation": 8173000.00,
+          "sub-category": [],
+          "percentage": 1.17
+        }
+      ],
+      "percentage": 8.41
+    }
+  ]
+  }]]></json>
+    <table>
+      <headings>
+        <cell>Name</cell>
+        <cell>Type</cell>
+        <cell>Example</cell>
+        <cell>Description</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell><code>category-breakdown</code></cell>
+          <cell><code>Seq[Category]</code></cell>
+          <cell><code></code></cell>
+          <cell>Sequence of Categories.</cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+  <section id="error-responses">
+    <title>Error Scenarios</title>
+    <table>
+      <headings>
+        <cell>Error Scenario</cell>
+        <cell>HTTP Status</cell>
+        <cell>Code</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell>Invalid NINO</cell>
+          <cell><code>400 (Bad Request)</code></cell>
+          <cell><code>NO_TOKEN</code></cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+</endpoint>

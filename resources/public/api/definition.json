@@ -17,8 +17,36 @@
         "status":"PUBLISHED",
         "endpoints":[
           {
-            "uriPattern":"/tax-calc/tax-expenditure-breakdown ",
-            "endpointName":"Tax Expenditure Breakdown ",
+            "uriPattern":"/tax-calc/tax-expenditure-breakdown/:taxYear",
+            "endpointName":"Tax Expenditure Breakdown",
+            "method":"GET",
+            "authType":"NONE",
+            "throttlingTier":"UNLIMITED",
+            "scope":"read:personal-income",
+            "queryParameters": [
+              {
+                "name": "journeyId",
+                "required": false
+              }
+            ]
+          },
+          {
+            "uriPattern":"/tax-calc/tax-expenditure-categories/:taxYear",
+            "endpointName":"Tax Expenditure Categories",
+            "method":"GET",
+            "authType":"NONE",
+            "throttlingTier":"UNLIMITED",
+            "scope":"read:personal-income",
+            "queryParameters": [
+              {
+                "name": "journeyId",
+                "required": false
+              }
+            ]
+          },
+          {
+            "uriPattern":"/tax-calc/tax-expenditure-category-percentage/:taxYear",
+            "endpointName":"Tax Expenditure Category Percentage",
             "method":"GET",
             "authType":"NONE",
             "throttlingTier":"UNLIMITED",
