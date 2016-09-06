@@ -1,7 +1,7 @@
 {
   "scopes":[
     {
-      "key":"read:personal-income",
+      "key":"your-tax-calculator",
       "name":"Execute your-tax-calculator call",
       "description":"Your Tax Calculator"
     }
@@ -17,13 +17,16 @@
         "status":"PUBLISHED",
         "endpoints":[
           {
-            "uriPattern":"/tax-calc/tax-expenditure-breakdown/:taxYear",
+            "uriPattern":"/tax-calc/tax-expenditure-breakdown",
             "endpointName":"Tax Expenditure Breakdown",
             "method":"GET",
             "authType":"NONE",
             "throttlingTier":"UNLIMITED",
-            "scope":"read:personal-income",
             "queryParameters": [
+              {
+                "name": "taxYear",
+                "required": true
+              },
               {
                 "name": "journeyId",
                 "required": false
@@ -36,8 +39,11 @@
             "method":"GET",
             "authType":"NONE",
             "throttlingTier":"UNLIMITED",
-            "scope":"read:personal-income",
             "queryParameters": [
+              {
+                "name": "taxYear",
+                "required": true
+              },
               {
                 "name": "journeyId",
                 "required": false
@@ -50,8 +56,11 @@
             "method":"GET",
             "authType":"NONE",
             "throttlingTier":"UNLIMITED",
-            "scope":"read:personal-income",
             "queryParameters": [
+              {
+                "name": "taxYear",
+                "required": true
+              },
               {
                 "name": "journeyId",
                 "required": false

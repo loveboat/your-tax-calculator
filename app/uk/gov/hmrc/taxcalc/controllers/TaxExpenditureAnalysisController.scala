@@ -36,7 +36,7 @@ trait TaxExpenditureBreakdownController extends BaseController with ErrorHandlin
     }
   }
 
-  def taxExpenditureCategories(taxYear: Int, journeyId: Option[String] = None) = Action.async{
+  def taxExpenditureCategories(taxYear: Int, journeyId: Option[String] = None) = Action.async {
     implicit request => {
       errorWrapper{
         service.taxExpenditureCategories(taxYear).map{
