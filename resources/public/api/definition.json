@@ -34,7 +34,7 @@
             ]
           },
           {
-            "uriPattern":"/tax-calc/tax-expenditure-categories/:taxYear",
+            "uriPattern":"/tax-calc/tax-expenditure-categories",
             "endpointName":"Tax Expenditure Categories",
             "method":"GET",
             "authType":"NONE",
@@ -51,7 +51,7 @@
             ]
           },
           {
-            "uriPattern":"/tax-calc/tax-expenditure-category-percentage/:taxYear",
+            "uriPattern":"/tax-calc/tax-expenditure-category-percentage",
             "endpointName":"Tax Expenditure Category Percentage",
             "method":"GET",
             "authType":"NONE",
