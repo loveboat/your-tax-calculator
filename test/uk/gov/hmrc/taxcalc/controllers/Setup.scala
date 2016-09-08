@@ -20,7 +20,7 @@ import java.util.UUID
 
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.http._
-import uk.gov.hmrc.taxcalc.services.{LiveTaxExpenditureBreakdownService, SandboxTaxExpenditureBreakdownService, TaxExpenditureBreakdownService}
+import uk.gov.hmrc.taxcalc.services._
 
 trait Setup {
   implicit val hc = HeaderCarrier()
@@ -29,16 +29,23 @@ trait Setup {
 
 }
 
-trait LiveSuccess extends Setup {
+trait LiveTaxExpenditureSuccess extends Setup {
   val controller = new TaxExpenditureBreakdownController {
     override val service: TaxExpenditureBreakdownService = LiveTaxExpenditureBreakdownService
     override val app: String = "TestLiveTaxExpenditureBreakdownController"
   }
 }
 
-trait SandboxSuccess extends Setup {
+trait SandboxTaxExpenditureSuccess extends Setup {
   val controller = new TaxExpenditureBreakdownController {
     override val service: TaxExpenditureBreakdownService = SandboxTaxExpenditureBreakdownService
     override val app: String = "TestSandboxTaxExpenditureBreakdownController"
+  }
+}
+
+trait LiveTaxCalcSuccess extends Setup {
+  val controller = new TaxCalculatorController {
+    override val service: TaxCalculatorService = LiveTaxCalculatorService
+    override val app: String = "TestLiveTaxCalculatorController"
   }
 }

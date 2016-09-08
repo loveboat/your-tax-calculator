@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 class TaxExpenditureBreakdownContollerSpec extends UnitSpec with WithFakeApplication with ScalaFutures {
 
   "taxExpenditureCategoryBreakdown for 2016 tax year" should {
-    "return a CategoryBreakdown response" in new LiveSuccess {
+    "return a CategoryBreakdown response" in new LiveTaxExpenditureSuccess {
 
         val result = await(controller.taxExpenditureCategoryBreakdown(2016)(emptyRequest))
         status(result) shouldBe 200
@@ -33,7 +33,7 @@ class TaxExpenditureBreakdownContollerSpec extends UnitSpec with WithFakeApplica
   }
 
   "taxExpenditureCategoryBreakdown for 1900 tax year" should {
-    "return an error response" in new LiveSuccess {
+    "return an error response" in new LiveTaxExpenditureSuccess {
 
       val result = await(controller.taxExpenditureCategoryBreakdown(1900)(emptyRequest))
       status(result) shouldBe 400
@@ -41,7 +41,7 @@ class TaxExpenditureBreakdownContollerSpec extends UnitSpec with WithFakeApplica
   }
 
   "taxExpenditureCategoryBreakdown for 2016 tax year with JourneyId" should {
-    "return a CategoryBreakdown response" in new LiveSuccess {
+    "return a CategoryBreakdown response" in new LiveTaxExpenditureSuccess {
 
       val result = await(controller.taxExpenditureCategoryBreakdown(2016, Option(journeyId))(emptyRequest))
       status(result) shouldBe 200
@@ -51,7 +51,7 @@ class TaxExpenditureBreakdownContollerSpec extends UnitSpec with WithFakeApplica
 
 
   "taxExpenditureCategories for 2016 tax year" should {
-    "return all tax categories" in new LiveSuccess {
+    "return all tax categories" in new LiveTaxExpenditureSuccess {
 
       val result = await(controller.taxExpenditureCategories(2016)(emptyRequest))
       status(result) shouldBe 200
@@ -60,7 +60,7 @@ class TaxExpenditureBreakdownContollerSpec extends UnitSpec with WithFakeApplica
   }
 
   "taxExpenditureCategories for 1900 tax year" should {
-    "return an error response" in new LiveSuccess {
+    "return an error response" in new LiveTaxExpenditureSuccess {
 
       val result = await(controller.taxExpenditureCategories(1900)(emptyRequest))
       status(result) shouldBe 400
@@ -68,7 +68,7 @@ class TaxExpenditureBreakdownContollerSpec extends UnitSpec with WithFakeApplica
   }
 
   "taxExpenditureCategoryPercentage for 2016 tax year" should {
-    "return all tax categories with expenditure percentage" in new LiveSuccess {
+    "return all tax categories with expenditure percentage" in new LiveTaxExpenditureSuccess {
 
       val result = await(controller.taxExpenditureCategoryPercentage(2016)(emptyRequest))
       status(result) shouldBe 200
@@ -77,7 +77,7 @@ class TaxExpenditureBreakdownContollerSpec extends UnitSpec with WithFakeApplica
   }
 
   "taxExpenditureCategoryPercentage for 1900 tax year" should {
-    "return an error response" in new LiveSuccess {
+    "return an error response" in new LiveTaxExpenditureSuccess {
 
       val result = await(controller.taxExpenditureCategoryPercentage(1900)(emptyRequest))
       status(result) shouldBe 400

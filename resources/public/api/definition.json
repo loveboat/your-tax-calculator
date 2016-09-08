@@ -66,6 +66,35 @@
                 "required": false
               }
             ]
+          },
+          {
+            "uriPattern":"/tax-calc/calculate-tax",
+            "endpointName":"Calculate Tax",
+            "method":"GET",
+            "authType":"NONE",
+            "throttlingTier":"UNLIMITED",
+            "queryParameters": [
+              {
+                "name": "taxYear",
+                "required": true
+              },
+              {
+                "name": "taxCode",
+                "required": true
+              },
+              {
+                "name": "grossPay",
+                "required": true
+              },
+              {
+                "name": "payPeriod",
+                "required": true
+              },
+              {
+                "name": "journeyId",
+                "required": false
+              }
+            ]
           }
         ]
       }
