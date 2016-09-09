@@ -77,11 +77,6 @@ object MicroserviceGlobal extends DefaultMicroserviceGlobal with RunMode with Se
 
   override implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private lazy val sessionFilter = CookieSessionFilter.SessionCookieFilter
-  override def doFilter(a: EssentialAction): EssentialAction = {
-    Filters(super.doFilter(a), microserviceFilters ++ sessionFilter : _*)
-  }
-
   override def onError(request: RequestHeader, ex: Throwable): Future[Result] = {
     super.onError(request, ex) map (res => {
       res.header.status
