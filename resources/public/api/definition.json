@@ -20,7 +20,7 @@
             "uriPattern":"/tax-calc/tax-expenditure-breakdown",
             "endpointName":"Tax Expenditure Breakdown",
             "method":"GET",
-            "authType":"USER",
+            "authType":"NONE",
             "throttlingTier":"UNLIMITED",
             "queryParameters": [
               {
