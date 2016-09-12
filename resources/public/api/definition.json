@@ -24,10 +24,6 @@
             "throttlingTier":"UNLIMITED",
             "queryParameters": [
               {
-                "name": "taxYear",
-                "required": true
-              },
-              {
                 "name": "journeyId",
                 "required": false
               }
@@ -40,10 +36,6 @@
             "authType":"NONE",
             "throttlingTier":"UNLIMITED",
             "queryParameters": [
-              {
-                "name": "taxYear",
-                "required": true
-              },
               {
                 "name": "journeyId",
                 "required": false
@@ -58,10 +50,6 @@
             "throttlingTier":"UNLIMITED",
             "queryParameters": [
               {
-                "name": "taxYear",
-                "required": true
-              },
-              {
                 "name": "journeyId",
                 "required": false
               }
@@ -74,22 +62,6 @@
             "authType":"NONE",
             "throttlingTier":"UNLIMITED",
             "queryParameters": [
-              {
-                "name": "taxYear",
-                "required": true
-              },
-              {
-                "name": "taxCode",
-                "required": true
-              },
-              {
-                "name": "grossPay",
-                "required": true
-              },
-              {
-                "name": "payPeriod",
-                "required": true
-              },
               {
                 "name": "journeyId",
                 "required": false
