@@ -17,7 +17,7 @@
         "status":"PUBLISHED",
         "endpoints":[
           {
-            "uriPattern":"/tax-calc/tax-expenditure-breakdown",
+            "uriPattern":"/tax-calc/tax-expenditure-breakdown/{taxYear}",
             "endpointName":"Tax Expenditure Breakdown",
             "method":"GET",
             "authType":"NONE",
@@ -30,7 +30,7 @@
             ]
           },
           {
-            "uriPattern":"/tax-calc/tax-expenditure-categories",
+            "uriPattern":"/tax-calc/tax-expenditure-categories/{taxYear}",
             "endpointName":"Tax Expenditure Categories",
             "method":"GET",
             "authType":"NONE",
@@ -43,7 +43,7 @@
             ]
           },
           {
-            "uriPattern":"/tax-calc/tax-expenditure-category-percentage",
+            "uriPattern":"/tax-calc/tax-expenditure-category-percentage/{taxYear}",
             "endpointName":"Tax Expenditure Category Percentage",
             "method":"GET",
             "authType":"NONE",
@@ -56,7 +56,7 @@
             ]
           },
           {
-            "uriPattern":"/tax-calc/calculate-tax",
+            "uriPattern":"/tax-calc/calculate-tax/{taxYear}/{taxCode}/{grossPay}/{payPeriod}",
             "endpointName":"Calculate Tax",
             "method":"GET",
             "authType":"NONE",
