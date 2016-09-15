@@ -31,5 +31,4 @@ class TaxCalculatorControllerSpec extends UnitSpec with WithFakeApplication with
         contentAsJson(result) shouldBe Json.toJson(TaxCalculatorTestData.taxCalculator_2016_response);
     }
   }
-
 }

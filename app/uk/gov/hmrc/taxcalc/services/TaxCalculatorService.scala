@@ -16,8 +16,11 @@
 
 package uk.gov.hmrc.taxcalc.services
 
+import java.time.LocalDate
+
 import play.api.libs.json.Json
-import uk.gov.hmrc.taxcalc.domain.TaxCalc
+import uk.gov.hmrc.taxcalc.config.TaxCalculatorStartup
+import uk.gov.hmrc.taxcalc.domain.{TaxBands, TaxCalc, TaxYearBands}
 
 import scala.concurrent.Future
 import scala.io.Source._
@@ -33,6 +36,19 @@ trait TaxCalculatorService {
         Future.successful(Json.parse(fromInputStream(is).mkString).as[TaxCalc])
       }
     }
+  }
+
+  def loadTaxBands() : TaxYearBands = {
+    TaxCalculatorStartup.taxBands.get("taxYearBands") match {
+      case Some(taxYearBands: TaxYearBands) => taxYearBands
+      case _ => throw new Exception("Error, no tax bands configured")
+    }
+  }
+
+  def getTaxBands(localDate: LocalDate) : TaxBands = {
+    val taxBands = loadTaxBands().taxYearBands.sortWith(_.fromDate.getYear < _.fromDate.getYear())
+      .filter(band => band.fromDate.isBefore(localDate) || band.fromDate.isEqual(localDate))
+    taxBands.last
   }
 }
 

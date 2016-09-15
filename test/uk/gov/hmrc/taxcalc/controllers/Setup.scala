@@ -49,3 +49,9 @@ trait LiveTaxCalcSuccess extends Setup {
     override val app: String = "TestLiveTaxCalculatorController"
   }
 }
+
+trait LiveTaxCalcServiceSuccess extends Setup {
+  val service = new TaxCalculatorService {
+
+  }
+}
