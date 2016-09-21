@@ -7,49 +7,93 @@
           "band": 1,
           "bandwidth": 0.00,
           "rate": 10,
-          "cumulativeBandwidth": 0,
-          "maxTax": 0,
-          "cumulativeTax": 0,
-          "weeklyThreshold": 0,
-          "weeklyCumulativeMaxTax": 0,
-          "monthlyThreshold": 0,
-          "monthlyCumulativeMaxTax": 0
+          "annualBandMaxTax": 0,
+          "periods": [
+            {
+              "periodType": "annual",
+              "threshold": 0,
+              "cumulativeMaxTax": 0
+            },
+            {
+              "periodType": "monthly",
+              "threshold": 0,
+              "cumulativeMaxTax": 0
+            },
+            {
+              "periodType": "weekly",
+              "threshold": 0,
+              "cumulativeMaxTax": 0
+            }
+          ]
         },
         {
           "band": 2,
           "bandwidth": 32000.00,
           "rate": 20,
-          "cumulativeBandwidth": 32000.00,
-          "maxTax": 6400,
-          "cumulativeTax": 6400.00,
-          "weeklyThreshold": 615.3846,
-          "weeklyCumulativeMaxTax": 123.0769,
-          "monthlyThreshold": 2666.6666,
-          "monthlyCumulativeMaxTax": 5333.3333
+          "annualBandMaxTax": 6400,
+          "periods": [
+            {
+              "periodType": "annual",
+              "threshold": 32000.00,
+              "cumulativeMaxTax": 6400.00
+            },
+            {
+              "periodType": "monthly",
+              "threshold": 2666.6666,
+              "cumulativeMaxTax": 533.3333
+            },
+            {
+              "periodType": "weekly",
+              "threshold": 615.3846,
+              "cumulativeMaxTax": 123.0769
+            }
+          ]
         },
         {
           "band": 3,
           "bandwidth": 118000.00,
           "rate": 40,
-          "cumulativeBandwidth": 150000.00,
-          "maxTax": 47200.00,
-          "cumulativeTax": 53600.00,
-          "weeklyThreshold": 2884.6153,
-          "weeklyCumulativeMaxTax": 1030.7692,
-          "monthlyThreshold": 12500.00,
-          "monthlyCumulativeMaxTax": 4466.6666
+          "annualBandMaxTax": 47200.00,
+          "periods": [
+            {
+              "periodType": "annual",
+              "threshold": 150000.00,
+              "cumulativeMaxTax": 53600.00
+            },
+            {
+              "periodType": "monthly",
+              "threshold": 12500.00,
+              "cumulativeMaxTax": 4466.6666
+            },
+            {
+              "periodType": "weekly",
+              "threshold": 2884.6153,
+              "cumulativeMaxTax": 1030.7692
+            }
+          ]
         },
         {
           "band": 4,
           "bandwidth": -1,
           "rate": 45,
-          "cumulativeBandwidth": -1,
-          "maxTax": -1,
-          "cumulativeTax": -1,
-          "weeklyThreshold": -1,
-          "weeklyCumulativeMaxTax": -1,
-          "monthlyThreshold": -1,
-          "monthlyCumulativeMaxTax": -1
+          "annualBandMaxTax": -1,
+          "periods": [
+            {
+              "periodType": "annual",
+              "threshold": -1,
+              "cumulativeMaxTax": -1
+            },
+            {
+              "periodType": "monthly",
+              "threshold": -1,
+              "cumulativeMaxTax": -1
+            },
+            {
+              "periodType": "weekly",
+              "threshold": -1,
+              "cumulativeMaxTax": -1
+            }
+          ]
         }
       ]
     },
@@ -60,49 +104,93 @@
           "band": 1,
           "bandwidth": 0.00,
           "rate": 10,
-          "cumulativeBandwidth": 0,
-          "maxTax": 0,
-          "cumulativeTax": 0,
-          "weeklyThreshold": 0,
-          "weeklyCumulativeMaxTax": 0,
-          "monthlyThreshold": 0,
-          "monthlyCumulativeMaxTax": 0
+          "annualBandMaxTax": 0,
+          "periods": [
+            {
+              "periodType": "annual",
+              "threshold": 0,
+              "cumulativeMaxTax": 0
+            },
+            {
+              "periodType": "monthly",
+              "threshold": 0,
+              "cumulativeMaxTax": 0
+            },
+            {
+              "periodType": "weekly",
+              "threshold": 0,
+              "cumulativeMaxTax": 0
+            }
+          ]
         },
         {
           "band": 2,
           "bandwidth": 32000.00,
           "rate": 20,
-          "cumulativeBandwidth": 32000.00,
-          "maxTax": 6400,
-          "cumulativeTax": 6400.00,
-          "weeklyThreshold": 615.3846,
-          "weeklyCumulativeMaxTax": 123.0769,
-          "monthlyThreshold": 2666.6666,
-          "monthlyCumulativeMaxTax": 5333.3333
+          "annualBandMaxTax": 6400,
+          "periods": [
+            {
+              "periodType": "annual",
+              "threshold": 32000.00,
+              "cumulativeMaxTax": 6400.00
+            },
+            {
+              "periodType": "monthly",
+              "threshold": 2666.6666,
+              "cumulativeMaxTax": 533.3333
+            },
+            {
+              "periodType": "weekly",
+              "threshold": 615.3846,
+              "cumulativeMaxTax": 123.0769
+            }
+          ]
         },
         {
           "band": 3,
           "bandwidth": 118000.00,
           "rate": 40,
-          "cumulativeBandwidth": 150000.00,
-          "maxTax": 47200.00,
-          "cumulativeTax": 53600.00,
-          "weeklyThreshold": 2884.6153,
-          "weeklyCumulativeMaxTax": 1030.7692,
-          "monthlyThreshold": 12500.00,
-          "monthlyCumulativeMaxTax": 4466.6666
+          "annualBandMaxTax": 47200.00,
+          "periods": [
+            {
+              "periodType": "annual",
+              "threshold": 150000.00,
+              "cumulativeMaxTax": 53600.00
+            },
+            {
+              "periodType": "monthly",
+              "threshold": 12500.00,
+              "cumulativeMaxTax": 4466.6666
+            },
+            {
+              "periodType": "weekly",
+              "threshold": 2884.6153,
+              "cumulativeMaxTax": 1030.7692
+            }
+          ]
         },
         {
           "band": 4,
           "bandwidth": -1,
           "rate": 45,
-          "cumulativeBandwidth": -1,
-          "maxTax": -1,
-          "cumulativeTax": -1,
-          "weeklyThreshold": -1,
-          "weeklyCumulativeMaxTax": -1,
-          "monthlyThreshold": -1,
-          "monthlyCumulativeMaxTax": -1
+          "annualBandMaxTax": -1,
+          "periods": [
+            {
+              "periodType": "annual",
+              "threshold": -1,
+              "cumulativeMaxTax": -1
+            },
+            {
+              "periodType": "monthly",
+              "threshold": -1,
+              "cumulativeMaxTax": -1
+            },
+            {
+              "periodType": "weekly",
+              "threshold": -1,
+              "cumulativeMaxTax": -1
+            }
+          ]
         }
       ]
     }

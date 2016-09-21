@@ -24,11 +24,12 @@ case class TaxYearBands(taxYearBands: Seq[TaxBands])
 
 case class TaxBands(fromDate: LocalDate, taxBands: Seq[TaxBand])
 
-case class TaxBand(band: Int, bandwidth: BigDecimal, rate: BigDecimal, cumulativeBandwidth: BigDecimal,
-                   maxTax: BigDecimal, cumulativeTax: BigDecimal, weeklyThreshold: BigDecimal, weeklyCumulativeMaxTax: BigDecimal,
-                   monthlyThreshold: BigDecimal, monthlyCumulativeMaxTax: BigDecimal)
+case class TaxBand(band: Int, bandwidth: BigDecimal, rate: BigDecimal, annualBandMaxTax: BigDecimal, periods: Seq[PeriodCalc])
+
+case class PeriodCalc(periodType: String, threshold: BigDecimal, cumulativeMaxTax: BigDecimal)
 
 object TaxYearBands {
+  implicit val formatPeriodCalc = Json.format[PeriodCalc]
   implicit val formatTaxBand = Json.format[TaxBand]
   implicit val localDateFormat = new Format[LocalDate] {
     override def reads(json: JsValue): JsResult[LocalDate] =
@@ -42,20 +43,26 @@ object TaxYearBands {
 
 object TaxBands {
 
+
   implicit val localDateFormat = new Format[LocalDate] {
     override def reads(json: JsValue): JsResult[LocalDate] =
       json.validate[String].map(LocalDate.parse)
 
     override def writes(o: LocalDate): JsValue = Json.toJson(o.toString)
   }
-
+  implicit val formatPeriodCalc = Json.format[PeriodCalc]
   implicit val formatTaxBand = Json.format[TaxBand]
-  implicit val format= Json.format[TaxBands]
 
+  implicit val format= Json.format[TaxBands]
 }
 
 object TaxBand {
+  implicit val formatPeriodCalc = Json.format[PeriodCalc]
   implicit val format= Json.format[TaxBand]
+}
+
+object PeriodCalc {
+  implicit val format= Json.format[PeriodCalc]
 }
 
 object LocalDateOrdered extends Ordering[LocalDate] {

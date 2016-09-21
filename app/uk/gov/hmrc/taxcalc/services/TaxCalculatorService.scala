@@ -20,10 +20,11 @@ import java.time.LocalDate
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.taxcalc.config.TaxCalculatorStartup
-import uk.gov.hmrc.taxcalc.domain.{TaxBands, TaxCalc, TaxYearBands}
+import uk.gov.hmrc.taxcalc.domain._
 
 import scala.concurrent.Future
 import scala.io.Source._
+import scala.math.BigDecimal.RoundingMode
 import scala.tools.nsc.interpreter._
 
 
@@ -49,6 +50,66 @@ trait TaxCalculatorService {
     val taxBands = loadTaxBands().taxYearBands.sortWith(_.fromDate.getYear < _.fromDate.getYear())
       .filter(band => band.fromDate.isBefore(localDate) || band.fromDate.isEqual(localDate))
     taxBands.last
+  }
+
+  def isValidTaxCode(taxCode: String): Boolean = {
+    taxCode.matches("([0-9]{1,4}[L-N,l-n,T,t,X,x]{1}){1}")
+  }
+
+  def calculateAllowance(taxCode: String): Seq[(String, Allowance)] = {
+    val taxCodeNumber = taxCode.stripSuffix(taxCode.substring(taxCode.length - 1, taxCode.length)).toInt
+    val seedData = new PAYEAllowanceSeedData(taxCodeNumber)
+    Seq("weekly" -> new WeeklyAllowance(seedData), "monthly" -> new MonthlyAllowance(seedData), "annual" -> new AnnualAllowance(taxCode, taxCodeNumber))
+  }
+
+
+  def calculatePAYETaxablePay(taxCode: String, payPeriod: String, grossPay: BigDecimal) : Seq[BigDecimal] = {
+    for{
+      allowance <- calculateAllowance(taxCode).filter(_._1.equals(payPeriod))
+    } yield (grossPay.-(allowance._2.allowance).setScale(2, RoundingMode.UP))
+  }
+
+  def getPreviousBandMaxTaxAmount(payPeriod: String, band: Int): Option[BigDecimal] = {
+    Option(getTaxBands(LocalDate.now()).taxBands.filter(_.band == band-1).head.periods.filter(_.periodType.equals(payPeriod)).head.cumulativeMaxTax)
+  }
+
+  def calculatePAYETax(taxCode: String, payPeriod: String, grossPay: BigDecimal) :BigDecimal = {
+    val taxablePay = calculatePAYETaxablePay(taxCode, payPeriod, grossPay).head
+    val taxBand = determineTaxBand(taxCode, payPeriod, taxablePay)
+    val excessPay = calculateExcessPay(taxBand, payPeriod, taxablePay)
+    val taxedAmount = excessPay.*(taxBand.rate./(100)).setScale(2, RoundingMode.HALF_UP)
+    if(taxBand.band > 1) {
+      val a = getPreviousBandMaxTaxAmount(payPeriod, taxBand.band).get.setScale(2, RoundingMode.HALF_UP)
+      val b = taxedAmount.+(a)
+      b
+    }
+    else
+      taxedAmount
+  }
+
+  def determineTaxBand(taxCode: String, payPeriod: String, taxablePay: BigDecimal) : TaxBand = {
+    val taxBands = getTaxBands(LocalDate.now()).taxBands.collect(taxBandFilterFunc(payPeriod, taxablePay))
+    if(taxBands.size > 0){
+      taxBands.head
+    }
+    else getTaxBands(LocalDate.now()).taxBands.last
+  }
+
+  private def taxBandFilterFunc(periodType: String, taxablePay: BigDecimal): PartialFunction[TaxBand, TaxBand] = {
+    case taxBand: TaxBand  if isPeriodValid(periodType, taxBand.periods, taxablePay) => taxBand
+  }
+
+  private def isPeriodValid(periodType: String, periodCalcs: Seq[PeriodCalc], taxablePay: BigDecimal) : Boolean = {
+    !periodCalcs.filter(_.periodType.equals(periodType)).filter((_.threshold.>(taxablePay))).isEmpty
+  }
+
+  def calculateExcessPay(taxBand: TaxBand, payPeriod: String, taxablePay: BigDecimal): BigDecimal = {
+    if(taxBand.band > 1){
+      val threshold = getTaxBands(LocalDate.now()).taxBands.filter(_.band == taxBand.band-1).head
+        .periods.filter(_.periodType.equals(payPeriod)).head.threshold
+      threshold.-(taxablePay.intValue()).abs
+    }
+    else taxablePay
   }
 }
 
