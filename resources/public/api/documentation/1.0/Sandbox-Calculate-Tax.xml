@@ -1,0 +1,243 @@
+<endpoint>
+  <name>Sandbox Calculate Tax</name>
+  <description>Sandbox Calculate Tax</description>
+  <section id="resource">
+    <title>Resource</title>
+    <resource>GET /tax-calc/sandbox-calculate-tax</resource>
+  </section>
+  <section id="path-parameters">
+    <title>Path Parameters</title>
+    <table>
+      <headings>
+        <cell>Name</cell>
+        <cell>Type</cell>
+        <cell>Example</cell>
+        <cell>Description</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell><code></code></cell>
+          <cell><code></code></cell>
+          <cell><code></code></cell>
+          <cell></cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+  <section id="authorisation">
+    <title>Authorisation</title>
+    <authorisation>
+      <type>NONE</type>
+      <scope>read:your-tax-calculator</scope>
+    </authorisation>
+  </section>
+  <section id="content-types">
+    <title>Accepted Media Types</title>
+    <list>
+      <item>
+        <code>application/vnd.hmrc.1.0+json</code>
+      </item>
+    </list>
+  </section>
+  <section id="sample-response">
+    <title>Response</title>
+    <httpStatus>200 (OK)</httpStatus>
+    <json><![CDATA[
+  {
+  "statePensionAge": false,
+  "taxCode": "1100L",
+  "taxBreakdown": [
+    {
+      "period": "week",
+      "grossPay": 1250.00,
+      "taxFreePay": 211.73,
+      "taxablePay": 1038.27,
+      "taxCategories": [
+        {
+          "taxType": "incomeTax",
+          "total": 292.24,
+          "aggregation": [
+            {
+              "percentage": 20,
+              "amount": 123.08
+            },
+            {
+              "percentage": 40,
+              "amount": 169.16
+            },
+            {
+              "percentage": 45,
+              "amount": 0.00
+            }
+          ]
+        },
+        {
+          "taxType": "employeeNationalInsurance",
+          "total": 89.07,
+          "aggregation": [
+            {
+              "percentage": 12,
+              "amount": 80.61
+            },
+            {
+              "percentage": 2,
+              "amount": 8.46
+            }
+          ]
+        },
+        {
+          "taxType": "employerNationalInsurance",
+          "total": 150.98,
+          "aggregation": [
+            {
+              "percentage": 13.8,
+              "amount": 150.98
+            }
+          ]
+        }
+      ],
+      "taxableDeductions": 381.31,
+      "takeHomePay": 368.69
+    },
+    {
+      "period": "month",
+      "grossPay": 5416.67,
+      "taxFreePay": 917.43,
+      "taxablePay": 4499.24,
+      "taxCategories": [
+        {
+          "taxType": "incomeTax",
+          "total": 1266.37,
+          "aggregation": [
+            {
+              "percentage": 20,
+              "amount": 533.33
+            },
+            {
+              "percentage": 40,
+              "amount": 733.03
+            },
+            {
+              "percentage": 45,
+              "amount": 0.00
+            }
+          ]
+        },
+        {
+          "taxType": "employeeNationalInsurance",
+          "total": 385.99,
+          "aggregation": [
+            {
+              "percentage": 12,
+              "amount": 349.32
+            },
+            {
+              "percentage": 2,
+              "amount": 36.67
+            }
+          ]
+        },
+        {
+          "taxType": "employerNationalInsurance",
+          "total": 654.22,
+          "aggregation": [
+            {
+              "percentage": 13.8,
+              "amount": 654.22
+            }
+         ]
+       }
+      ],
+      "taxableDeductions": 1652.36,
+      "takeHomePay": 3764.31
+    },
+    {
+      "period": "year",
+      "grossPay": 65000.00,
+      "taxFreePay": 11009.00,
+      "taxablePay": 53991.00,
+      "taxCategories": [
+        {
+          "taxType": "incomeTax",
+          "total": 15196.40,
+          "aggregation": [
+            {
+              "percentage": 20,
+              "amount": 6400.00
+            },
+            {
+              "percentage": 40,
+              "amount": 8796.40
+            },
+            {
+              "percentage": 45,
+              "amount": 0.00
+            }
+          ]
+        },
+        {
+          "taxType": "employeeNationalInsurance",
+          "total": 4631.88,
+          "aggregation": [
+            {
+              "percentage": 12,
+              "amount": 4191.84
+            },
+            {
+              "percentage": 2,
+              "amount": 440.04
+            }
+          ]
+        },
+        {
+          "taxType": "employerNationalInsurance",
+          "total": 7850.64,
+          "aggregation": [
+            {
+              "percentage": 13.8,
+              "amount": 7850.64
+            }
+          ]
+        }
+      ],
+      "taxableDeductions": 19828.28,
+      "takeHomePay":45171.72
+    }
+  ]
+}
+  ]]></json>
+    <table>
+      <headings>
+        <cell>Name</cell>
+        <cell>Type</cell>
+        <cell>Example</cell>
+        <cell>Description</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell><code>tax-calc</code></cell>
+          <cell><code>Seq[Category]</code></cell>
+          <cell><code></code></cell>
+          <cell>Sequence of Categories.</cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+  <section id="error-responses">
+    <title>Error Scenarios</title>
+    <table>
+      <headings>
+        <cell>Error Scenario</cell>
+        <cell>HTTP Status</cell>
+        <cell>Code</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell>Invalid NINO</cell>
+          <cell><code>400 (Bad Request)</code></cell>
+          <cell><code>NO_TOKEN</code></cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+</endpoint>
