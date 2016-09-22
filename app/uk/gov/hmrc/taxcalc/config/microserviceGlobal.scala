@@ -33,9 +33,14 @@ import uk.gov.hmrc.play.config.{AppName, ControllerConfig, RunMode}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
 import uk.gov.hmrc.play.microservice.bootstrap.DefaultMicroserviceGlobal
+import uk.gov.hmrc.taxcalc.controllers.BadRequestException
+import uk.gov.hmrc.taxcalc.domain.{TaxBands, TaxCalc, TaxYearBands}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.io.Source._
+import scala.tools.nsc.interpreter._
+import scala.util.Success
 
 object ControllerConfiguration extends ControllerConfig {
   lazy val controllerConfigs = Play.current.configuration.underlying.as[Config]("controllers")
@@ -60,6 +65,20 @@ object MicroserviceAuthFilter extends AuthorisationFilter {
   override lazy val authConnector = MicroserviceAuthConnector
 
   override def controllerNeedsAuth(controllerName: String): Boolean = ControllerConfiguration.paramsForController(controllerName).needsAuth
+}
+
+object TaxCalculatorStartup {
+
+  val taxBands = Map("taxYearBands" -> populateTaxBands.getOrElse(None))
+
+  def populateTaxBands: Option[TaxYearBands] = {
+    getClass.getResourceAsStream(s"/tax-calc/tax_bands.json") match {
+      case is: InputStream => {
+        Json.parse(fromInputStream(is).mkString).asOpt[TaxYearBands]
+      }
+      case _ => None
+    }
+  }
 }
 
 object MicroserviceGlobal extends DefaultMicroserviceGlobal with RunMode with ServiceLocatorConfig with ServiceLocatorRegistration {

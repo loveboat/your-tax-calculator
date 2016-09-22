@@ -1,4 +1,49 @@
-{
+<endpoint>
+  <name>Sandbox Calculate Tax</name>
+  <description>Sandbox Calculate Tax</description>
+  <section id="resource">
+    <title>Resource</title>
+    <resource>GET /tax-calc/sandbox-calculate-tax</resource>
+  </section>
+  <section id="path-parameters">
+    <title>Path Parameters</title>
+    <table>
+      <headings>
+        <cell>Name</cell>
+        <cell>Type</cell>
+        <cell>Example</cell>
+        <cell>Description</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell><code></code></cell>
+          <cell><code></code></cell>
+          <cell><code></code></cell>
+          <cell></cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+  <section id="authorisation">
+    <title>Authorisation</title>
+    <authorisation>
+      <type>NONE</type>
+      <scope>read:your-tax-calculator</scope>
+    </authorisation>
+  </section>
+  <section id="content-types">
+    <title>Accepted Media Types</title>
+    <list>
+      <item>
+        <code>application/vnd.hmrc.1.0+json</code>
+      </item>
+    </list>
+  </section>
+  <section id="sample-response">
+    <title>Response</title>
+    <httpStatus>200 (OK)</httpStatus>
+    <json><![CDATA[
+  {
   "statePensionAge": false,
   "taxCode": "1100L",
   "taxBreakdown": [
@@ -51,7 +96,7 @@
           ]
         }
       ],
-      "totalDeductions": 381.31,
+      "taxableDeductions": 381.31,
       "takeHomePay": 368.69
     },
     {
@@ -103,7 +148,7 @@
          ]
        }
       ],
-      "totalDeductions": 1652.36,
+      "taxableDeductions": 1652.36,
       "takeHomePay": 3764.31
     },
     {
@@ -155,8 +200,44 @@
           ]
         }
       ],
-      "totalDeductions": 19828.28,
+      "taxableDeductions": 19828.28,
       "takeHomePay":45171.72
     }
   ]
 }
+  ]]></json>
+    <table>
+      <headings>
+        <cell>Name</cell>
+        <cell>Type</cell>
+        <cell>Example</cell>
+        <cell>Description</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell><code>tax-calc</code></cell>
+          <cell><code>Seq[Category]</code></cell>
+          <cell><code></code></cell>
+          <cell>Sequence of Categories.</cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+  <section id="error-responses">
+    <title>Error Scenarios</title>
+    <table>
+      <headings>
+        <cell>Error Scenario</cell>
+        <cell>HTTP Status</cell>
+        <cell>Code</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell>Invalid NINO</cell>
+          <cell><code>400 (Bad Request)</code></cell>
+          <cell><code>NO_TOKEN</code></cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+</endpoint>

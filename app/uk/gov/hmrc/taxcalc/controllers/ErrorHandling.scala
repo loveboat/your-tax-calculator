@@ -25,6 +25,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class BadRequestException(message:String) extends uk.gov.hmrc.play.http.HttpException(message, 400)
+class TaxCalculatorConfigException(message: String) extends uk.gov.hmrc.play.http.HttpException(message, 500)
 
 trait ErrorHandling {
   self: BaseController =>
@@ -37,7 +38,9 @@ trait ErrorHandling {
       case ex:BadRequestException =>
         log("BadRequest!")
         Status(ErrorBadRequest.httpStatusCode)(Json.toJson(ErrorBadRequest))
-
+      case ex: TaxCalculatorConfigException =>
+        log("TaxCalculatorConfigException")
+        Status(ErrorTaxCalculatorConfig.httpStatusCode)(Json.toJson(ErrorTaxCalculatorConfig))
       case e: Throwable =>
         Logger.error(s"$app Internal server error: ${e.getMessage}", e)
         Status(ErrorInternalServerError.httpStatusCode)(Json.toJson(ErrorInternalServerError))

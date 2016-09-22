@@ -56,8 +56,21 @@
             ]
           },
           {
-            "uriPattern":"/tax-calc/calculate-tax/{taxYear}/{taxCode}/{grossPay}/{payPeriod}",
+            "uriPattern":"/tax-calc/calculate-tax/{isStatePensionAge}/{taxYear}/{taxCode}/{grossPay}/{payPeriod}",
             "endpointName":"Calculate Tax",
+            "method":"GET",
+            "authType":"NONE",
+            "throttlingTier":"UNLIMITED",
+            "queryParameters": [
+              {
+                "name": "journeyId",
+                "required": false
+              }
+            ]
+          },
+          {
+            "uriPattern":"/tax-calc/sandbox-calculate-tax/{isStatePensionAge}/{taxYear}/{taxCode}/{grossPay}/{payPeriod}",
+            "endpointName":"Sandbox Calculate Tax",
             "method":"GET",
             "authType":"NONE",
             "throttlingTier":"UNLIMITED",

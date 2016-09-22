@@ -18,9 +18,11 @@ package uk.gov.hmrc.taxcalc.domain
 
 import play.api.libs.json.Json
 
+case class PAYETaxResult(taxablePay: BigDecimal, excessPay: BigDecimal, finalBandTaxedAmount: BigDecimal, band: Int, payeTaxAmount: BigDecimal)
+
 case class TaxCalc(statePensionAge: Boolean, taxCode: String, taxBreakdown: Seq[TaxBreakdown])
 
-case class TaxBreakdown(period: String, grossPay: BigDecimal, taxFreePay: BigDecimal, taxablePay: BigDecimal, taxCategories: Seq[TaxCategory], taxableDeductions: BigDecimal, takeHomePay: BigDecimal)
+case class TaxBreakdown(period: String, grossPay: BigDecimal, taxFreePay: BigDecimal, taxablePay: BigDecimal, taxCategories: Seq[TaxCategory], totalDeductions: BigDecimal, takeHomePay: BigDecimal)
 
 case class TaxCategory(taxType: String, total: BigDecimal, aggregation: Seq[Aggregation])
 

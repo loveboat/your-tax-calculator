@@ -19,3 +19,4 @@ package uk.gov.hmrc.taxcalc.controllers
 import uk.gov.hmrc.api.controllers.ErrorResponse
 
 case object ErrorBadRequest extends ErrorResponse(400, "BAD_REQUEST" ,"Invalid Request")
+case object ErrorTaxCalculatorConfig extends ErrorResponse(500, "INTERNAL_SERVER_ERROR" ,"Error Tax Calculator Config")

@@ -6,4 +6,6 @@ GET        /tax-calc/tax-expenditure-categories/:taxYear                    uk.g
 
 GET        /tax-calc/tax-expenditure-category-percentage/:taxYear           uk.gov.hmrc.taxcalc.controllers.LiveTaxExpenditureBreakdownController.taxExpenditureCategoryPercentage(taxYear: Int, journeyId: Option[String])
 
-GET        /tax-calc/calculate-tax/:taxYear/:taxCode/:grossPay/:payPeriod   uk.gov.hmrc.taxcalc.controllers.LiveTaxCalculatorController.calculateTax(taxYear: Int, taxCode: String, grossPay: Long, payPeriod: String, journeyId: Option[String])
+GET        /tax-calc/calculate-tax/:taxYear/:taxCode/:grossPay/:payPeriod   uk.gov.hmrc.taxcalc.controllers.LiveTaxCalculatorController.calculateTax(isStatePensionAge: Boolean, taxYear: Int, taxCode: String, grossPay: Long, payPeriod: String, journeyId: Option[String])
+
+GET        /tax-calc/sandbox-calculate-tax/:taxYear/:taxCode/:grossPay/:payPeriod   uk.gov.hmrc.taxcalc.controllers.SandboxTaxCalculatorController.calculateTax(isStatePensionAge: Boolean, taxYear: Int, taxCode: String, grossPay: Long, payPeriod: String, journeyId: Option[String])

@@ -19,6 +19,205 @@ package uk.gov.hmrc.taxcalc.controllers
 import play.api.libs.json._
 
 object TaxCalculatorTestData {
+  val taxBands = Json.parse("""{
+                              |  "taxYearBands": [
+                              |    {
+                              |      "fromDate": "2016-04-05",
+                              |      "taxBands": [
+                              |        {
+                              |          "band": 1,
+                              |          "bandwidth": 0.00,
+                              |          "rate": 10,
+                              |          "annualBandMaxTax": 0,
+                              |          "periods": [
+                              |            {
+                              |              "periodType": "annual",
+                              |              "threshold": 0,
+                              |              "cumulativeMaxTax": 0
+                              |            },
+                              |            {
+                              |              "periodType": "monthly",
+                              |              "threshold": 0,
+                              |              "cumulativeMaxTax": 0
+                              |            },
+                              |            {
+                              |              "periodType": "weekly",
+                              |              "threshold": 0,
+                              |              "cumulativeMaxTax": 0
+                              |            }
+                              |          ]
+                              |        },
+                              |        {
+                              |          "band": 2,
+                              |          "bandwidth": 32000.00,
+                              |          "rate": 20,
+                              |          "annualBandMaxTax": 6400,
+                              |          "periods": [
+                              |            {
+                              |              "periodType": "annual",
+                              |              "threshold": 32000.00,
+                              |              "cumulativeMaxTax": 6400.00
+                              |            },
+                              |            {
+                              |              "periodType": "monthly",
+                              |              "threshold": 2666.6666,
+                              |              "cumulativeMaxTax": 533.3333
+                              |            },
+                              |            {
+                              |              "periodType": "weekly",
+                              |              "threshold": 615.3846,
+                              |              "cumulativeMaxTax": 123.0769
+                              |            }
+                              |          ]
+                              |        },
+                              |        {
+                              |          "band": 3,
+                              |          "bandwidth": 118000.00,
+                              |          "rate": 40,
+                              |          "annualBandMaxTax": 47200.00,
+                              |          "periods": [
+                              |            {
+                              |              "periodType": "annual",
+                              |              "threshold": 150000.00,
+                              |              "cumulativeMaxTax": 53600.00
+                              |            },
+                              |            {
+                              |              "periodType": "monthly",
+                              |              "threshold": 12500.00,
+                              |              "cumulativeMaxTax": 4466.6666
+                              |            },
+                              |            {
+                              |              "periodType": "weekly",
+                              |              "threshold": 2884.6153,
+                              |              "cumulativeMaxTax": 1030.7692
+                              |            }
+                              |          ]
+                              |        },
+                              |        {
+                              |          "band": 4,
+                              |          "bandwidth": -1,
+                              |          "rate": 45,
+                              |          "annualBandMaxTax": -1,
+                              |          "periods": [
+                              |            {
+                              |              "periodType": "annual",
+                              |              "threshold": -1,
+                              |              "cumulativeMaxTax": -1
+                              |            },
+                              |            {
+                              |              "periodType": "monthly",
+                              |              "threshold": -1,
+                              |              "cumulativeMaxTax": -1
+                              |            },
+                              |            {
+                              |              "periodType": "weekly",
+                              |              "threshold": -1,
+                              |              "cumulativeMaxTax": -1
+                              |            }
+                              |          ]
+                              |        }
+                              |      ]
+                              |    },
+                              |    {
+                              |      "fromDate": "2017-04-05",
+                              |      "taxBands": [
+                              |        {
+                              |          "band": 1,
+                              |          "bandwidth": 0.00,
+                              |          "rate": 10,
+                              |          "annualBandMaxTax": 0,
+                              |          "periods": [
+                              |            {
+                              |              "periodType": "annual",
+                              |              "threshold": 0,
+                              |              "cumulativeMaxTax": 0
+                              |            },
+                              |            {
+                              |              "periodType": "monthly",
+                              |              "threshold": 0,
+                              |              "cumulativeMaxTax": 0
+                              |            },
+                              |            {
+                              |              "periodType": "weekly",
+                              |              "threshold": 0,
+                              |              "cumulativeMaxTax": 0
+                              |            }
+                              |          ]
+                              |        },
+                              |        {
+                              |          "band": 2,
+                              |          "bandwidth": 32000.00,
+                              |          "rate": 20,
+                              |          "annualBandMaxTax": 6400,
+                              |          "periods": [
+                              |            {
+                              |              "periodType": "annual",
+                              |              "threshold": 32000.00,
+                              |              "cumulativeMaxTax": 6400.00
+                              |            },
+                              |            {
+                              |              "periodType": "monthly",
+                              |              "threshold": 2666.6666,
+                              |              "cumulativeMaxTax": 533.3333
+                              |            },
+                              |            {
+                              |              "periodType": "weekly",
+                              |              "threshold": 615.3846,
+                              |              "cumulativeMaxTax": 123.0769
+                              |            }
+                              |          ]
+                              |        },
+                              |        {
+                              |          "band": 3,
+                              |          "bandwidth": 118000.00,
+                              |          "rate": 40,
+                              |          "annualBandMaxTax": 47200.00,
+                              |          "periods": [
+                              |            {
+                              |              "periodType": "annual",
+                              |              "threshold": 150000.00,
+                              |              "cumulativeMaxTax": 53600.00
+                              |            },
+                              |            {
+                              |              "periodType": "monthly",
+                              |              "threshold": 12500.00,
+                              |              "cumulativeMaxTax": 4466.6666
+                              |            },
+                              |            {
+                              |              "periodType": "weekly",
+                              |              "threshold": 2884.6153,
+                              |              "cumulativeMaxTax": 1030.7692
+                              |            }
+                              |          ]
+                              |        },
+                              |        {
+                              |          "band": 4,
+                              |          "bandwidth": -1,
+                              |          "rate": 45,
+                              |          "annualBandMaxTax": -1,
+                              |          "periods": [
+                              |            {
+                              |              "periodType": "annual",
+                              |              "threshold": -1,
+                              |              "cumulativeMaxTax": -1
+                              |            },
+                              |            {
+                              |              "periodType": "monthly",
+                              |              "threshold": -1,
+                              |              "cumulativeMaxTax": -1
+                              |            },
+                              |            {
+                              |              "periodType": "weekly",
+                              |              "threshold": -1,
+                              |              "cumulativeMaxTax": -1
+                              |            }
+                              |          ]
+                              |        }
+                              |      ]
+                              |    }
+                              |  ]
+                              |}""".stripMargin)
+
 
   val taxCalculator_2016_response = Json.parse(
     """{
@@ -74,7 +273,7 @@ object TaxCalculatorTestData {
       |          ]
       |        }
       |      ],
-      |      "taxableDeductions": 381.31,
+      |      "totalDeductions": 381.31,
       |      "takeHomePay": 368.69
       |    },
       |    {
@@ -126,7 +325,7 @@ object TaxCalculatorTestData {
       |         ]
       |       }
       |      ],
-      |      "taxableDeductions": 1652.36,
+      |      "totalDeductions": 1652.36,
       |      "takeHomePay": 3764.31
       |    },
       |    {
@@ -178,11 +377,101 @@ object TaxCalculatorTestData {
       |          ]
       |        }
       |      ],
-      |      "taxableDeductions": 19828.28,
+      |      "totalDeductions": 19828.28,
       |      "takeHomePay":45171.72
       |    }
       |  ]
       |}""".stripMargin)
 
 
+  val taxCalulator_PAYE_response = Json.parse("""{
+                                     |  "statePensionAge": true,
+                                     |  "taxCode": "1100L",
+                                     |  "taxBreakdown": [
+                                     |    {
+                                     |      "period": "annual",
+                                     |      "grossPay": 200000.0,
+                                     |      "taxFreePay": 11009.00,
+                                     |      "taxablePay": 188991.00,
+                                     |      "taxCategories": [
+                                     |        {
+                                     |          "taxType": "incomeTax",
+                                     |          "total": 60000.00,
+                                     |          "aggregation": [
+                                     |            {
+                                     |              "percentage": 20,
+                                     |              "amount": 6400.00
+                                     |            },
+                                     |            {
+                                     |              "percentage": 40,
+                                     |              "amount": 53600.00
+                                     |            },
+                                     |            {
+                                     |              "percentage": 45,
+                                     |              "amount": 0
+                                     |            }
+                                     |          ]
+                                     |        }
+                                     |      ],
+                                     |      "totalDeductions": 60000.00,
+                                     |      "takeHomePay": 140000.00
+                                     |    },
+                                     |    {
+                                     |      "period": "monthly",
+                                     |      "grossPay": 16666.67,
+                                     |      "taxFreePay": 917.42,
+                                     |      "taxablePay": 15749.25,
+                                     |      "taxCategories": [
+                                     |        {
+                                     |          "taxType": "incomeTax",
+                                     |          "total": 5000.00,
+                                     |          "aggregation": [
+                                     |            {
+                                     |              "percentage": 20,
+                                     |              "amount": 533.3333
+                                     |            },
+                                     |            {
+                                     |              "percentage": 40,
+                                     |              "amount": 4466.6666
+                                     |            },
+                                     |            {
+                                     |              "percentage": 45,
+                                     |              "amount": 0
+                                     |            }
+                                     |          ]
+                                     |        }
+                                     |      ],
+                                     |      "totalDeductions": 5000.00,
+                                     |      "takeHomePay": 11666.67
+                                     |    },
+                                     |    {
+                                     |      "period": "weekly",
+                                     |      "grossPay": 3846.15,
+                                     |      "taxFreePay": 211.71,
+                                     |      "taxablePay": 3634.44,
+                                     |      "taxCategories": [
+                                     |        {
+                                     |          "taxType": "incomeTax",
+                                     |          "total": 1153.85,
+                                     |          "aggregation": [
+                                     |            {
+                                     |              "percentage": 20,
+                                     |              "amount": 123.0769
+                                     |            },
+                                     |            {
+                                     |              "percentage": 40,
+                                     |              "amount": 1030.7692
+                                     |            },
+                                     |            {
+                                     |              "percentage": 45,
+                                     |              "amount": 0
+                                     |            }
+                                     |          ]
+                                     |        }
+                                     |      ],
+                                     |      "totalDeductions": 1153.85,
+                                     |      "takeHomePay": 2692.30
+                                     |    }
+                                     |  ]
+                                     |}""".stripMargin)
 }
