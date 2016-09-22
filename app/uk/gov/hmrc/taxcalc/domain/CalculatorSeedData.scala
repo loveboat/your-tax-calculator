@@ -51,3 +51,17 @@ trait Allowance {
   def remainder: BigDecimal = ???
   def allowance: BigDecimal = ???
 }
+
+object AnnualAllowance {
+  def apply(taxCode: String, taxCodeNumber: Int): AnnualAllowance = new AnnualAllowance(taxCode, taxCodeNumber)
+}
+
+object MonthlyAllowance {
+  def apply(payeSeedData: PAYEAllowanceSeedData): MonthlyAllowance = new MonthlyAllowance(payeSeedData)
+}
+
+object WeeklyAllowance {
+  def apply(payeSeedData: PAYEAllowanceSeedData): WeeklyAllowance = new WeeklyAllowance(payeSeedData)
+}
+
+

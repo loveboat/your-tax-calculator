@@ -51,7 +51,7 @@
           ]
         }
       ],
-      "taxableDeductions": 381.31,
+      "totalDeductions": 381.31,
       "takeHomePay": 368.69
     },
     {
@@ -103,7 +103,7 @@
          ]
        }
       ],
-      "taxableDeductions": 1652.36,
+      "totalDeductions": 1652.36,
       "takeHomePay": 3764.31
     },
     {
@@ -155,7 +155,7 @@
           ]
         }
       ],
-      "taxableDeductions": 19828.28,
+      "totalDeductions": 19828.28,
       "takeHomePay":45171.72
     }
   ]

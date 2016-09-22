@@ -26,9 +26,10 @@ class TaxCalculatorControllerSpec extends UnitSpec with WithFakeApplication with
   "calculate tax for 2016 tax year" should {
     "return a Mock TaxCalc response" in new LiveTaxCalcSuccess {
 
-        val result = await(controller.calculateTax(2016,"1100L", 100000L, "year", Option(journeyId))(emptyRequest))
+        val result = await(controller.calculateTax(true, 2016, "1100L", BigDecimal.valueOf(200000.00), "annual", Option(journeyId))(emptyRequest))
         status(result) shouldBe 200
-        contentAsJson(result) shouldBe Json.toJson(TaxCalculatorTestData.taxCalculator_2016_response);
+        println(contentAsJson(result))
+        contentAsJson(result) shouldBe Json.toJson(TaxCalculatorTestData.taxCalulator_PAYE_response);
     }
   }
 }

@@ -19,7 +19,6 @@ package uk.gov.hmrc.taxcalc.services
 import java.time.LocalDate
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.taxcalc.config.TaxCalculatorStartup
 import uk.gov.hmrc.taxcalc.domain._
 
 import scala.concurrent.Future
@@ -27,10 +26,76 @@ import scala.io.Source._
 import scala.math.BigDecimal.RoundingMode
 import scala.tools.nsc.interpreter._
 
+trait TaxCalculatorService extends TaxCalculatorHelper {
 
-trait TaxCalculatorService {
+  val payeTaxCalculatorService: PAYETaxCalculatorService
 
-  def calculateTax(taxYear: Int, taxCode: String, grossPay: Long, payPeriod: String): Future[TaxCalc] = {
+  def calculateTax(isStatePensionAge: Boolean, taxYear: Int, taxCode: String, grossPay: BigDecimal, payPeriod: String): Future[TaxCalc] = {
+
+    val payeTax: PAYETaxResult = payeTaxCalculatorService.calculatePAYETax(taxCode, payPeriod, grossPay)
+
+    val payeAggregation: Seq[Aggregation] = getTaxBands(LocalDate.now()).taxBands.collect(AggregationFunc(payeTax.band, payPeriod))
+    val total = payeAggregation.foldLeft(BigDecimal.valueOf(0.0))(_ + _.amount)
+
+    val taxCategories: Seq[TaxCategory] = Seq(TaxCategory(taxType = "incomeTax", total , payeAggregation))
+    val totalDeductions = taxCategories.collect(TotalDeductionsFunc).foldLeft(BigDecimal.valueOf(0.0))(_ + _)
+    val calculatedTaxBreakdown = TaxBreakdown(payPeriod, grossPay, grossPay.-(payeTax.taxablePay), payeTax.taxablePay, taxCategories, totalDeductions, grossPay - totalDeductions)
+    val taxBreakdown: Seq[TaxBreakdown] = derivePeriodTaxBreakdowns(calculatedTaxBreakdown, payeTax)
+    val taxCalResult: TaxCalc = TaxCalc(isStatePensionAge, taxCode, taxBreakdown)
+
+    Future.successful(taxCalResult)
+  }
+
+  def derivePeriodTaxBreakdowns(taxBreakdown: TaxBreakdown, payeTax: PAYETaxResult): Seq[TaxBreakdown] = {
+    val grossPay = taxBreakdown.grossPay
+    taxBreakdown.period match {
+      case "annual" => {
+        Seq(taxBreakdown, deriveTaxBreakdown(payeTax.band, grossPay./(12).setScale(2, RoundingMode.HALF_UP), "monthly", payeTax.taxablePay./(12).setScale(2, RoundingMode.HALF_UP)),
+                          deriveTaxBreakdown(payeTax.band, grossPay./(52).setScale(2, RoundingMode.HALF_UP), "weekly", payeTax.taxablePay./(52).setScale(2, RoundingMode.HALF_UP)))
+      }
+      case "monthly" => {
+        Seq(deriveTaxBreakdown(payeTax.band, grossPay.*(12).setScale(2, RoundingMode.HALF_UP), "annual", payeTax.taxablePay.*(12).setScale(2, RoundingMode.HALF_UP)), taxBreakdown)
+      }
+      case "weekly" => {
+        Seq(deriveTaxBreakdown(payeTax.band, grossPay.*(52).setScale(2, RoundingMode.HALF_UP), "annual", payeTax.taxablePay.*(52).setScale(2, RoundingMode.HALF_UP)), taxBreakdown)
+      }
+    }
+  }
+
+  def deriveTaxBreakdown(band: Int, grossPay: BigDecimal, payPeriod: String, taxablePay: BigDecimal): TaxBreakdown = {
+    val payeAggregation: Seq[Aggregation] = getTaxBands(LocalDate.now()).taxBands.collect(AggregationFunc(band, payPeriod))
+    val total = payeAggregation.foldLeft(BigDecimal.valueOf(0.0))(_ + _.amount).setScale(2, RoundingMode.HALF_UP)
+
+    val taxCategories: Seq[TaxCategory] = Seq(TaxCategory(taxType = "incomeTax", total, payeAggregation))
+    val totalDeductions = taxCategories.collect(TotalDeductionsFunc).foldLeft(BigDecimal.valueOf(0.0))(_ + _)
+    val derivedTaxBreakdown: TaxBreakdown = TaxBreakdown(payPeriod, grossPay, grossPay.-(taxablePay),
+      taxablePay, taxCategories, totalDeductions, grossPay - totalDeductions)
+    derivedTaxBreakdown
+  }
+
+  def createAggregation(taxBand: TaxBand, payPeriod: String, band: Int): Aggregation = {
+    val periodCalc = taxBand.periods.filter(_.periodType.equals(payPeriod)).head
+
+    Aggregation(taxBand.rate, if(periodCalc.cumulativeMaxTax >= 0) periodCalc.cumulativeMaxTax else 0)
+  }
+
+  def AggregationFunc(band: Int, payPeriod: String) : PartialFunction[TaxBand, Aggregation] = {
+    case taxBand: TaxBand if taxBand.band <= band && taxBand.band != 1 => createAggregation(taxBand, payPeriod, band)
+  }
+
+  def TotalDeductionsFunc: PartialFunction[TaxCategory, BigDecimal] ={
+    case taxCategory: TaxCategory if !taxCategory.taxType.equals("employerNationalInsurance") => taxCategory.total
+  }
+}
+
+object LiveTaxCalculatorService extends TaxCalculatorService {
+  override val payeTaxCalculatorService: PAYETaxCalculatorService = LivePAYETaxCalculatorService
+}
+
+object SandboxTaxCalculatorService extends TaxCalculatorService {
+  override val payeTaxCalculatorService: PAYETaxCalculatorService = SandboxPAYETaxCalculatorService
+
+  override def calculateTax(isStatePensionAge: Boolean, taxYear: Int, taxCode: String, grossPay: BigDecimal, payPeriod: String): Future[TaxCalc] = {
 
     getClass.getResourceAsStream(s"/tax-calc/tax_calculator_2016_response.json") match {
       case is: InputStream => {
@@ -38,85 +103,4 @@ trait TaxCalculatorService {
       }
     }
   }
-
-  def loadTaxBands() : TaxYearBands = {
-    TaxCalculatorStartup.taxBands.get("taxYearBands") match {
-      case Some(taxYearBands: TaxYearBands) => taxYearBands
-      case _ => throw new Exception("Error, no tax bands configured")
-    }
-  }
-
-  def getTaxBands(localDate: LocalDate) : TaxBands = {
-    val taxBands = loadTaxBands().taxYearBands.sortWith(_.fromDate.getYear < _.fromDate.getYear())
-      .filter(band => band.fromDate.isBefore(localDate) || band.fromDate.isEqual(localDate))
-    taxBands.last
-  }
-
-  def isValidTaxCode(taxCode: String): Boolean = {
-    taxCode.matches("([0-9]{1,4}[L-N,l-n,T,t,X,x]{1}){1}")
-  }
-
-  def calculateAllowance(taxCode: String): Seq[(String, Allowance)] = {
-    val taxCodeNumber = taxCode.stripSuffix(taxCode.substring(taxCode.length - 1, taxCode.length)).toInt
-    val seedData = new PAYEAllowanceSeedData(taxCodeNumber)
-    Seq("weekly" -> new WeeklyAllowance(seedData), "monthly" -> new MonthlyAllowance(seedData), "annual" -> new AnnualAllowance(taxCode, taxCodeNumber))
-  }
-
-
-  def calculatePAYETaxablePay(taxCode: String, payPeriod: String, grossPay: BigDecimal) : Seq[BigDecimal] = {
-    for{
-      allowance <- calculateAllowance(taxCode).filter(_._1.equals(payPeriod))
-    } yield (grossPay.-(allowance._2.allowance).setScale(2, RoundingMode.UP))
-  }
-
-  def getPreviousBandMaxTaxAmount(payPeriod: String, band: Int): Option[BigDecimal] = {
-    Option(getTaxBands(LocalDate.now()).taxBands.filter(_.band == band-1).head.periods.filter(_.periodType.equals(payPeriod)).head.cumulativeMaxTax)
-  }
-
-  def calculatePAYETax(taxCode: String, payPeriod: String, grossPay: BigDecimal) :BigDecimal = {
-    val taxablePay = calculatePAYETaxablePay(taxCode, payPeriod, grossPay).head
-    val taxBand = determineTaxBand(taxCode, payPeriod, taxablePay)
-    val excessPay = calculateExcessPay(taxBand, payPeriod, taxablePay)
-    val taxedAmount = excessPay.*(taxBand.rate./(100)).setScale(2, RoundingMode.HALF_UP)
-    if(taxBand.band > 1) {
-      val a = getPreviousBandMaxTaxAmount(payPeriod, taxBand.band).get.setScale(2, RoundingMode.HALF_UP)
-      val b = taxedAmount.+(a)
-      b
-    }
-    else
-      taxedAmount
-  }
-
-  def determineTaxBand(taxCode: String, payPeriod: String, taxablePay: BigDecimal) : TaxBand = {
-    val taxBands = getTaxBands(LocalDate.now()).taxBands.collect(taxBandFilterFunc(payPeriod, taxablePay))
-    if(taxBands.size > 0){
-      taxBands.head
-    }
-    else getTaxBands(LocalDate.now()).taxBands.last
-  }
-
-  private def taxBandFilterFunc(periodType: String, taxablePay: BigDecimal): PartialFunction[TaxBand, TaxBand] = {
-    case taxBand: TaxBand  if isPeriodValid(periodType, taxBand.periods, taxablePay) => taxBand
-  }
-
-  private def isPeriodValid(periodType: String, periodCalcs: Seq[PeriodCalc], taxablePay: BigDecimal) : Boolean = {
-    !periodCalcs.filter(_.periodType.equals(periodType)).filter((_.threshold.>(taxablePay))).isEmpty
-  }
-
-  def calculateExcessPay(taxBand: TaxBand, payPeriod: String, taxablePay: BigDecimal): BigDecimal = {
-    if(taxBand.band > 1){
-      val threshold = getTaxBands(LocalDate.now()).taxBands.filter(_.band == taxBand.band-1).head
-        .periods.filter(_.periodType.equals(payPeriod)).head.threshold
-      threshold.-(taxablePay.intValue()).abs
-    }
-    else taxablePay
-  }
-}
-
-object LiveTaxCalculatorService extends TaxCalculatorService {
-
-}
-
-object SandboxTaxCalculatorService extends TaxCalculatorService {
-
 }

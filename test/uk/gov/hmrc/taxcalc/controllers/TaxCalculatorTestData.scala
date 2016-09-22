@@ -273,7 +273,7 @@ object TaxCalculatorTestData {
       |          ]
       |        }
       |      ],
-      |      "taxableDeductions": 381.31,
+      |      "totalDeductions": 381.31,
       |      "takeHomePay": 368.69
       |    },
       |    {
@@ -325,7 +325,7 @@ object TaxCalculatorTestData {
       |         ]
       |       }
       |      ],
-      |      "taxableDeductions": 1652.36,
+      |      "totalDeductions": 1652.36,
       |      "takeHomePay": 3764.31
       |    },
       |    {
@@ -377,11 +377,101 @@ object TaxCalculatorTestData {
       |          ]
       |        }
       |      ],
-      |      "taxableDeductions": 19828.28,
+      |      "totalDeductions": 19828.28,
       |      "takeHomePay":45171.72
       |    }
       |  ]
       |}""".stripMargin)
 
 
+  val taxCalulator_PAYE_response = Json.parse("""{
+                                     |  "statePensionAge": true,
+                                     |  "taxCode": "1100L",
+                                     |  "taxBreakdown": [
+                                     |    {
+                                     |      "period": "annual",
+                                     |      "grossPay": 200000.0,
+                                     |      "taxFreePay": 11009.00,
+                                     |      "taxablePay": 188991.00,
+                                     |      "taxCategories": [
+                                     |        {
+                                     |          "taxType": "incomeTax",
+                                     |          "total": 60000.00,
+                                     |          "aggregation": [
+                                     |            {
+                                     |              "percentage": 20,
+                                     |              "amount": 6400.00
+                                     |            },
+                                     |            {
+                                     |              "percentage": 40,
+                                     |              "amount": 53600.00
+                                     |            },
+                                     |            {
+                                     |              "percentage": 45,
+                                     |              "amount": 0
+                                     |            }
+                                     |          ]
+                                     |        }
+                                     |      ],
+                                     |      "totalDeductions": 60000.00,
+                                     |      "takeHomePay": 140000.00
+                                     |    },
+                                     |    {
+                                     |      "period": "monthly",
+                                     |      "grossPay": 16666.67,
+                                     |      "taxFreePay": 917.42,
+                                     |      "taxablePay": 15749.25,
+                                     |      "taxCategories": [
+                                     |        {
+                                     |          "taxType": "incomeTax",
+                                     |          "total": 5000.00,
+                                     |          "aggregation": [
+                                     |            {
+                                     |              "percentage": 20,
+                                     |              "amount": 533.3333
+                                     |            },
+                                     |            {
+                                     |              "percentage": 40,
+                                     |              "amount": 4466.6666
+                                     |            },
+                                     |            {
+                                     |              "percentage": 45,
+                                     |              "amount": 0
+                                     |            }
+                                     |          ]
+                                     |        }
+                                     |      ],
+                                     |      "totalDeductions": 5000.00,
+                                     |      "takeHomePay": 11666.67
+                                     |    },
+                                     |    {
+                                     |      "period": "weekly",
+                                     |      "grossPay": 3846.15,
+                                     |      "taxFreePay": 211.71,
+                                     |      "taxablePay": 3634.44,
+                                     |      "taxCategories": [
+                                     |        {
+                                     |          "taxType": "incomeTax",
+                                     |          "total": 1153.85,
+                                     |          "aggregation": [
+                                     |            {
+                                     |              "percentage": 20,
+                                     |              "amount": 123.0769
+                                     |            },
+                                     |            {
+                                     |              "percentage": 40,
+                                     |              "amount": 1030.7692
+                                     |            },
+                                     |            {
+                                     |              "percentage": 45,
+                                     |              "amount": 0
+                                     |            }
+                                     |          ]
+                                     |        }
+                                     |      ],
+                                     |      "totalDeductions": 1153.85,
+                                     |      "takeHomePay": 2692.30
+                                     |    }
+                                     |  ]
+                                     |}""".stripMargin)
 }

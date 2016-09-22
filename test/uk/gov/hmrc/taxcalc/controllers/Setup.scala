@@ -50,8 +50,8 @@ trait LiveTaxCalcSuccess extends Setup {
   }
 }
 
-trait LiveTaxCalcServiceSuccess extends Setup {
-  val service = new TaxCalculatorService {
+trait LivePAYETaxCalcServiceSuccess extends Setup {
+  val service = new PAYETaxCalculatorService {
 
   }
 }
