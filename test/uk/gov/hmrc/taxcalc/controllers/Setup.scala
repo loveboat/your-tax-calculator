@@ -61,3 +61,9 @@ trait LivePAYETaxCalcServiceSuccess extends Setup {
 
   }
 }
+
+trait LiveNICTaxCalcServiceSuccess extends Setup {
+  val service = new NICTaxCalculatorService {
+
+  }
+}

@@ -28,6 +28,12 @@ case class TaxBand(band: Int, bandwidth: BigDecimal, rate: BigDecimal, annualBan
 
 case class PeriodCalc(periodType: String, threshold: BigDecimal, cumulativeMaxTax: BigDecimal)
 
+case class NICRateLimits(rateLimits: Seq[NICRateLimit])
+
+case class NICRateLimit(fromDate: LocalDate, earningLimit: Seq[RateLimit], threshold: Seq[RateLimit], employeeRate: Seq[RateLimit], employerRate: Seq[RateLimit])
+
+case class RateLimit(rateLimitType: String, weekly: BigDecimal, monthly: BigDecimal)
+
 object TaxYearBands {
   implicit val formatPeriodCalc = Json.format[PeriodCalc]
   implicit val formatTaxBand = Json.format[TaxBand]
@@ -43,16 +49,16 @@ object TaxYearBands {
 
 object TaxBands {
 
-
   implicit val localDateFormat = new Format[LocalDate] {
     override def reads(json: JsValue): JsResult[LocalDate] =
       json.validate[String].map(LocalDate.parse)
 
     override def writes(o: LocalDate): JsValue = Json.toJson(o.toString)
   }
-  implicit val formatPeriodCalc = Json.format[PeriodCalc]
-  implicit val formatTaxBand = Json.format[TaxBand]
 
+  implicit val formatPeriodCalc = Json.format[PeriodCalc]
+
+  implicit val formatTaxBand = Json.format[TaxBand]
   implicit val format= Json.format[TaxBands]
 }
 
@@ -69,4 +75,32 @@ object LocalDateOrdered extends Ordering[LocalDate] {
   override def compare(x: LocalDate, y: LocalDate): Int = {
     x.compareTo(y)
   }
+}
+
+object NICRateLimits {
+  implicit val formatRateLimit = Json.format[RateLimit]
+  implicit val localDateFormat = new Format[LocalDate] {
+    override def reads(json: JsValue): JsResult[LocalDate] =
+      json.validate[String].map(LocalDate.parse)
+
+    override def writes(o: LocalDate): JsValue = Json.toJson(o.toString)
+  }
+  implicit val formatNICRateLimit = Json.format[NICRateLimit]
+  implicit val format = Json.format[NICRateLimits]
+}
+
+object NICRateLimit {
+  implicit val localDateFormat = new Format[LocalDate] {
+    override def reads(json: JsValue): JsResult[LocalDate] =
+      json.validate[String].map(LocalDate.parse)
+
+    override def writes(o: LocalDate): JsValue = Json.toJson(o.toString)
+  }
+  implicit val formatRateLimit = Json.format[RateLimit]
+
+  implicit val format = Json.format[NICRateLimit]
+}
+
+object RateLimit {
+  implicit val format = Json.format[RateLimit]
 }
