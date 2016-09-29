@@ -27,19 +27,19 @@ class MoneySpec extends UnitSpec  {
       money.value shouldBe BigDecimal.valueOf(1000.4567)
     }
     "should round to 2 decimal places with no rounding up" in new Setup {
-      val money = Money(1000.4567, Option(2), Option(false))
+      val money = Money(1000.4567, 2, false)
       money.value shouldBe BigDecimal.valueOf(1000.45)
     }
     "should round to 3 decimal places with no rounding up" in new Setup {
-      val money = Money(1000.4567, Option(3), Option(false))
+      val money = Money(1000.4567, 3, false)
       money.value shouldBe BigDecimal.valueOf(1000.456)
     }
     "should round up to 2 decimal places" in new Setup {
-      val money = Money(1000.4567, Option(2), Option(true))
+      val money = Money(1000.4567, 2, true)
       money.value shouldBe BigDecimal.valueOf(1000.46)
     }
     "should round up to 1 decimal places" in new Setup {
-      val money = Money(1000.4567, Option(1), Option(true))
+      val money = Money(1000.4567, 1, true)
       money.value shouldBe BigDecimal.valueOf(1000.5)
     }
   }

@@ -50,7 +50,7 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
     TaxCategory(taxType = "employeeNationalInsurance", employeeNICTotal, nicTax.employeeNIC),
     TaxCategory(taxType = "employerNationalInsurance", employerNICTotal, nicTax.employerNIC))
     val totalDeductions = taxCategories.collect(TotalDeductionsFunc).foldLeft(BigDecimal.valueOf(0.0))(_ + _)
-    val calculatedTaxBreakdown = TaxBreakdown(payPeriod, grossPay.value, grossPay.-(payeTax.taxablePay).value, payeTax.taxablePay.value, taxCategories, totalDeductions, (grossPay - totalDeductions).value)
+    val calculatedTaxBreakdown = TaxBreakdown(payPeriod, grossPay.value, (grossPay-(payeTax.taxablePay)).value, payeTax.taxablePay.value, taxCategories, totalDeductions, (grossPay - totalDeductions).value)
     val taxBreakdown: Seq[TaxBreakdown] = derivePeriodTaxBreakdowns(calculatedTaxBreakdown, payeTax, nicTax, payeAggregation)
     val taxCalResult: TaxCalc = TaxCalc(isStatePensionAge, taxCode, taxBreakdown)
 
@@ -63,54 +63,52 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
   }
 
   private def derivePeriodTaxBreakdowns(taxBreakdown: TaxBreakdown, payeTax: PAYETaxResult, nicTax: NICTaxResult, payeAggregation: Seq[Aggregation]): Seq[TaxBreakdown] = {
-    val grossPay = taxBreakdown.grossPay
+    val grossPay = Money(taxBreakdown.grossPay)
     taxBreakdown.period match {
       case "annual" => {
-        Seq(taxBreakdown, deriveTaxBreakdown(payeTax.band, grossPay, "monthly", payeTax.taxablePay.value, nicTax, false, 12, payeAggregation),
-        deriveTaxBreakdown(payeTax.band, grossPay, "weekly", payeTax.taxablePay.value, nicTax, false , 52, payeAggregation))
+        Seq(taxBreakdown, deriveTaxBreakdown(payeTax.band, grossPay, "monthly", payeTax.taxablePay, nicTax, false, 12, payeAggregation),
+        deriveTaxBreakdown(payeTax.band, grossPay, "weekly", payeTax.taxablePay, nicTax, false , 52, payeAggregation))
       }
       case "monthly" => {
-        Seq(deriveTaxBreakdown(payeTax.band, grossPay, "annual", payeTax.taxablePay.value, nicTax, true, 12, payeAggregation), taxBreakdown)
+        Seq(deriveTaxBreakdown(payeTax.band, grossPay, "annual", payeTax.taxablePay, nicTax, true, 12, payeAggregation), taxBreakdown)
       }
       case "weekly" => {
-        Seq(deriveTaxBreakdown(payeTax.band, grossPay, "annual", payeTax.taxablePay.value, nicTax, true, 52, payeAggregation), taxBreakdown)
+        Seq(deriveTaxBreakdown(payeTax.band, grossPay, "annual", payeTax.taxablePay, nicTax, true, 52, payeAggregation), taxBreakdown)
       }
     }
   }
 
-  private def deriveTaxBreakdown(band: Int, grossPay: BigDecimal, payPeriod: String, taxablePay: BigDecimal, nicTax: NICTaxResult, isMultiplier: Boolean, rhs: Int, payeAggregation: Seq[Aggregation]): TaxBreakdown = {
+  private def deriveTaxBreakdown(band: Int, grossPay: Money, payPeriod: String, taxablePay: Money, nicTax: NICTaxResult, isMultiplier: Boolean, rhs: Int, payeAggregation: Seq[Aggregation]): TaxBreakdown = {
 
-    val updatedGrossPay = if (isMultiplier) grossPay.*(rhs).setScale(2, RoundingMode.HALF_UP) else grossPay./(rhs).setScale(2, RoundingMode.HALF_UP)
-    val updatedTaxablePay = if (isMultiplier) taxablePay.*(rhs).setScale(2, RoundingMode.HALF_UP) else taxablePay./(rhs).setScale(2, RoundingMode.HALF_UP)
-    val payeTotal = payeAggregation.foldLeft(BigDecimal.valueOf(0.0))(if(isMultiplier) _ + _.amount*rhs else _ + _.amount/rhs).setScale(2, RoundingMode.HALF_UP)
+    val updatedGrossPay = performIsMultiplyFunction(grossPay, isMultiplier, rhs)
+    val updatedTaxablePay = performIsMultiplyFunction(taxablePay, isMultiplier, rhs)
+    val payeTotal = Money(payeAggregation.foldLeft(BigDecimal.valueOf(0.0))(if(isMultiplier) _ + _.amount*rhs else _ + _.amount/rhs), 2, true)
 
     val employeeNICAggregation: Seq[Aggregation] = nicTax.employeeNIC.collect(NICAggregationFunc(isMultiplier, rhs))
-    val employeeNICTotal = employeeNICAggregation.foldLeft(BigDecimal.valueOf(0.0))(_ + _.amount).setScale(2, RoundingMode.HALF_UP)
+    val employeeNICTotal = Money(employeeNICAggregation.foldLeft(BigDecimal.valueOf(0.0))(_ + _.amount), 2, true)
 
     val employerNICAggregation: Seq[Aggregation] = nicTax.employerNIC.collect(NICAggregationFunc(isMultiplier, rhs))
-    val employerNICTotal = employerNICAggregation.foldLeft(BigDecimal.valueOf(0.0))(_ + _.amount).setScale(2, RoundingMode.HALF_UP)
+    val employerNICTotal = Money(employerNICAggregation.foldLeft(BigDecimal.valueOf(0.0))(_ + _.amount), 2, true)
 
-    val taxCategories: Seq[TaxCategory] = Seq(TaxCategory(taxType = "incomeTax", payeTotal, derivePAYEAggregation(isMultiplier, rhs, payeAggregation)),
-                                              TaxCategory(taxType = "employeeNationalInsurance", employeeNICTotal, employeeNICAggregation),
-                                              TaxCategory(taxType = "employerNationalInsurance", employerNICTotal, employerNICAggregation))
+    val taxCategories: Seq[TaxCategory] = Seq(TaxCategory(taxType = "incomeTax", payeTotal.value, derivePAYEAggregation(isMultiplier, rhs, payeAggregation)),
+                                              TaxCategory(taxType = "employeeNationalInsurance", employeeNICTotal.value, employeeNICAggregation),
+                                              TaxCategory(taxType = "employerNationalInsurance", employerNICTotal.value, employerNICAggregation))
+
     val totalDeductions = taxCategories.collect(TotalDeductionsFunc).foldLeft(BigDecimal.valueOf(0.0))(_ + _)
-    val derivedTaxBreakdown: TaxBreakdown = TaxBreakdown(payPeriod, updatedGrossPay, updatedGrossPay.-(updatedTaxablePay),
-      updatedTaxablePay, taxCategories, totalDeductions, updatedGrossPay - totalDeductions)
+    val derivedTaxBreakdown: TaxBreakdown = TaxBreakdown(payPeriod, updatedGrossPay.value, (updatedGrossPay.-(updatedTaxablePay)).value,
+      updatedTaxablePay.value, taxCategories, totalDeductions,(updatedGrossPay - totalDeductions).value)
     derivedTaxBreakdown
   }
 
   private def derivePAYEAggregation(isMultiplier: Boolean, rhs: Int, payeAggregation: Seq[Aggregation]): Seq[Aggregation] = {
     for{
       aggregation <- payeAggregation
-    } yield (Aggregation(aggregation.percentage,
-      if (isMultiplier) (aggregation.amount*(rhs)).setScale(2, RoundingMode.HALF_UP)
-    else (aggregation.amount/(rhs)).setScale(2, RoundingMode.HALF_UP)))
+    } yield (Aggregation(aggregation.percentage, performIsMultiplyFunction(Money(aggregation.amount), isMultiplier, rhs).value))
   }
 
   private def createPAYEAggregation(taxBand: TaxBand, payPeriod: String, band: Int): Aggregation = {
     val periodCalc = taxBand.periods.filter(_.periodType.equals(payPeriod)).head
-
-    Aggregation(taxBand.rate, periodCalc.maxTax.setScale(2, RoundingMode.HALF_UP))
+    Aggregation(taxBand.rate, Money(periodCalc.maxTax, 2, true).value)
   }
 
   private def PAYEAggregationFunc(band: Int, payPeriod: String) : PartialFunction[TaxBand, Aggregation] = {
@@ -118,15 +116,23 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
   }
 
   private def createNICAggregation(isMultiplier: Boolean, rhs: Int, aggregate: Aggregation): Aggregation = {
-    Aggregation(aggregate.percentage, if (isMultiplier) aggregate.amount.*(rhs).setScale(2, RoundingMode.HALF_UP) else aggregate.amount./(rhs).setScale(2, RoundingMode.HALF_UP))
+    Aggregation(aggregate.percentage, performIsMultiplyFunction(Money(aggregate.amount), isMultiplier, rhs).value)
   }
 
   private def NICAggregationFunc(isMultiplier: Boolean, rhs: Int) : PartialFunction[Aggregation, Aggregation] = {
     case aggregate:Aggregation => createNICAggregation(isMultiplier, rhs, aggregate)
   }
 
-  private def TotalDeductionsFunc: PartialFunction[TaxCategory, BigDecimal] ={
+  private def TotalDeductionsFunc: PartialFunction[TaxCategory, BigDecimal] = {
     case taxCategory: TaxCategory if !taxCategory.taxType.equals("employerNationalInsurance") => taxCategory.total
+  }
+
+  private def performIsMultiplyFunction(amount: Money, isMultiplier: Boolean, rhs: Int): Money = {
+    if(isMultiplier){
+      Money(amount.*(rhs), 2, true)
+    }
+    else
+      Money(amount./(rhs), 2, true)
   }
 }
 

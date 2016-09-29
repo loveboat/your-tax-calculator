@@ -30,8 +30,8 @@ trait PAYETaxCalculatorService extends TaxCalculatorHelper {
 
     val taxBand = determineTaxBand(taxCode, payPeriod, taxablePay)
     val excessPay = calculateExcessPay(taxBand, payPeriod, taxablePay)
-    val finalBandTaxedAmount = Money(excessPay*(taxBand.rate/(100)), Option(2), Option(true))
-    val previousBandMaxTax = Money(getPreviousBandMaxTaxAmount(payPeriod, taxBand.band).get, Option(2), Option(true))
+    val finalBandTaxedAmount = Money(excessPay*(taxBand.rate/(100)), 2, true)
+    val previousBandMaxTax = Money(getPreviousBandMaxTaxAmount(payPeriod, taxBand.band).get, 2, true)
     if(taxBand.band > 1) {
       PAYETaxResult(taxablePay, excessPay, finalBandTaxedAmount, taxBand.band, finalBandTaxedAmount.+(previousBandMaxTax))
     }

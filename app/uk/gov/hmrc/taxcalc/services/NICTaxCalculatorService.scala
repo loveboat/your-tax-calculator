@@ -45,7 +45,7 @@ trait NICTaxCalculatorService extends TaxCalculatorHelper {
 
   def calculateEmployerNIC(grossPay: Money, payPeriod: String, nicRateLimit: NICRateLimit): Seq[Aggregation] = {
     val grossPayAmount = payPeriod match {
-      case "annual" => Money(grossPay/BigDecimal.valueOf(12), Option(2), Option(true))
+      case "annual" => Money(grossPay/BigDecimal.valueOf(12), 2, true)
       case _ => grossPay
     }
 
@@ -72,7 +72,7 @@ trait NICTaxCalculatorService extends TaxCalculatorHelper {
 
   private def calcRate(rate: Money, amount: Money, isAnnual: Boolean): Money = {
     val multiplier = if (isAnnual) 12 else 1
-    Money((amount.value * (rate / 100).value) - 0.001, Option(2), Option(true)) * multiplier
+    Money((amount.value * (rate / 100).value) - 0.001, 2, true) * multiplier
   }
 
   private def calculateEmployeeRate1(nicRateLimit: NICRateLimit, payPeriod: String, grossPay: Money, isAnnual: Boolean): Aggregation = {

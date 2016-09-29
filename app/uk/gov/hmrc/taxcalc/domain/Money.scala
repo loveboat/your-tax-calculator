@@ -18,13 +18,13 @@ package uk.gov.hmrc.taxcalc.domain
 
 import scala.math.BigDecimal.RoundingMode
 
-class Money(amount: BigDecimal, decimalPlaces: Option[Int], roundingUp: Option[Boolean]){
+class Money(amount: BigDecimal, decimalPlaces: Int, roundingUp: Boolean){
 
-  val roundingMode =  if (roundingUp.getOrElse(false)) RoundingMode.HALF_UP else RoundingMode.DOWN
+  val roundingMode =  if (roundingUp) RoundingMode.HALF_UP else RoundingMode.DOWN
 
   def value: BigDecimal = {
-    if(decimalPlaces.getOrElse(-1) >= 0) {
-      val scaledAmount = amount.setScale(decimalPlaces.get, roundingMode)
+    if(decimalPlaces >= 0) {
+      val scaledAmount = amount.setScale(decimalPlaces, roundingMode)
       scaledAmount
     } else {
       amount
@@ -48,6 +48,7 @@ class Money(amount: BigDecimal, decimalPlaces: Option[Int], roundingUp: Option[B
   def -(that: Money): Money = {
     Money(value.-(that.value), decimalPlaces, roundingUp)
   }
+
   def -(that: BigDecimal): Money = {
     Money(value.-(that), decimalPlaces, roundingUp)
   }
@@ -71,8 +72,8 @@ class Money(amount: BigDecimal, decimalPlaces: Option[Int], roundingUp: Option[B
 }
 
 object Money {
-  def apply(amount: Money, decimalPlaces: Option[Int], roundingUp: Option[Boolean]): Money = new Money(amount.value, decimalPlaces, roundingUp)
-  def apply(amount: Money): Money = new Money(amount.value, None, None)
-  def apply(value: BigDecimal, decimalPlaces: Option[Int], roundingUp: Option[Boolean]): Money = new Money(value, decimalPlaces, roundingUp)
-  def apply(value: BigDecimal): Money = new Money(value, None, None)
+  def apply(amount: Money, decimalPlaces: Int, roundingUp: Boolean): Money = new Money(amount.value, decimalPlaces, roundingUp)
+  def apply(amount: Money): Money = new Money(amount.value, -1, false)
+  def apply(value: BigDecimal, decimalPlaces: Int, roundingUp: Boolean): Money = new Money(value, decimalPlaces, roundingUp)
+  def apply(value: BigDecimal): Money = new Money(value, -1, false)
 }
