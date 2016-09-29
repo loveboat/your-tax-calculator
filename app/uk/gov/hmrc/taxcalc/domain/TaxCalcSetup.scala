@@ -24,9 +24,9 @@ case class TaxYearBands(taxYearBands: Seq[TaxBands])
 
 case class TaxBands(fromDate: LocalDate, taxBands: Seq[TaxBand])
 
-case class TaxBand(band: Int, bandwidth: BigDecimal, rate: BigDecimal, annualBandMaxTax: BigDecimal, periods: Seq[PeriodCalc])
+case class TaxBand(band: Int, bandwidth: BigDecimal, rate: BigDecimal, periods: Seq[PeriodCalc])
 
-case class PeriodCalc(periodType: String, threshold: BigDecimal, cumulativeMaxTax: BigDecimal)
+case class PeriodCalc(periodType: String, threshold: BigDecimal, cumulativeMaxTax: BigDecimal, maxTax: BigDecimal)
 
 case class NICRateLimits(rateLimits: Seq[NICRateLimit])
 

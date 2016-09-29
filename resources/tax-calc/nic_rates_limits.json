@@ -17,7 +17,7 @@
         {
           "rateLimitType": "primary",
           "weekly": 155.00,
-          "monthly": 627.00
+          "monthly": 672.00
         },
         {
           "rateLimitType": "secondary",
@@ -27,41 +27,46 @@
       ],
       "employeeRate": [
         {
-          "rateLimitType": "rate 1",
+          "rateLimitType": "1",
           "weekly": 12,
           "monthly": 12
         },
         {
-          "rateLimitType": "rate 2",
+          "rateLimitType": "2",
           "weekly": 0,
           "monthly": 0
         },
         {
-          "rateLimitType": "rate 3",
+          "rateLimitType": "3",
           "weekly": 12,
           "monthly": 12
         },
         {
-          "rateLimitType": "rate 4",
+          "rateLimitType": "4",
           "weekly": 2,
           "monthly": 2
         }
       ],
       "employerRate": [
         {
-          "rateLimitType": "rate 1",
+          "rateLimitType": "1",
+          "weekly": 0,
+          "monthly": 0
+        },
+        {
+          "rateLimitType": "2",
           "weekly": 13.8,
           "monthly": 13.8
         },
         {
-          "rateLimitType": "rate 2",
+          "rateLimitType": "3",
           "weekly": 13.8,
           "monthly": 13.8
         },
         {
-          "rateLimitType": "rate 3",
-          "weekly": 13.8,
-          "monthly": 13.8
+          "rateLimitType": "4",
+          "weekly": 0,
+          "monthly": 0
         }
       ]
     },
@@ -93,41 +98,46 @@
       ],
       "employeeRate": [
         {
-          "rateLimitType": "rate 1",
+          "rateLimitType": "1",
           "weekly": 12,
           "monthly": 12
         },
         {
-          "rateLimitType": "rate 2",
+          "rateLimitType": "2",
           "weekly": 0,
           "monthly": 0
         },
         {
-          "rateLimitType": "rate 3",
+          "rateLimitType": "3",
           "weekly": 12,
           "monthly": 12
         },
         {
-          "rateLimitType": "rate 4",
+          "rateLimitType": "4",
           "weekly": 2,
           "monthly": 2
         }
       ],
       "employerRate": [
         {
-          "rateLimitType": "rate 1",
+          "rateLimitType": "1",
+          "weekly": 0,
+          "monthly": 0
+        },
+        {
+          "rateLimitType": "2",
           "weekly": 13.8,
           "monthly": 13.8
         },
         {
-          "rateLimitType": "rate 2",
+          "rateLimitType": "3",
           "weekly": 13.8,
           "monthly": 13.8
         },
         {
-          "rateLimitType": "rate 3",
-          "weekly": 13.8,
-          "monthly": 13.8
+          "rateLimitType": "4",
+          "weekly": 0,
+          "monthly": 0
         }
       ]
     }

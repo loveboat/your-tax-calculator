@@ -29,7 +29,7 @@ class TaxCalculatorControllerSpec extends UnitSpec with WithFakeApplication with
         val result = await(controller.calculateTax(true, 2016, "1100L", BigDecimal.valueOf(200000.00), "annual", Option(journeyId))(emptyRequest))
         status(result) shouldBe 200
         println(contentAsJson(result))
-        contentAsJson(result) shouldBe Json.toJson(TaxCalculatorTestData.taxCalulator_PAYE_response);
+        contentAsJson(result) shouldBe Json.toJson(TaxCalculatorTestData.tax_calculator_paye_nic_response);
     }
   }
 

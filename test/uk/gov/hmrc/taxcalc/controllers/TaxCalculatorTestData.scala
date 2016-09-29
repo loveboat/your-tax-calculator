@@ -274,7 +274,7 @@ object TaxCalculatorTestData {
       |        }
       |      ],
       |      "totalDeductions": 381.31,
-      |      "takeHomePay": 368.69
+      |      "takeHomePay": 868.69
       |    },
       |    {
       |      "period": "month",
@@ -494,7 +494,7 @@ object TaxCalculatorTestData {
                                       |        {
                                       |          "rateLimitType": "primary",
                                       |          "weekly": 155.00,
-                                      |          "monthly": 627.00
+                                      |          "monthly": 672.00
                                       |        },
                                       |        {
                                       |          "rateLimitType": "secondary",
@@ -504,41 +504,46 @@ object TaxCalculatorTestData {
                                       |      ],
                                       |      "employeeRate": [
                                       |        {
-                                      |          "rateLimitType": "rate 1",
+                                      |          "rateLimitType": "1",
                                       |          "weekly": 12,
                                       |          "monthly": 12
                                       |        },
                                       |        {
-                                      |          "rateLimitType": "rate 2",
+                                      |          "rateLimitType": "2",
                                       |          "weekly": 0,
                                       |          "monthly": 0
                                       |        },
                                       |        {
-                                      |          "rateLimitType": "rate 3",
+                                      |          "rateLimitType": "3",
                                       |          "weekly": 12,
                                       |          "monthly": 12
                                       |        },
                                       |        {
-                                      |          "rateLimitType": "rate 4",
+                                      |          "rateLimitType": "4",
                                       |          "weekly": 2,
                                       |          "monthly": 2
                                       |        }
                                       |      ],
                                       |      "employerRate": [
                                       |        {
-                                      |          "rateLimitType": "rate 1",
+                                      |          "rateLimitType": "1",
+                                      |          "weekly": 0,
+                                      |          "monthly": 0
+                                      |        },
+                                      |        {
+                                      |          "rateLimitType": "2",
                                       |          "weekly": 13.8,
                                       |          "monthly": 13.8
                                       |        },
                                       |        {
-                                      |          "rateLimitType": "rate 2",
+                                      |          "rateLimitType": "3",
                                       |          "weekly": 13.8,
                                       |          "monthly": 13.8
                                       |        },
                                       |        {
-                                      |          "rateLimitType": "rate 3",
-                                      |          "weekly": 13.8,
-                                      |          "monthly": 13.8
+                                      |          "rateLimitType": "4",
+                                      |          "weekly": 0,
+                                      |          "monthly": 0
                                       |        }
                                       |      ]
                                       |    },
@@ -570,44 +575,182 @@ object TaxCalculatorTestData {
                                       |      ],
                                       |      "employeeRate": [
                                       |        {
-                                      |          "rateLimitType": "rate 1",
+                                      |          "rateLimitType": "1",
                                       |          "weekly": 12,
                                       |          "monthly": 12
                                       |        },
                                       |        {
-                                      |          "rateLimitType": "rate 2",
+                                      |          "rateLimitType": "2",
                                       |          "weekly": 0,
                                       |          "monthly": 0
                                       |        },
                                       |        {
-                                      |          "rateLimitType": "rate 3",
+                                      |          "rateLimitType": "3",
                                       |          "weekly": 12,
                                       |          "monthly": 12
                                       |        },
                                       |        {
-                                      |          "rateLimitType": "rate 4",
+                                      |          "rateLimitType": "4",
                                       |          "weekly": 2,
                                       |          "monthly": 2
                                       |        }
                                       |      ],
                                       |      "employerRate": [
                                       |        {
-                                      |          "rateLimitType": "rate 1",
+                                      |          "rateLimitType": "1",
+                                      |          "weekly": 0,
+                                      |          "monthly": 0
+                                      |        },
+                                      |        {
+                                      |          "rateLimitType": "2",
                                       |          "weekly": 13.8,
                                       |          "monthly": 13.8
                                       |        },
                                       |        {
-                                      |          "rateLimitType": "rate 2",
+                                      |          "rateLimitType": "3",
                                       |          "weekly": 13.8,
                                       |          "monthly": 13.8
                                       |        },
                                       |        {
-                                      |          "rateLimitType": "rate 3",
-                                      |          "weekly": 13.8,
-                                      |          "monthly": 13.8
+                                      |          "rateLimitType": "4",
+                                      |          "weekly": 0,
+                                      |          "monthly": 0
                                       |        }
                                       |      ]
                                       |    }
                                       |  ]
                                       |}""".stripMargin)
+
+  val tax_calculator_paye_nic_response = Json.parse("""{
+                                                      |  "statePensionAge": true,
+                                                      |  "taxCode": "1100L",
+                                                      |  "taxBreakdown": [
+                                                      |    {
+                                                      |      "period": "annual",
+                                                      |      "grossPay": 200000.0,
+                                                      |      "taxFreePay": 11009.00,
+                                                      |      "taxablePay": 188991.00,
+                                                      |      "taxCategories": [
+                                                      |        {
+                                                      |          "taxType": "incomeTax",
+                                                      |          "total": 60000.00,
+                                                      |          "aggregation": [
+                                                      |            {
+                                                      |              "percentage": 20,
+                                                      |              "amount": 6400.00
+                                                      |            },
+                                                      |            {
+                                                      |              "percentage": 40,
+                                                      |              "amount": 53600.00
+                                                      |            },
+                                                      |            {
+                                                      |              "percentage": 45,
+                                                      |              "amount": 0
+                                                      |            }
+                                                      |          ]
+                                                      |        },
+                                                      |        {
+                                                      |          "taxType": "employeeNationalInsurance",
+                                                      |          "total": 7331.88,
+                                                      |          "aggregation": [
+                                                      |            {
+                                                      |              "percentage": 12,
+                                                      |              "amount": 4191.84
+                                                      |            },
+                                                      |            {
+                                                      |              "percentage": 2,
+                                                      |              "amount": 3140.04
+                                                      |            }
+                                                      |          ]
+                                                      |        }
+                                                      |      ],
+                                                      |      "totalDeductions": 67331.88,
+                                                      |      "takeHomePay": 132668.12
+                                                      |    },
+                                                      |    {
+                                                      |      "period": "monthly",
+                                                      |      "grossPay": 16666.67,
+                                                      |      "taxFreePay": 917.42,
+                                                      |      "taxablePay": 15749.25,
+                                                      |      "taxCategories": [
+                                                      |        {
+                                                      |          "taxType": "incomeTax",
+                                                      |          "total": 5000.00,
+                                                      |          "aggregation": [
+                                                      |            {
+                                                      |              "percentage": 20,
+                                                      |              "amount": 533.3333
+                                                      |            },
+                                                      |            {
+                                                      |              "percentage": 40,
+                                                      |              "amount": 4466.6666
+                                                      |            },
+                                                      |            {
+                                                      |              "percentage": 45,
+                                                      |              "amount": 0
+                                                      |            }
+                                                      |          ]
+                                                      |        },
+                                                      |        {
+                                                      |          "taxType": "employeeNationalInsurance",
+                                                      |          "total": 610.99,
+                                                      |          "aggregation": [
+                                                      |            {
+                                                      |              "percentage": 12,
+                                                      |              "amount": 349.32
+                                                      |            },
+                                                      |            {
+                                                      |              "percentage": 2,
+                                                      |              "amount": 261.67
+                                                      |            }
+                                                      |          ]
+                                                      |        }
+                                                      |      ],
+                                                      |      "totalDeductions": 5610.99,
+                                                      |      "takeHomePay": 11055.68
+                                                      |    },
+                                                      |    {
+                                                      |      "period": "weekly",
+                                                      |      "grossPay": 3846.15,
+                                                      |      "taxFreePay": 211.71,
+                                                      |      "taxablePay": 3634.44,
+                                                      |      "taxCategories": [
+                                                      |        {
+                                                      |          "taxType": "incomeTax",
+                                                      |          "total": 1153.85,
+                                                      |          "aggregation": [
+                                                      |            {
+                                                      |              "percentage": 20,
+                                                      |              "amount": 123.0769
+                                                      |            },
+                                                      |            {
+                                                      |              "percentage": 40,
+                                                      |              "amount": 1030.7692
+                                                      |            },
+                                                      |            {
+                                                      |              "percentage": 45,
+                                                      |              "amount": 0
+                                                      |            }
+                                                      |          ]
+                                                      |        },
+                                                      |        {
+                                                      |          "taxType": "employeeNationalInsurance",
+                                                      |          "total": 141.00,
+                                                      |          "aggregation": [
+                                                      |            {
+                                                      |              "percentage": 12,
+                                                      |              "amount": 80.61
+                                                      |            },
+                                                      |            {
+                                                      |              "percentage": 2,
+                                                      |              "amount": 60.39
+                                                      |            }
+                                                      |          ]
+                                                      |        }
+                                                      |      ],
+                                                      |      "totalDeductions": 1294.85,
+                                                      |      "takeHomePay": 2551.30
+                                                      |    }
+                                                      |  ]
+                                                      |}""".stripMargin)
 }
