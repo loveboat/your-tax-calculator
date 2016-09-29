@@ -21,7 +21,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-class TaxExpenditureBreakdownContollerSpec extends UnitSpec with WithFakeApplication with ScalaFutures {
+class TaxExpenditureBreakdownControllerSpec extends UnitSpec with WithFakeApplication with ScalaFutures {
 
   "taxExpenditureCategoryBreakdown for 2016 tax year" should {
     "return a CategoryBreakdown response" in new LiveTaxExpenditureSuccess {

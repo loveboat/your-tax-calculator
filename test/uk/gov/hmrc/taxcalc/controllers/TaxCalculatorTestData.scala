@@ -28,22 +28,24 @@ object TaxCalculatorTestData {
                               |          "band": 1,
                               |          "bandwidth": 0.00,
                               |          "rate": 10,
-                              |          "annualBandMaxTax": 0,
                               |          "periods": [
                               |            {
                               |              "periodType": "annual",
                               |              "threshold": 0,
-                              |              "cumulativeMaxTax": 0
+                              |              "cumulativeMaxTax": 0,
+                              |              "maxTax": 0
                               |            },
                               |            {
                               |              "periodType": "monthly",
                               |              "threshold": 0,
-                              |              "cumulativeMaxTax": 0
+                              |              "cumulativeMaxTax": 0,
+                              |              "maxTax": 0
                               |            },
                               |            {
                               |              "periodType": "weekly",
                               |              "threshold": 0,
-                              |              "cumulativeMaxTax": 0
+                              |              "cumulativeMaxTax": 0,
+                              |              "maxTax": 0
                               |            }
                               |          ]
                               |        },
@@ -51,22 +53,24 @@ object TaxCalculatorTestData {
                               |          "band": 2,
                               |          "bandwidth": 32000.00,
                               |          "rate": 20,
-                              |          "annualBandMaxTax": 6400,
                               |          "periods": [
                               |            {
                               |              "periodType": "annual",
                               |              "threshold": 32000.00,
-                              |              "cumulativeMaxTax": 6400.00
+                              |              "cumulativeMaxTax": 6400.00,
+                              |              "maxTax": 6400.00
                               |            },
                               |            {
                               |              "periodType": "monthly",
                               |              "threshold": 2666.6666,
-                              |              "cumulativeMaxTax": 533.3333
+                              |              "cumulativeMaxTax": 533.3333,
+                              |              "maxTax": 533.3333
                               |            },
                               |            {
                               |              "periodType": "weekly",
                               |              "threshold": 615.3846,
-                              |              "cumulativeMaxTax": 123.0769
+                              |              "cumulativeMaxTax": 123.0769,
+                              |              "maxTax": 123.0769
                               |            }
                               |          ]
                               |        },
@@ -74,22 +78,24 @@ object TaxCalculatorTestData {
                               |          "band": 3,
                               |          "bandwidth": 118000.00,
                               |          "rate": 40,
-                              |          "annualBandMaxTax": 47200.00,
                               |          "periods": [
                               |            {
                               |              "periodType": "annual",
                               |              "threshold": 150000.00,
-                              |              "cumulativeMaxTax": 53600.00
+                              |              "cumulativeMaxTax": 53600.00,
+                              |              "maxTax": 47200.00
                               |            },
                               |            {
                               |              "periodType": "monthly",
                               |              "threshold": 12500.00,
-                              |              "cumulativeMaxTax": 4466.6666
+                              |              "cumulativeMaxTax": 4466.6666,
+                              |              "maxTax": 3933.3333
                               |            },
                               |            {
                               |              "periodType": "weekly",
                               |              "threshold": 2884.6153,
-                              |              "cumulativeMaxTax": 1030.7692
+                              |              "cumulativeMaxTax": 1030.7692,
+                              |              "maxTax": 907.6923
                               |            }
                               |          ]
                               |        },
@@ -97,22 +103,24 @@ object TaxCalculatorTestData {
                               |          "band": 4,
                               |          "bandwidth": -1,
                               |          "rate": 45,
-                              |          "annualBandMaxTax": -1,
                               |          "periods": [
                               |            {
                               |              "periodType": "annual",
                               |              "threshold": -1,
-                              |              "cumulativeMaxTax": -1
+                              |              "cumulativeMaxTax": -1,
+                              |              "maxTax": -1
                               |            },
                               |            {
                               |              "periodType": "monthly",
                               |              "threshold": -1,
-                              |              "cumulativeMaxTax": -1
+                              |              "cumulativeMaxTax": -1,
+                              |              "maxTax": -1
                               |            },
                               |            {
                               |              "periodType": "weekly",
                               |              "threshold": -1,
-                              |              "cumulativeMaxTax": -1
+                              |              "cumulativeMaxTax": -1,
+                              |              "maxTax": -1
                               |            }
                               |          ]
                               |        }
@@ -125,22 +133,24 @@ object TaxCalculatorTestData {
                               |          "band": 1,
                               |          "bandwidth": 0.00,
                               |          "rate": 10,
-                              |          "annualBandMaxTax": 0,
                               |          "periods": [
                               |            {
                               |              "periodType": "annual",
                               |              "threshold": 0,
-                              |              "cumulativeMaxTax": 0
+                              |              "cumulativeMaxTax": 0,
+                              |              "maxTax": 0
                               |            },
                               |            {
                               |              "periodType": "monthly",
                               |              "threshold": 0,
-                              |              "cumulativeMaxTax": 0
+                              |              "cumulativeMaxTax": 0,
+                              |              "maxTax": 0
                               |            },
                               |            {
                               |              "periodType": "weekly",
                               |              "threshold": 0,
-                              |              "cumulativeMaxTax": 0
+                              |              "cumulativeMaxTax": 0,
+                              |              "maxTax": 0
                               |            }
                               |          ]
                               |        },
@@ -148,22 +158,24 @@ object TaxCalculatorTestData {
                               |          "band": 2,
                               |          "bandwidth": 32000.00,
                               |          "rate": 20,
-                              |          "annualBandMaxTax": 6400,
                               |          "periods": [
                               |            {
                               |              "periodType": "annual",
                               |              "threshold": 32000.00,
-                              |              "cumulativeMaxTax": 6400.00
+                              |              "cumulativeMaxTax": 6400.00,
+                              |              "maxTax": 6400.00
                               |            },
                               |            {
                               |              "periodType": "monthly",
                               |              "threshold": 2666.6666,
-                              |              "cumulativeMaxTax": 533.3333
+                              |              "cumulativeMaxTax": 533.3333,
+                              |              "maxTax": 533.3333
                               |            },
                               |            {
                               |              "periodType": "weekly",
                               |              "threshold": 615.3846,
-                              |              "cumulativeMaxTax": 123.0769
+                              |              "cumulativeMaxTax": 123.0769,
+                              |              "maxTax": 123.0769
                               |            }
                               |          ]
                               |        },
@@ -171,22 +183,24 @@ object TaxCalculatorTestData {
                               |          "band": 3,
                               |          "bandwidth": 118000.00,
                               |          "rate": 40,
-                              |          "annualBandMaxTax": 47200.00,
                               |          "periods": [
                               |            {
                               |              "periodType": "annual",
                               |              "threshold": 150000.00,
-                              |              "cumulativeMaxTax": 53600.00
+                              |              "cumulativeMaxTax": 53600.00,
+                              |              "maxTax": 47200.00
                               |            },
                               |            {
                               |              "periodType": "monthly",
                               |              "threshold": 12500.00,
-                              |              "cumulativeMaxTax": 4466.6666
+                              |              "cumulativeMaxTax": 4466.6666,
+                              |              "maxTax": 3933.3333
                               |            },
                               |            {
                               |              "periodType": "weekly",
                               |              "threshold": 2884.6153,
-                              |              "cumulativeMaxTax": 1030.7692
+                              |              "cumulativeMaxTax": 1030.7692,
+                              |              "maxTax": 907.6923
                               |            }
                               |          ]
                               |        },
@@ -194,22 +208,24 @@ object TaxCalculatorTestData {
                               |          "band": 4,
                               |          "bandwidth": -1,
                               |          "rate": 45,
-                              |          "annualBandMaxTax": -1,
                               |          "periods": [
                               |            {
                               |              "periodType": "annual",
                               |              "threshold": -1,
-                              |              "cumulativeMaxTax": -1
+                              |              "cumulativeMaxTax": -1,
+                              |              "maxTax": -1
                               |            },
                               |            {
                               |              "periodType": "monthly",
                               |              "threshold": -1,
-                              |              "cumulativeMaxTax": -1
+                              |              "cumulativeMaxTax": -1,
+                              |              "maxTax": -1
                               |            },
                               |            {
                               |              "periodType": "weekly",
                               |              "threshold": -1,
-                              |              "cumulativeMaxTax": -1
+                              |              "cumulativeMaxTax": -1,
+                              |              "maxTax": -1
                               |            }
                               |          ]
                               |        }
@@ -221,122 +237,18 @@ object TaxCalculatorTestData {
 
   val taxCalculator_2016_response = Json.parse(
     """{
-      |  "statePensionAge": false,
+      |  "statePensionAge": true,
       |  "taxCode": "1100L",
       |  "taxBreakdown": [
       |    {
-      |      "period": "week",
-      |      "grossPay": 1250.00,
-      |      "taxFreePay": 211.73,
-      |      "taxablePay": 1038.27,
-      |      "taxCategories": [
-      |        {
-      |          "taxType": "incomeTax",
-      |          "total": 292.24,
-      |          "aggregation": [
-      |            {
-      |              "percentage": 20,
-      |              "amount": 123.08
-      |            },
-      |            {
-      |              "percentage": 40,
-      |              "amount": 169.16
-      |            },
-      |            {
-      |              "percentage": 45,
-      |              "amount": 0.00
-      |            }
-      |          ]
-      |        },
-      |        {
-      |          "taxType": "employeeNationalInsurance",
-      |          "total": 89.07,
-      |          "aggregation": [
-      |            {
-      |              "percentage": 12,
-      |              "amount": 80.61
-      |            },
-      |            {
-      |              "percentage": 2,
-      |              "amount": 8.46
-      |            }
-      |          ]
-      |        },
-      |        {
-      |          "taxType": "employerNationalInsurance",
-      |          "total": 150.98,
-      |          "aggregation": [
-      |            {
-      |              "percentage": 13.8,
-      |              "amount": 150.98
-      |            }
-      |          ]
-      |        }
-      |      ],
-      |      "totalDeductions": 381.31,
-      |      "takeHomePay": 868.69
-      |    },
-      |    {
-      |      "period": "month",
-      |      "grossPay": 5416.67,
-      |      "taxFreePay": 917.43,
-      |      "taxablePay": 4499.24,
-      |      "taxCategories": [
-      |        {
-      |          "taxType": "incomeTax",
-      |          "total": 1266.37,
-      |          "aggregation": [
-      |            {
-      |              "percentage": 20,
-      |              "amount": 533.33
-      |            },
-      |            {
-      |              "percentage": 40,
-      |              "amount": 733.03
-      |            },
-      |            {
-      |              "percentage": 45,
-      |              "amount": 0.00
-      |            }
-      |          ]
-      |        },
-      |        {
-      |          "taxType": "employeeNationalInsurance",
-      |          "total": 385.99,
-      |          "aggregation": [
-      |            {
-      |              "percentage": 12,
-      |              "amount": 349.32
-      |            },
-      |            {
-      |              "percentage": 2,
-      |              "amount": 36.67
-      |            }
-      |          ]
-      |        },
-      |        {
-      |          "taxType": "employerNationalInsurance",
-      |          "total": 654.22,
-      |          "aggregation": [
-      |            {
-      |              "percentage": 13.8,
-      |              "amount": 654.22
-      |            }
-      |         ]
-      |       }
-      |      ],
-      |      "totalDeductions": 1652.36,
-      |      "takeHomePay": 3764.31
-      |    },
-      |    {
-      |      "period": "year",
-      |      "grossPay": 65000.00,
+      |      "period": "annual",
+      |      "grossPay": 200000.0,
       |      "taxFreePay": 11009.00,
-      |      "taxablePay": 53991.00,
+      |      "taxablePay": 188991.00,
       |      "taxCategories": [
       |        {
       |          "taxType": "incomeTax",
-      |          "total": 15196.40,
+      |          "total": 71145.95,
       |          "aggregation": [
       |            {
       |              "percentage": 20,
@@ -344,17 +256,17 @@ object TaxCalculatorTestData {
       |            },
       |            {
       |              "percentage": 40,
-      |              "amount": 8796.40
+      |              "amount": 47200.00
       |            },
       |            {
       |              "percentage": 45,
-      |              "amount": 0.00
+      |              "amount": 17545.95
       |            }
       |          ]
       |        },
       |        {
       |          "taxType": "employeeNationalInsurance",
-      |          "total": 4631.88,
+      |          "total": 7331.88,
       |          "aggregation": [
       |            {
       |              "percentage": 12,
@@ -362,23 +274,127 @@ object TaxCalculatorTestData {
       |            },
       |            {
       |              "percentage": 2,
-      |              "amount": 440.04
+      |              "amount": 3140.04
       |            }
       |          ]
       |        },
       |        {
       |          "taxType": "employerNationalInsurance",
-      |          "total": 7850.64,
+      |          "total": 26480.64,
       |          "aggregation": [
       |            {
       |              "percentage": 13.8,
-      |              "amount": 7850.64
+      |              "amount": 26480.64
       |            }
       |          ]
       |        }
       |      ],
-      |      "totalDeductions": 19828.28,
-      |      "takeHomePay":45171.72
+      |      "totalDeductions": 78477.83,
+      |      "takeHomePay": 121522.17
+      |    },
+      |    {
+      |      "period": "monthly",
+      |      "grossPay": 16666.67,
+      |      "taxFreePay": 917.42,
+      |      "taxablePay": 15749.25,
+      |      "taxCategories": [
+      |        {
+      |          "taxType": "incomeTax",
+      |          "total": 5928.83,
+      |          "aggregation": [
+      |            {
+      |              "percentage": 20,
+      |              "amount": 533.33
+      |            },
+      |            {
+      |              "percentage": 40,
+      |              "amount": 3933.33
+      |            },
+      |            {
+      |              "percentage": 45,
+      |              "amount": 1462.16
+      |            }
+      |          ]
+      |        },
+      |        {
+      |          "taxType": "employeeNationalInsurance",
+      |          "total": 610.99,
+      |          "aggregation": [
+      |            {
+      |              "percentage": 12,
+      |              "amount": 349.32
+      |            },
+      |            {
+      |              "percentage": 2,
+      |              "amount": 261.67
+      |            }
+      |          ]
+      |        },
+      |        {
+      |          "taxType": "employerNationalInsurance",
+      |          "total": 2206.72,
+      |          "aggregation": [
+      |            {
+      |              "percentage": 13.8,
+      |              "amount": 2206.72
+      |            }
+      |          ]
+      |        }
+      |      ],
+      |      "totalDeductions": 6539.82,
+      |      "takeHomePay": 10126.85
+      |    },
+      |    {
+      |      "period": "weekly",
+      |      "grossPay": 3846.15,
+      |      "taxFreePay": 211.71,
+      |      "taxablePay": 3634.44,
+      |      "taxCategories": [
+      |        {
+      |          "taxType": "incomeTax",
+      |          "total": 1368.19,
+      |          "aggregation": [
+      |            {
+      |              "percentage": 20,
+      |              "amount": 123.08
+      |            },
+      |            {
+      |              "percentage": 40,
+      |              "amount": 907.69
+      |            },
+      |            {
+      |              "percentage": 45,
+      |              "amount": 337.42
+      |            }
+      |          ]
+      |        },
+      |        {
+      |          "taxType": "employeeNationalInsurance",
+      |          "total": 141.00,
+      |          "aggregation": [
+      |            {
+      |              "percentage": 12,
+      |              "amount": 80.61
+      |            },
+      |            {
+      |              "percentage": 2,
+      |              "amount": 60.39
+      |            }
+      |          ]
+      |        },
+      |        {
+      |          "taxType": "employerNationalInsurance",
+      |          "total": 509.24,
+      |          "aggregation": [
+      |            {
+      |              "percentage": 13.8,
+      |              "amount": 509.24
+      |            }
+      |          ]
+      |        }
+      |      ],
+      |      "totalDeductions": 1509.19,
+      |      "takeHomePay": 2336.96
       |    }
       |  ]
       |}""".stripMargin)
