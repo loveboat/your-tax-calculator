@@ -34,7 +34,7 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
 import uk.gov.hmrc.play.microservice.bootstrap.DefaultMicroserviceGlobal
 import uk.gov.hmrc.taxcalc.controllers.BadRequestException
-import uk.gov.hmrc.taxcalc.domain.{TaxBands, TaxCalc, TaxYearBands}
+import uk.gov.hmrc.taxcalc.domain.{NICRateLimits, TaxBands, TaxCalc, TaxYearBands}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -69,12 +69,20 @@ object MicroserviceAuthFilter extends AuthorisationFilter {
 
 object TaxCalculatorStartup {
 
-  val taxBands = Map("taxYearBands" -> populateTaxBands.getOrElse(None))
+  val taxCalcData = Map("taxYearBands" -> populateTaxBands.getOrElse(None), "nicRateLimits" -> populateNIC.getOrElse(None))
 
   def populateTaxBands: Option[TaxYearBands] = {
     getClass.getResourceAsStream(s"/tax-calc/tax_bands.json") match {
       case is: InputStream => {
         Json.parse(fromInputStream(is).mkString).asOpt[TaxYearBands]
+      }
+      case _ => None
+    }
+  }
+  def populateNIC: Option[NICRateLimits] = {
+    getClass.getResourceAsStream(s"/tax-calc/nic_rates_limits.json") match {
+      case is: InputStream => {
+        Json.parse(fromInputStream(is).mkString).asOpt[NICRateLimits]
       }
       case _ => None
     }

@@ -19,7 +19,7 @@ package uk.gov.hmrc.taxcalc.services
 import java.time.LocalDate
 
 import uk.gov.hmrc.taxcalc.config.TaxCalculatorStartup
-import uk.gov.hmrc.taxcalc.domain.{TaxBands, TaxYearBands}
+import uk.gov.hmrc.taxcalc.domain.{NICRateLimit, NICRateLimits, TaxBands, TaxYearBands}
 
 trait TaxCalculatorHelper {
 
@@ -28,9 +28,16 @@ trait TaxCalculatorHelper {
   }
 
   def loadTaxBands() : TaxYearBands = {
-    TaxCalculatorStartup.taxBands.get("taxYearBands") match {
+    TaxCalculatorStartup.taxCalcData.get("taxYearBands") match {
       case Some(taxYearBands: TaxYearBands) => taxYearBands
       case _ => throw new Exception("Error, no tax bands configured")
+    }
+  }
+
+  def loadNICRateLimits() : NICRateLimits = {
+    TaxCalculatorStartup.taxCalcData.get("nicRateLimits") match {
+      case Some(nicRateLimits: NICRateLimits) => nicRateLimits
+      case _ => throw new Exception("Error, not national insurance rates and limits configured")
     }
   }
 
@@ -38,6 +45,12 @@ trait TaxCalculatorHelper {
     val taxBands = loadTaxBands().taxYearBands.sortWith(_.fromDate.getYear < _.fromDate.getYear())
       .filter(band => band.fromDate.isBefore(localDate) || band.fromDate.isEqual(localDate))
     taxBands.last
+  }
+
+  def getRateLimits(localDate: LocalDate) : NICRateLimit = {
+    val rateLimits = loadNICRateLimits().rateLimits.sortWith(_.fromDate.getYear < _.fromDate.getYear())
+      .filter(rateLimit => rateLimit.fromDate.isBefore(localDate) || rateLimit.fromDate.isEqual(localDate))
+    rateLimits.last
   }
 
   def getPreviousBandMaxTaxAmount(payPeriod: String, band: Int): Option[BigDecimal] = {

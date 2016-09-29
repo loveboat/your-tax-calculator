@@ -39,8 +39,3 @@ object  LiveTaxCalculatorController extends TaxCalculatorController {
   override val service: TaxCalculatorService = LiveTaxCalculatorService
   override val app: String = "LiveTaxCalculatorController"
 }
-
-object SandboxTaxCalculatorController extends TaxCalculatorController {
-  override val service: TaxCalculatorService = SandboxTaxCalculatorService
-  override val app: String = "SandboxTaxCalculatorController"
-}

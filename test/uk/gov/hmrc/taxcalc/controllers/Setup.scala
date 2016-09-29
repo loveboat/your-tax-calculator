@@ -36,28 +36,21 @@ trait LiveTaxExpenditureSuccess extends Setup {
   }
 }
 
-trait SandboxTaxExpenditureSuccess extends Setup {
-  val controller = new TaxExpenditureBreakdownController {
-    override val service: TaxExpenditureBreakdownService = SandboxTaxExpenditureBreakdownService
-    override val app: String = "TestSandboxTaxExpenditureBreakdownController"
-  }
-}
-
 trait LiveTaxCalcSuccess extends Setup {
   val controller = new TaxCalculatorController {
     override val service: TaxCalculatorService = LiveTaxCalculatorService
     override val app: String = "TestLiveTaxCalculatorController"
   }
 }
-trait SandboxTaxCalcSuccess extends Setup {
-  val controller = new TaxCalculatorController {
-    override val service: TaxCalculatorService = SandboxTaxCalculatorService
-    override val app: String = "TestLiveTaxCalculatorController"
-  }
-}
 
 trait LivePAYETaxCalcServiceSuccess extends Setup {
   val service = new PAYETaxCalculatorService {
+
+  }
+}
+
+trait LiveNICTaxCalcServiceSuccess extends Setup {
+  val service = new NICTaxCalculatorService {
 
   }
 }

@@ -61,8 +61,3 @@ object  LiveTaxExpenditureBreakdownController extends TaxExpenditureBreakdownCon
   override val service: TaxExpenditureBreakdownService = LiveTaxExpenditureBreakdownService
   override val app: String = "LiveTaxExpenditureBreakdownController"
 }
-
-object SandboxTaxExpenditureBreakdownController extends TaxExpenditureBreakdownController {
-  override val service: TaxExpenditureBreakdownService = SandboxTaxExpenditureBreakdownService
-  override val app: String = "SandboxTaxExpenditureBreakdownController"
-}

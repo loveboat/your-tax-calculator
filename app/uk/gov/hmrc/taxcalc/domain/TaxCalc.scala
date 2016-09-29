@@ -20,6 +20,8 @@ import play.api.libs.json.Json
 
 case class PAYETaxResult(taxablePay: BigDecimal, excessPay: BigDecimal, finalBandTaxedAmount: BigDecimal, band: Int, payeTaxAmount: BigDecimal)
 
+case class NICTaxResult(employeeNIC: Seq[Aggregation], employerNIC: Seq[Aggregation])
+
 case class TaxCalc(statePensionAge: Boolean, taxCode: String, taxBreakdown: Seq[TaxBreakdown])
 
 case class TaxBreakdown(period: String, grossPay: BigDecimal, taxFreePay: BigDecimal, taxablePay: BigDecimal, taxCategories: Seq[TaxCategory], totalDeductions: BigDecimal, takeHomePay: BigDecimal)
