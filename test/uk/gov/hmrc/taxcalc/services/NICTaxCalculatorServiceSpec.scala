@@ -22,7 +22,7 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import uk.gov.hmrc.taxcalc.controllers.{LiveNICTaxCalcServiceSuccess, TaxCalculatorTestData}
-import uk.gov.hmrc.taxcalc.domain.{NICRateLimit, NICRateLimits, TaxBands, TaxYearBands}
+import uk.gov.hmrc.taxcalc.domain._
 
 import scala.math.BigDecimal
 
@@ -56,7 +56,7 @@ class NICTaxCalculatorServiceSpec extends UnitSpec with WithFakeApplication with
     "NICTaxCalculatorService.calculateEmployeeNIC " should {
       "should calculate the annual rate at the monthly rate" in new LiveNICTaxCalcServiceSuccess {
         val rates = service.getRateLimits(LocalDate.now)
-        val result = service.calculateEmployeeNIC(BigDecimal.valueOf(100000.00), "annual", rates)
+        val result = service.calculateEmployeeNIC(Money(100000.00), "annual", rates)
         result.size shouldBe 2
         result.map{
           aggregation => aggregation.percentage.intValue() match {
@@ -67,7 +67,7 @@ class NICTaxCalculatorServiceSpec extends UnitSpec with WithFakeApplication with
       }
       "should calculate at the monthly rate" in new LiveNICTaxCalcServiceSuccess {
         val rates = service.getRateLimits(LocalDate.now)
-        val result = service.calculateEmployeeNIC(BigDecimal.valueOf(8333.33), "monthly", rates)
+        val result = service.calculateEmployeeNIC(Money(8333.33), "monthly", rates)
         result.size shouldBe 2
         result.map{
           aggregation => aggregation.percentage.intValue() match {
@@ -78,7 +78,7 @@ class NICTaxCalculatorServiceSpec extends UnitSpec with WithFakeApplication with
       }
       "should calculate at the weekly rate" in new LiveNICTaxCalcServiceSuccess {
         val rates = service.getRateLimits(LocalDate.now)
-        val result = service.calculateEmployeeNIC(BigDecimal.valueOf(1923.08), "weekly", rates)
+        val result = service.calculateEmployeeNIC(Money(1923.08), "weekly", rates)
         result.size shouldBe 2
         result.map{
           aggregation => aggregation.percentage.intValue() match {
@@ -92,7 +92,7 @@ class NICTaxCalculatorServiceSpec extends UnitSpec with WithFakeApplication with
   "NICTaxCalculatorService.calculateEmployerNIC " should {
     "should calculate the annual rate at the monthly rate" in new LiveNICTaxCalcServiceSuccess {
       val rates = service.getRateLimits(LocalDate.now)
-      val result = service.calculateEmployerNIC(BigDecimal.valueOf(100000.00), "annual", rates)
+      val result = service.calculateEmployerNIC(Money(100000.00), "annual", rates)
       result.size shouldBe 1
       result.map{
         aggregation =>
@@ -103,7 +103,7 @@ class NICTaxCalculatorServiceSpec extends UnitSpec with WithFakeApplication with
     }
     "should calculate at the monthly rate" in new LiveNICTaxCalcServiceSuccess {
       val rates = service.getRateLimits(LocalDate.now)
-      val result = service.calculateEmployerNIC(BigDecimal.valueOf(8333.33), "monthly", rates)
+      val result = service.calculateEmployerNIC(Money(8333.33), "monthly", rates)
       result.size shouldBe 1
       result.map{
         aggregation =>
@@ -113,7 +113,7 @@ class NICTaxCalculatorServiceSpec extends UnitSpec with WithFakeApplication with
     }
     "should calculate at the weekly rate" in new LiveNICTaxCalcServiceSuccess {
       val rates = service.getRateLimits(LocalDate.now)
-      val result = service.calculateEmployerNIC(BigDecimal.valueOf(1923.08), "weekly", rates)
+      val result = service.calculateEmployerNIC(Money(1923.08), "weekly", rates)
       result.size shouldBe 1
       result.map {
         aggregation =>

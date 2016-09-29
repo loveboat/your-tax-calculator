@@ -18,7 +18,7 @@ package uk.gov.hmrc.taxcalc.domain
 
 import play.api.libs.json.Json
 
-case class PAYETaxResult(taxablePay: BigDecimal, excessPay: BigDecimal, finalBandTaxedAmount: BigDecimal, band: Int, payeTaxAmount: BigDecimal)
+case class PAYETaxResult(taxablePay: Money, excessPay: Money, finalBandTaxedAmount: Money, band: Int, payeTaxAmount: Money)
 
 case class NICTaxResult(employeeNIC: Seq[Aggregation], employerNIC: Seq[Aggregation])
 
