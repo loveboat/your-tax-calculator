@@ -39,7 +39,7 @@ trait ErrorHandling {
         log("BadRequest!")
         Status(ErrorBadRequest.httpStatusCode)(Json.toJson(ErrorBadRequest))
       case ex: TaxCalculatorConfigException =>
-        log("TaxCalculatorConfigException")
+        Logger.error(s"TaxCalculatorConfigException : ${ex.getMessage}", ex)
         Status(ErrorTaxCalculatorConfig.httpStatusCode)(Json.toJson(ErrorTaxCalculatorConfig))
       case e: Throwable =>
         Logger.error(s"$app Internal server error: ${e.getMessage}", e)

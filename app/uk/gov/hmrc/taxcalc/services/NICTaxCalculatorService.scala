@@ -142,6 +142,3 @@ trait NICTaxCalculatorService extends TaxCalculatorHelper {
 
 object LiveNICTaxCalculatorService extends NICTaxCalculatorService {
 }
-
-object SandboxNICTaxCalculatorService extends NICTaxCalculatorService {
-}

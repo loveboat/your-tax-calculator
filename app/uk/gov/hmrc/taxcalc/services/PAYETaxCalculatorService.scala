@@ -18,6 +18,7 @@ package uk.gov.hmrc.taxcalc.services
 
 import java.time.LocalDate
 
+import uk.gov.hmrc.taxcalc.controllers.TaxCalculatorConfigException
 import uk.gov.hmrc.taxcalc.domain._
 
 
@@ -32,11 +33,12 @@ trait PAYETaxCalculatorService extends TaxCalculatorHelper {
     val excessPay = calculateExcessPay(taxBand, payPeriod, taxablePay)
     val finalBandTaxedAmount = Money(excessPay*(taxBand.rate/(100)), 2, true)
     val previousBandMaxTax = Money(getPreviousBandMaxTaxAmount(payPeriod, taxBand.band).get, 2, true)
-    if(taxBand.band > 1) {
-      PAYETaxResult(taxablePay, excessPay, finalBandTaxedAmount, taxBand.band, finalBandTaxedAmount.+(previousBandMaxTax))
-    }
-    else
-      PAYETaxResult(taxablePay, excessPay, finalBandTaxedAmount, taxBand.band, finalBandTaxedAmount)
+    PAYETaxResult(taxablePay, excessPay, finalBandTaxedAmount, taxBand.band, previousBandMaxTax)
+  }
+
+  def getPAYETaxAmount(band: Int,finalBandTaxedAmount: Money, previousBandMaxTax: Money): Money = {
+    val maxTax = if(band > 1) previousBandMaxTax else Money(0)
+    finalBandTaxedAmount.+(maxTax)
   }
 
   def calculateAllowance(taxCode: String): Seq[(String, Allowance)] = {
@@ -63,8 +65,9 @@ trait PAYETaxCalculatorService extends TaxCalculatorHelper {
   def calculateExcessPay(taxBand: TaxBand, payPeriod: String, taxablePay: Money): Money = {
     val taxBands = getTaxBands(LocalDate.now())
     if(taxBand.band > 1){
-      val threshold = taxBands.taxBands.filter(_.band == taxBand.band-1).head.periods.filter(_.periodType.equals(payPeriod)).head.threshold
-      Money(threshold.-(taxablePay.value.intValue()).abs)
+      val previousBand = taxBands.taxBands.find(_.band == taxBand.band-1).getOrElse(throw new TaxCalculatorConfigException(s"Could not find tax band configured for band ${taxBand.band-1}"))
+      val periodCalc = previousBand.periods.find(_.periodType.equals(payPeriod)).getOrElse(throw new TaxCalculatorConfigException(s"Could not find period calc configured for period $payPeriod in tax band ${taxBand.band-1}"))
+      Money(periodCalc.threshold.-(taxablePay.value.intValue()).abs)
     }
     else taxablePay
   }
@@ -74,13 +77,10 @@ trait PAYETaxCalculatorService extends TaxCalculatorHelper {
   }
 
   private def isPeriodValid(periodType: String, periodCalcs: Seq[PeriodCalc], taxablePay: Money) : Boolean = {
-    !periodCalcs.filter(_.periodType.equals(periodType)).filter((_.threshold.>(taxablePay.value))).isEmpty
+    !periodCalcs.find(_.periodType.equals(periodType)).filter((_.threshold.>(taxablePay.value))).isEmpty
   }
 
 }
 
 object LivePAYETaxCalculatorService extends PAYETaxCalculatorService {
-}
-
-object SandboxPAYETaxCalculatorService extends PAYETaxCalculatorService {
 }

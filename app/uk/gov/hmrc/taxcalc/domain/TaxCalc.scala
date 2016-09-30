@@ -18,7 +18,9 @@ package uk.gov.hmrc.taxcalc.domain
 
 import play.api.libs.json.Json
 
-case class PAYETaxResult(taxablePay: Money, excessPay: Money, finalBandTaxedAmount: Money, band: Int, payeTaxAmount: Money)
+case class PAYETaxResult(taxablePay: Money, excessPay: Money, finalBandTaxedAmount: Money, band: Int, previousBandMaxTax: Money){
+  val payeTaxAmount = if(band > 1) finalBandTaxedAmount+previousBandMaxTax else finalBandTaxedAmount
+}
 
 case class NICTaxResult(employeeNIC: Seq[Aggregation], employerNIC: Seq[Aggregation])
 
