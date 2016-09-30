@@ -22,34 +22,34 @@ class PAYEAllowanceSeedData (taxCodeNumber: Int) {
   val recalculatedTaxCodeNumber = taxCodeNumber-1
   val initQuotient = recalculatedTaxCodeNumber/500
   val initRemainder = recalculatedTaxCodeNumber%500
-  val middleRemainder = ((initRemainder.+(1)).*(10)).+(9)
+  val middleRemainder: BigDecimal = ((initRemainder+(1))*(10))+(9)
 }
 
 class AnnualAllowance(taxCode: String, taxCodeNumber: Int) extends Allowance {
-  override val quotient: BigDecimal = 0
-  override val remainder: BigDecimal = 0
-  override val allowance: BigDecimal = taxCode.matches("([0]{1}[L-N,l-n,T,t,X,x]{1}){1}") match {
-    case true => 0
-    case false => (BigDecimal.valueOf(taxCodeNumber).*(10)).+(9)
+  override val quotient = Money(0)
+  override val remainder = Money(0)
+  override val allowance = taxCode.matches("([0]{1}[L-N,l-n,T,t,X,x]{1}){1}") match {
+    case true => Money(0)
+    case false => (Money(taxCodeNumber)*(10))+(9)
   }
 }
 
 class MonthlyAllowance(payeSeedData: PAYEAllowanceSeedData) extends Allowance {
-  override val quotient  = BigDecimal.valueOf(payeSeedData.initQuotient.*(416.67))
-  override val remainder = BigDecimal.valueOf(payeSeedData.middleRemainder)./(BigDecimal.valueOf(12)).setScale(2, RoundingMode.UP)
-  override val allowance = quotient.+(remainder)
+  override val quotient  = Money(payeSeedData.initQuotient*(416.67))
+  override val remainder = Money((payeSeedData.middleRemainder/12).setScale(2, RoundingMode.UP))
+  override val allowance = quotient+remainder
 }
 
 class WeeklyAllowance(payeSeedData: PAYEAllowanceSeedData) extends Allowance {
-  override val quotient  = BigDecimal.valueOf(payeSeedData.initQuotient.*(96.16))
-  override val remainder = (BigDecimal.valueOf(payeSeedData.middleRemainder)./(BigDecimal.valueOf(52))).setScale(2,RoundingMode.UP)
+  override val quotient  = Money(payeSeedData.initQuotient.*(96.16))
+  override val remainder = Money((payeSeedData.middleRemainder/52).setScale(2, RoundingMode.UP))
   override val allowance = quotient.+(remainder)
 }
 
 trait Allowance {
-  def quotient: BigDecimal = ???
-  def remainder: BigDecimal = ???
-  def allowance: BigDecimal = ???
+  def quotient: Money = ???
+  def remainder: Money = ???
+  def allowance: Money = ???
 }
 
 object AnnualAllowance {

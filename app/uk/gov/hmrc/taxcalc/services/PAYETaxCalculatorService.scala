@@ -18,26 +18,27 @@ package uk.gov.hmrc.taxcalc.services
 
 import java.time.LocalDate
 
+import uk.gov.hmrc.taxcalc.controllers.TaxCalculatorConfigException
 import uk.gov.hmrc.taxcalc.domain._
-
-import scala.math.BigDecimal.RoundingMode
 
 
 trait PAYETaxCalculatorService extends TaxCalculatorHelper {
 
 
-  def calculatePAYETax(taxCode: String, payPeriod: String, grossPay: BigDecimal) : PAYETaxResult = {
+  def calculatePAYETax(taxCode: String, payPeriod: String, grossPay: Money) : PAYETaxResult = {
 
     val taxablePay = calculatePAYETaxablePay(taxCode, payPeriod, grossPay).head
+
     val taxBand = determineTaxBand(taxCode, payPeriod, taxablePay)
     val excessPay = calculateExcessPay(taxBand, payPeriod, taxablePay)
-    val finalBandTaxedAmount = excessPay.*(taxBand.rate./(100)).setScale(2, RoundingMode.HALF_UP)
-    val previousBandMaxTax = getPreviousBandMaxTaxAmount(payPeriod, taxBand.band).get.setScale(2, RoundingMode.HALF_UP)
-    if(taxBand.band > 1) {
-      PAYETaxResult(taxablePay, excessPay, finalBandTaxedAmount, taxBand.band, finalBandTaxedAmount.+(previousBandMaxTax))
-    }
-    else
-      PAYETaxResult(taxablePay, excessPay, finalBandTaxedAmount, taxBand.band, finalBandTaxedAmount)
+    val finalBandTaxedAmount = Money(excessPay*(taxBand.rate/(100)), 2, true)
+    val previousBandMaxTax = Money(getPreviousBandMaxTaxAmount(payPeriod, taxBand.band).get, 2, true)
+    PAYETaxResult(taxablePay, excessPay, finalBandTaxedAmount, taxBand.band, previousBandMaxTax)
+  }
+
+  def getPAYETaxAmount(band: Int,finalBandTaxedAmount: Money, previousBandMaxTax: Money): Money = {
+    val maxTax = if(band > 1) previousBandMaxTax else Money(0)
+    finalBandTaxedAmount.+(maxTax)
   }
 
   def calculateAllowance(taxCode: String): Seq[(String, Allowance)] = {
@@ -46,13 +47,13 @@ trait PAYETaxCalculatorService extends TaxCalculatorHelper {
     Seq("weekly" -> WeeklyAllowance(seedData), "monthly" -> MonthlyAllowance(seedData), "annual" -> AnnualAllowance(taxCode, taxCodeNumber))
   }
 
-  def calculatePAYETaxablePay(taxCode: String, payPeriod: String, grossPay: BigDecimal) : Seq[BigDecimal] = {
+  def calculatePAYETaxablePay(taxCode: String, payPeriod: String, grossPay: Money) : Seq[Money] = {
     for{
     allowance <- calculateAllowance(taxCode).filter(_._1.equals(payPeriod))
-    } yield (grossPay.-(allowance._2.allowance).setScale(2, RoundingMode.UP))
+    } yield (grossPay.-(allowance._2.allowance))
   }
 
-  def determineTaxBand(taxCode: String, payPeriod: String, taxablePay: BigDecimal) : TaxBand = {
+  def determineTaxBand(taxCode: String, payPeriod: String, taxablePay: Money) : TaxBand = {
     val taxBands = getTaxBands(LocalDate.now())
     val taxBand = taxBands.taxBands.collect(taxBandFilterFunc(payPeriod, taxablePay))
     if(taxBand.size > 0){
@@ -61,28 +62,25 @@ trait PAYETaxCalculatorService extends TaxCalculatorHelper {
     else taxBands.taxBands.last
   }
 
-  def calculateExcessPay(taxBand: TaxBand, payPeriod: String, taxablePay: BigDecimal): BigDecimal = {
+  def calculateExcessPay(taxBand: TaxBand, payPeriod: String, taxablePay: Money): Money = {
     val taxBands = getTaxBands(LocalDate.now())
     if(taxBand.band > 1){
-      val threshold = taxBands.taxBands.filter(_.band == taxBand.band-1).head
-        .periods.filter(_.periodType.equals(payPeriod)).head.threshold
-      threshold.-(taxablePay.intValue()).abs
+      val previousBand = taxBands.taxBands.find(_.band == taxBand.band-1).getOrElse(throw new TaxCalculatorConfigException(s"Could not find tax band configured for band ${taxBand.band-1}"))
+      val periodCalc = previousBand.periods.find(_.periodType.equals(payPeriod)).getOrElse(throw new TaxCalculatorConfigException(s"Could not find period calc configured for period $payPeriod in tax band ${taxBand.band-1}"))
+      Money(periodCalc.threshold.-(taxablePay.value.intValue()).abs)
     }
     else taxablePay
   }
 
-  private def taxBandFilterFunc(periodType: String, taxablePay: BigDecimal): PartialFunction[TaxBand, TaxBand] = {
+  private def taxBandFilterFunc(periodType: String, taxablePay: Money): PartialFunction[TaxBand, TaxBand] = {
     case taxBand: TaxBand  if isPeriodValid(periodType, taxBand.periods, taxablePay) => taxBand
   }
 
-  private def isPeriodValid(periodType: String, periodCalcs: Seq[PeriodCalc], taxablePay: BigDecimal) : Boolean = {
-    !periodCalcs.filter(_.periodType.equals(periodType)).filter((_.threshold.>(taxablePay))).isEmpty
+  private def isPeriodValid(periodType: String, periodCalcs: Seq[PeriodCalc], taxablePay: Money) : Boolean = {
+    !periodCalcs.find(_.periodType.equals(periodType)).filter((_.threshold.>(taxablePay.value))).isEmpty
   }
 
 }
 
 object LivePAYETaxCalculatorService extends PAYETaxCalculatorService {
-}
-
-object SandboxPAYETaxCalculatorService extends PAYETaxCalculatorService {
 }

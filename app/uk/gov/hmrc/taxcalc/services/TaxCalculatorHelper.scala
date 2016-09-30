@@ -37,7 +37,7 @@ trait TaxCalculatorHelper {
   def loadNICRateLimits() : NICRateLimits = {
     TaxCalculatorStartup.taxCalcData.get("nicRateLimits") match {
       case Some(nicRateLimits: NICRateLimits) => nicRateLimits
-      case _ => throw new Exception("Error, not national insurance rates and limits configured")
+      case _ => throw new Exception("Error, no national insurance rates and limits configured")
     }
   }
 
