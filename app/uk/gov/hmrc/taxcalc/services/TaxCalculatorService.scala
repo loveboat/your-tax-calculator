@@ -75,10 +75,8 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
     val payeTotal = Money(payeAggregation.foldLeft(BigDecimal.valueOf(0.0))(if(isMultiplier) _ + _.amount*rhs else _ + _.amount/rhs), 2, true)
 
     val employeeNICAggregation = nicTax.employeeNIC.collect(NICAggregationFunc(isMultiplier, rhs))
-    val employeeNICTotal = Money(employeeNICAggregation.foldLeft(BigDecimal.valueOf(0.0))(_ + _.amount), 2, true)
 
     val employerNICAggregation = nicTax.employerNIC.collect(NICAggregationFunc(isMultiplier, rhs))
-    val employerNICTotal = Money(employerNICAggregation.foldLeft(BigDecimal.valueOf(0.0))(_ + _.amount), 2, true)
 
     val nicTaxCategories = NICTaxCategoryBuilder(isStatePensionAge, NICTaxResult(employeeNICAggregation, employerNICAggregation)).build().taxCategories
     val taxCategories = Seq(TaxCategory(taxType = "incomeTax", payeTotal.value, derivePAYEAggregation(isMultiplier, rhs, payeAggregation)))++nicTaxCategories

@@ -79,19 +79,25 @@ case class TaxablePayCalculator(taxCode: String, payPeriod: String, grossPay: Mo
   }
 
   def applyResponse(success: Boolean, taxablePay: Money): TaxablePayResponse = {
-    TaxablePayResponse(success, taxablePay)
+    val result = if(taxablePay < Money(0)) Money(0) else taxablePay
+    TaxablePayResponse(success, result)
   }
 }
 
-case class TaxBandCalculator(date: LocalDate, payPeriod: String, taxablePay: Money) extends Calculator with TaxCalculatorHelper{
+case class TaxBandCalculator(taxCode: String, date: LocalDate, payPeriod: String, taxablePay: Money) extends Calculator with TaxCalculatorHelper{
 
   override def calculate(): TaxBandResponse = {
-    val taxBands = getTaxBands(date).taxBands.collect(taxBandFilterFunc(payPeriod, taxablePay))
-    val taxBand = !taxBands.isEmpty match {
-      case true => taxBands.head
-      case false => getTaxBands(date).taxBands.last
+    val taxBand = isBasicRateTaxCode(taxCode) match {
+      case true => getTaxBands(date).taxBands.find(_.band == 2).head
+      case false => {
+        val taxBands = getTaxBands (date).taxBands.collect (taxBandFilterFunc (payPeriod, taxablePay) )
+        !taxBands.isEmpty match {
+          case true => taxBands.head
+          case false => getTaxBands(date).taxBands.last
+        }
+      }
     }
-    applyResponse(true, taxBand)
+    applyResponse (true, taxBand)
   }
 
   def applyResponse(success: Boolean, taxBand: TaxBand): TaxBandResponse = {
@@ -110,8 +116,7 @@ case class TaxBandCalculator(date: LocalDate, payPeriod: String, taxablePay: Mon
 case class NICRateCalculator(payPeriod: String, rate: BigDecimal, amount: Money) extends Calculator {
 
   override def calculate(): NICRateCalculatorResponse = {
-    val multiplier = if (isAnnual(payPeriod)) 12 else 1
-    applyResponse(true, Money((amount.value * (rate / 100)) - 0.001, 2, true) * multiplier)
+    applyResponse(true, Money((amount.value * (rate / 100)) - 0.001, 2, true))
   }
 
   def applyResponse(success: Boolean, rate: Money): NICRateCalculatorResponse = {
@@ -124,38 +129,41 @@ case class EmployeeRateCalculator(date: LocalDate, grossPay: Money, payPeriod: S
   val nicRateLimit = getRateLimits(date)
   val rate = nicRateLimit.employeeRate.collect(rateLimit(s"$limitId", payPeriod)).head.value
   override def calculate(): RateCalculatorResponse = {
-
-    val result = limitId match {
-      case 1 => {
-        grossPay > nicRateLimit.threshold.collect(rateLimit("primary", payPeriod)).head match {
-          case true => RateResult(nicRateLimit.threshold.collect(rateLimit("secondary", payPeriod)).head,
-            nicRateLimit.threshold.collect(rateLimit("primary", payPeriod)).head, rate, payPeriod)
-          case false => grossPay <= nicRateLimit.threshold.collect(rateLimit("secondary", payPeriod)).head match {
-            case true => RateResult(grossPay, nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head, rate, payPeriod)
-            case false => zeroRate
-          }
-        }
-      }
-      case 3 => {
-        grossPay > nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head match {
-          case true => RateResult(nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head,
-            nicRateLimit.threshold.collect(rateLimit("secondary", payPeriod)).head, rate, payPeriod)
-          case false => grossPay <= nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head &&
-            grossPay > nicRateLimit.threshold.collect(rateLimit("secondary", payPeriod)).head match {
-            case true => RateResult(grossPay, nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head, rate, payPeriod)
-            case false => zeroRate
-          }
-        }
-      }
-      case 4 => {
-        grossPay > nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head match {
-          case true => RateResult(grossPay, nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head, rate, payPeriod)
-          case false => zeroRate
-        }
-      }
+    if(grossPay <= nicRateLimit.threshold.collect(rateLimit("primary", payPeriod)).head){
+      applyResponse(true, zeroRate.aggregation)
     }
-
-    applyResponse(true, result.aggregation)
+    else {
+      val result = limitId match {
+        case 1 => {
+          grossPay > nicRateLimit.threshold.collect(rateLimit("primary", payPeriod)).head match {
+            case true => RateResult(nicRateLimit.threshold.collect(rateLimit("secondary", payPeriod)).head,
+              nicRateLimit.threshold.collect(rateLimit("primary", payPeriod)).head, rate, payPeriod)
+            case false => grossPay <= nicRateLimit.threshold.collect(rateLimit("secondary", payPeriod)).head match {
+              case true => RateResult(grossPay, nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head, rate, payPeriod)
+              case false => zeroRate
+            }
+          }
+        }
+        case 3 => {
+          grossPay > nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head match {
+            case true => RateResult(nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head,
+              nicRateLimit.threshold.collect(rateLimit("secondary", payPeriod)).head, rate, payPeriod)
+            case false => grossPay <= nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head &&
+              grossPay > nicRateLimit.threshold.collect(rateLimit("secondary", payPeriod)).head match {
+              case true => RateResult(grossPay, nicRateLimit.threshold.collect(rateLimit("secondary", payPeriod)).head, rate, payPeriod)
+              case false => zeroRate
+            }
+          }
+        }
+        case 4 => {
+          grossPay > nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head match {
+            case true => RateResult(grossPay, nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head, rate, payPeriod)
+            case false => zeroRate
+          }
+        }
+      }
+      applyResponse(true, result.aggregation)
+    }
   }
 
   def applyResponse(success: Boolean, aggregation: Aggregation): RateCalculatorResponse = {

@@ -18,7 +18,7 @@ package uk.gov.hmrc.taxcalc.services
 
 import java.time.LocalDate
 
-import uk.gov.hmrc.taxcalc.domain._
+import uk.gov.hmrc.taxcalc.domain.{Money, _}
 
 import scala.math.BigDecimal
 
@@ -39,24 +39,34 @@ case class PAYEAggregateBuilder(date: LocalDate, bandId: Int, payPeriod: String,
   val taxbands = getTaxBands(date)
 
   override def build(): AggregationBuildResult = {
-    appendAggregate(AggregationBuildResult(taxbands.taxBands.collect(PAYEAggregationFunc(bandId, payPeriod, payeTaxAmount))))
+    appendAggregate(AggregationBuildResult(taxbands.taxBands.collect(PAYEAggregationFunc())))
   }
 
-  private def PAYEAggregationFunc(band: Int, payPeriod: String, payeTaxAmount: Money) : PartialFunction[TaxBand, Aggregation] = {
-    case taxBand if payeTaxAmount == Money(0) && taxBand.band != 1 => Aggregation(taxBand.rate, BigDecimal.valueOf(0.0))
-    case taxBand if payeTaxAmount != Money(0) && taxBand.band <= band && taxBand.band != 1 && taxBand.band != 4 => createPAYEAggregation(taxBand, payPeriod, band, payeTaxAmount)
+  private def PAYEAggregationFunc() : PartialFunction[TaxBand, Aggregation] = {
+    case taxBand if taxBand.band == bandId && payeTaxAmount != Money(0) && taxBand.band != 4 => {
+      val sum = taxbands.taxBands.filter(_.band < bandId).collect(previousBandMaxTaxFunction()).foldLeft(BigDecimal.valueOf(0.0))(_ + _)
+      Aggregation(taxBand.rate, payeTaxAmount.value - sum)
+    }
+    case taxBand if taxBand.band < bandId && taxBand.band != 1 && payeTaxAmount != Money(0) => createPAYEAggregation(taxBand)
+    case taxBand if taxBand.band != 1 && payeTaxAmount == Money(0) => Aggregation(taxBand.rate, BigDecimal.valueOf(0.0))
+    case taxBand if taxBand.band > bandId && taxBand.band != 4 => Aggregation(taxBand.rate, BigDecimal.valueOf(0.0))
   }
 
-  private def createPAYEAggregation(taxBand: TaxBand, payPeriod: String, band: Int, payeTaxAmount: Money): Aggregation = {
+  private def previousBandMaxTaxFunction() : PartialFunction[TaxBand, BigDecimal] = {
+    case taxBand => taxBand.periods.filter(_.periodType.equals(payPeriod)).head.maxTax
+  }
+
+  private def createPAYEAggregation(taxBand: TaxBand): Aggregation = {
     val periodCalc = taxBand.periods.filter(_.periodType.equals(payPeriod)).head
-    val amount = if(payeTaxAmount > Money(0)) Money(periodCalc.maxTax, 2, true) else Money(0)
+    val amount = Money(periodCalc.maxTax, 2, true)
     Aggregation(taxBand.rate, amount.value)
   }
 
   private def appendAggregate(result: AggregationBuildResult): AggregationBuildResult = {
     if(payeTaxAmount != Money(0)){
       val total = calculateAggregationTotal(result.aggregation)
-      val append = Seq(Aggregation(taxbands.taxBands.last.rate, (payeTaxAmount - total).value))
+      val amount = if (payeTaxAmount.value <= total) Money(0) else payeTaxAmount - total
+      val append = Seq(Aggregation(taxbands.taxBands.last.rate, (amount).value))
       AggregationBuildResult(result.aggregation++append)
     }
     else
