@@ -34,12 +34,19 @@ trait Builder {
   }
 }
 
-case class PAYEAggregateBuilder(date: LocalDate, bandId: Int, payPeriod: String, payeTaxAmount: Money) extends Builder with TaxCalculatorHelper {
+case class PAYEAggregateBuilder(taxCode: String, date: LocalDate, bandId: Int, payPeriod: String, payeTaxAmount: Money) extends Builder with TaxCalculatorHelper {
 
   val taxbands = getTaxBands(date)
 
   override def build(): AggregationBuildResult = {
-    appendAggregate(AggregationBuildResult(taxbands.taxBands.collect(PAYEAggregationFunc())))
+    isBasicRateTaxCode(taxCode) match {
+      case true => taxCode match {
+        case "BR" | "D0" | "D1" => {
+          AggregationBuildResult(taxbands.taxBands.filter(_.band != 1).collect(BasicRatePAYEAggregationFunc()))
+        }
+      }
+      case false => appendAggregate(AggregationBuildResult(taxbands.taxBands.collect(PAYEAggregationFunc())))
+    }
   }
 
   private def PAYEAggregationFunc() : PartialFunction[TaxBand, Aggregation] = {
@@ -71,6 +78,11 @@ case class PAYEAggregateBuilder(date: LocalDate, bandId: Int, payPeriod: String,
     }
     else
       result
+  }
+
+  private def BasicRatePAYEAggregationFunc(): PartialFunction[TaxBand, Aggregation] = {
+    case taxBand if taxBand.band == bandId => Aggregation(taxBand.rate, payeTaxAmount.value)
+    case taxBand if taxBand.band != bandId => Aggregation(taxBand.rate, BigDecimal.valueOf(0.0))
   }
 }
 

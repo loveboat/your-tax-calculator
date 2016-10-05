@@ -34,7 +34,7 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
     val payeTax  = payeTaxCalculatorService.calculatePAYETax(taxCode, payPeriod, grossPay)
     val nicTax   = nicTaxCalculatorService.calculateNICTax(isStatePensionAge, grossPay, payPeriod)
 
-    val aggregation = PAYEAggregateBuilder(LocalDate.now, payeTax.band, payPeriod, payeTax.payeTaxAmount).build().aggregation
+    val aggregation = PAYEAggregateBuilder(taxCode, LocalDate.now, payeTax.band, payPeriod, payeTax.payeTaxAmount).build().aggregation
 
     val nicTaxCategories = NICTaxCategoryBuilder(isStatePensionAge, nicTax).build().taxCategories
     val taxCategories = Seq(TaxCategory(taxType = "incomeTax", payeTax.payeTaxAmount.value , aggregation))++nicTaxCategories

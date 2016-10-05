@@ -33,14 +33,19 @@ trait Calculator {
 
 }
 
-case class ExcessPayCalculator(date: LocalDate, taxBandId : Int, payPeriod: String, taxablePay: Money) extends Calculator with TaxCalculatorHelper {
+case class ExcessPayCalculator(taxCode: String, date: LocalDate, taxBandId : Int, payPeriod: String, taxablePay: Money) extends Calculator with TaxCalculatorHelper {
 
   override def calculate(): ExcessPayResponse = {
     val taxBands = getTaxBands(date)
     if(taxBandId > 1){
-      val previousBand = taxBands.taxBands.find(_.band == taxBandId-1).getOrElse(throw new TaxCalculatorConfigException(s"Could not find tax band configured for band ${taxBandId-1}"))
-      val periodCalc = previousBand.periods.find(_.periodType.equals(payPeriod)).getOrElse(throw new TaxCalculatorConfigException(s"Could not find period calc configured for period $payPeriod in tax band ${taxBandId-1}"))
-      applyResponse(true, Money(periodCalc.threshold.-(taxablePay.value.intValue()).abs))
+      isBasicRateTaxCode(taxCode) match {
+        case true => applyResponse(true, taxablePay)
+        case false => {
+          val previousBand = taxBands.taxBands.find(_.band == taxBandId - 1).getOrElse(throw new TaxCalculatorConfigException(s"Could not find tax band configured for band ${taxBandId - 1}"))
+          val periodCalc = previousBand.periods.find(_.periodType.equals(payPeriod)).getOrElse(throw new TaxCalculatorConfigException(s"Could not find period calc configured for period $payPeriod in tax band ${taxBandId - 1}"))
+          applyResponse(true, Money(periodCalc.threshold.-(taxablePay.value.intValue()).abs))
+        }
+      }
     }
     else applyResponse(true, taxablePay)
   }
@@ -67,13 +72,18 @@ case class TaxablePayCalculator(taxCode: String, payPeriod: String, grossPay: Mo
 
   override def calculate(): TaxablePayResponse = {
 
-    val taxablePay: Seq[Money] = isTaxableCode(taxCode) match {
-      case true   => {
-        for {
-          allowance <- AllowanceCalculator(taxCode).calculate().result.filter(_._1.equals(payPeriod))
-        } yield (Money(grossPay-allowance._2.allowance))
+    val taxablePay: Seq[Money] = isBasicRateTaxCode(taxCode) match {
+      case true   => Seq(grossPay)
+      case false  => {
+        isTaxableCode(taxCode) match {
+          case true   => {
+            for {
+              allowance <- AllowanceCalculator(taxCode).calculate().result.filter(_._1.equals(payPeriod))
+            } yield (Money(grossPay-allowance._2.allowance))
+          }
+          case false   => Seq(Money(0))
+        }
       }
-      case false  => Seq(Money(0))
     }
     applyResponse(true, taxablePay.head)
   }
@@ -88,9 +98,15 @@ case class TaxBandCalculator(taxCode: String, date: LocalDate, payPeriod: String
 
   override def calculate(): TaxBandResponse = {
     val taxBand = isBasicRateTaxCode(taxCode) match {
-      case true => getTaxBands(date).taxBands.find(_.band == 2).head
+      case true => {
+        taxCode match {
+          case "BR" => getTaxBands(date).taxBands.find(_.band == 2).head
+          case "D0" => getTaxBands(date).taxBands.find(_.band == 3).head
+          case "D1" => getTaxBands(date).taxBands.find(_.band == 4).head
+        }
+      }
       case false => {
-        val taxBands = getTaxBands (date).taxBands.collect (taxBandFilterFunc (payPeriod, taxablePay) )
+        val taxBands = getTaxBands(date).taxBands.collect(taxBandFilterFunc(payPeriod, taxablePay))
         !taxBands.isEmpty match {
           case true => taxBands.head
           case false => getTaxBands(date).taxBands.last
