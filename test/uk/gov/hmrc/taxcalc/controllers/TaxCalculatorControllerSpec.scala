@@ -33,6 +33,7 @@ class TaxCalculatorControllerSpec extends UnitSpec with WithFakeApplication with
     "return a NT TaxCalc response with no PAYE tax applied" in new LiveTaxCalcSuccess {
       val result = await(controller.calculateTax(false, 2016, "NT", 20000000, "annual", Option(journeyId))(emptyRequest))
       status(result) shouldBe 200
+      println(contentAsJson(result))
       contentAsJson(result) shouldBe Json.toJson(TaxCalculatorTestData.NT_taxCode_response);
     }
 
@@ -51,7 +52,6 @@ class TaxCalculatorControllerSpec extends UnitSpec with WithFakeApplication with
     "return a D1 TaxCalc response with PAYE tax applied at 45%" in new LiveTaxCalcSuccess {
       val result = await(controller.calculateTax(false, 2016, "D1", 20000000, "annual", Option(journeyId))(emptyRequest))
       status(result) shouldBe 200
-      println(contentAsJson(result))
       contentAsJson(result) shouldBe Json.toJson(TaxCalculatorTestData.D1_taxCode_response);
     }
   }
