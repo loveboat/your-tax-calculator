@@ -30,11 +30,12 @@ trait TaxCalculatorHelper {
   }
 
   def isTaxableCode(taxCode: String): Boolean = {
-    !taxCode.matches("([N,n]{1}[T,t]{1}){1}")
+    !taxCode.matches("([N,n]{1}[T,t]{1}){1}") && !isBasicRateTaxCode(taxCode)
   }
 
   def isBasicRateTaxCode(taxCode: String): Boolean = {
-    taxCode.matches("([B-b]{1}[R-r]{1}){1}")
+    taxCode.matches("([B-b]{1}[R-r]{1}){1}") ||
+    taxCode.matches("([D-d]{1}[0,1]{1}){1}")
   }
 
   def loadTaxBands() : TaxYearBands = {
