@@ -19,12 +19,22 @@ package uk.gov.hmrc.taxcalc.services
 import java.time.LocalDate
 
 import uk.gov.hmrc.taxcalc.config.TaxCalculatorStartup
-import uk.gov.hmrc.taxcalc.domain.{NICRateLimit, NICRateLimits, TaxBands, TaxYearBands}
+import uk.gov.hmrc.taxcalc.domain.{Money, _}
 
 trait TaxCalculatorHelper {
 
   def isValidTaxCode(taxCode: String): Boolean = {
-    taxCode.matches("([0-9]{1,4}[L-N,l-n,T,t,X,x]{1}){1}")
+    taxCode.matches("([0-9]{1,4}[L-N,l-n,T,t,X,x]{1}){1}") ||
+    !isTaxableCode(taxCode) ||
+    isBasicRateTaxCode(taxCode)
+  }
+
+  def isTaxableCode(taxCode: String): Boolean = {
+    !taxCode.matches("([N,n]{1}[T,t]{1}){1}")
+  }
+
+  def isBasicRateTaxCode(taxCode: String): Boolean = {
+    taxCode.matches("([B-b]{1}[R-r]{1}){1}")
   }
 
   def loadTaxBands() : TaxYearBands = {
@@ -55,6 +65,13 @@ trait TaxCalculatorHelper {
 
   def getPreviousBandMaxTaxAmount(payPeriod: String, band: Int): Option[BigDecimal] = {
     Option(getTaxBands(LocalDate.now()).taxBands.filter(_.band == band-1).head.periods.filter(_.periodType.equals(payPeriod)).head.cumulativeMaxTax)
+  }
+
+  def rateLimit(limitType: String, payPeriod: String): PartialFunction[RateLimit, Money] = {
+    case rateLimit: RateLimit if rateLimit.rateLimitType.equals(limitType) => {
+      val limit = Money((rateLimit.getClass.getMethod(payPeriod).invoke(rateLimit)).asInstanceOf[BigDecimal])
+      limit
+    }
   }
 
 }

@@ -237,14 +237,14 @@ object TaxCalculatorTestData {
 
   val taxCalculator_2016_response = Json.parse(
     """{
-      |  "statePensionAge": true,
+      |  "statePensionAge": false,
       |  "taxCode": "1100L",
       |  "taxBreakdown": [
       |    {
       |      "period": "annual",
-      |      "grossPay": 200000.0,
-      |      "taxFreePay": 11009.00,
-      |      "taxablePay": 188991.00,
+      |      "grossPay": 200000,
+      |      "taxFreePay": 11009,
+      |      "taxablePay": 188991,
       |      "taxCategories": [
       |        {
       |          "taxType": "incomeTax",
@@ -769,4 +769,167 @@ object TaxCalculatorTestData {
                                                       |    }
                                                       |  ]
                                                       |}""".stripMargin)
+
+  val NT_taxCode_response = Json.parse("""{
+                                         |  "statePensionAge": false,
+                                         |  "taxCode": "NT",
+                                         |  "taxBreakdown": [
+                                         |    {
+                                         |      "period": "annual",
+                                         |      "grossPay": 200000,
+                                         |      "taxFreePay": 200000,
+                                         |      "taxablePay": 0,
+                                         |      "taxCategories": [
+                                         |        {
+                                         |          "taxType": "incomeTax",
+                                         |          "total": 0,
+                                         |          "aggregation": [
+                                         |            {
+                                         |              "percentage": 20,
+                                         |              "amount": 0
+                                         |            },
+                                         |            {
+                                         |              "percentage": 40,
+                                         |              "amount": 0
+                                         |            },
+                                         |            {
+                                         |              "percentage": 45,
+                                         |              "amount": 0
+                                         |            }
+                                         |          ]
+                                         |        },
+                                         |        {
+                                         |          "taxType": "employeeNationalInsurance",
+                                         |          "total": 7331.88,
+                                         |          "aggregation": [
+                                         |            {
+                                         |              "percentage": 12,
+                                         |              "amount": 4191.84
+                                         |            },
+                                         |            {
+                                         |              "percentage": 2,
+                                         |              "amount": 3140.04
+                                         |            }
+                                         |          ]
+                                         |        },
+                                         |        {
+                                         |          "taxType": "employerNationalInsurance",
+                                         |          "total": 26480.64,
+                                         |          "aggregation": [
+                                         |            {
+                                         |              "percentage": 13.8,
+                                         |              "amount": 26480.64
+                                         |            }
+                                         |          ]
+                                         |        }
+                                         |      ],
+                                         |      "totalDeductions": 7331.88,
+                                         |      "takeHomePay": 192668.12
+                                         |    },
+                                         |    {
+                                         |      "period": "monthly",
+                                         |      "grossPay": 16666.67,
+                                         |      "taxFreePay": 16666.67,
+                                         |      "taxablePay": 0,
+                                         |      "taxCategories": [
+                                         |        {
+                                         |          "taxType": "incomeTax",
+                                         |          "total": 0,
+                                         |          "aggregation": [
+                                         |            {
+                                         |              "percentage": 20,
+                                         |              "amount": 0
+                                         |            },
+                                         |            {
+                                         |              "percentage": 40,
+                                         |              "amount": 0
+                                         |            },
+                                         |            {
+                                         |              "percentage": 45,
+                                         |              "amount": 0
+                                         |            }
+                                         |          ]
+                                         |        },
+                                         |        {
+                                         |          "taxType": "employeeNationalInsurance",
+                                         |          "total": 610.99,
+                                         |          "aggregation": [
+                                         |            {
+                                         |              "percentage": 12,
+                                         |              "amount": 349.32
+                                         |            },
+                                         |            {
+                                         |              "percentage": 2,
+                                         |              "amount": 261.67
+                                         |            }
+                                         |          ]
+                                         |        },
+                                         |        {
+                                         |          "taxType": "employerNationalInsurance",
+                                         |          "total": 2206.72,
+                                         |          "aggregation": [
+                                         |            {
+                                         |              "percentage": 13.8,
+                                         |              "amount": 2206.72
+                                         |            }
+                                         |          ]
+                                         |        }
+                                         |      ],
+                                         |      "totalDeductions": 610.99,
+                                         |      "takeHomePay": 16055.68
+                                         |    },
+                                         |    {
+                                         |      "period": "weekly",
+                                         |      "grossPay": 3846.15,
+                                         |      "taxFreePay": 3846.15,
+                                         |      "taxablePay": 0,
+                                         |      "taxCategories": [
+                                         |        {
+                                         |          "taxType": "incomeTax",
+                                         |          "total": 0,
+                                         |          "aggregation": [
+                                         |            {
+                                         |              "percentage": 20,
+                                         |              "amount": 0
+                                         |            },
+                                         |            {
+                                         |              "percentage": 40,
+                                         |              "amount": 0
+                                         |            },
+                                         |            {
+                                         |              "percentage": 45,
+                                         |              "amount": 0
+                                         |            }
+                                         |          ]
+                                         |        },
+                                         |        {
+                                         |          "taxType": "employeeNationalInsurance",
+                                         |          "total": 141,
+                                         |          "aggregation": [
+                                         |            {
+                                         |              "percentage": 12,
+                                         |              "amount": 80.61
+                                         |            },
+                                         |            {
+                                         |              "percentage": 2,
+                                         |              "amount": 60.39
+                                         |            }
+                                         |          ]
+                                         |        },
+                                         |        {
+                                         |          "taxType": "employerNationalInsurance",
+                                         |          "total": 509.24,
+                                         |          "aggregation": [
+                                         |            {
+                                         |              "percentage": 13.8,
+                                         |              "amount": 509.24
+                                         |            }
+                                         |          ]
+                                         |        }
+                                         |      ],
+                                         |      "totalDeductions": 141,
+                                         |      "takeHomePay": 3705.15
+                                         |    }
+                                         |  ]
+                                         |}""".stripMargin)
 }

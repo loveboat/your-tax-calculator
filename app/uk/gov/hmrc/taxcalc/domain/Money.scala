@@ -16,6 +16,9 @@
 
 package uk.gov.hmrc.taxcalc.domain
 
+import play.api.libs.json
+import play.api.libs.json.{JsResult, JsValue, Json}
+
 import scala.math.BigDecimal.RoundingMode
 
 class Money(amount: BigDecimal, decimalPlaces: Int, roundingUp: Boolean){
@@ -67,6 +70,14 @@ class Money(amount: BigDecimal, decimalPlaces: Int, roundingUp: Boolean){
 
   def <=(that: Money): Boolean = {
     value <= that.value
+  }
+
+  def ==(that: Money): Boolean = {
+    value == that.value
+  }
+
+  def !=(that: Money): Boolean = {
+    value != that.value
   }
 
 }
