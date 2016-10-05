@@ -32,7 +32,7 @@ case class NICRateLimits(rateLimits: Seq[NICRateLimit])
 
 case class NICRateLimit(fromDate: LocalDate, earningLimit: Seq[RateLimit], threshold: Seq[RateLimit], employeeRate: Seq[RateLimit], employerRate: Seq[RateLimit])
 
-case class RateLimit(rateLimitType: String, weekly: BigDecimal, monthly: BigDecimal)
+case class RateLimit(rateLimitType: String, weekly: BigDecimal, monthly: BigDecimal, annual: BigDecimal)
 
 object TaxYearBands {
   implicit val formatPeriodCalc = Json.format[PeriodCalc]

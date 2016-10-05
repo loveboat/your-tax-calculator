@@ -5,68 +5,80 @@
         {
           "rateLimitType": "lower",
           "weekly": 112.00,
-          "monthly": 486.00
+          "monthly": 486.00,
+          "annual": 5824.00
         },
         {
           "rateLimitType": "upper",
           "weekly": 827.00,
-          "monthly": 3583.00
+          "monthly": 3583.00,
+          "annual": 43000.00
         }
       ],
       "threshold": [
         {
           "rateLimitType": "primary",
           "weekly": 155.00,
-          "monthly": 672.00
+          "monthly": 672.00,
+          "annual": 8060.00
         },
         {
           "rateLimitType": "secondary",
           "weekly": 156.00,
-          "monthly": 676.00
+          "monthly": 676.00,
+          "annual": 8112.00
         }
       ],
       "employeeRate": [
         {
           "rateLimitType": "1",
           "weekly": 12,
-          "monthly": 12
+          "monthly": 12,
+          "annual": 12
         },
         {
           "rateLimitType": "2",
           "weekly": 0,
-          "monthly": 0
+          "monthly": 0,
+          "annual": 0
         },
         {
           "rateLimitType": "3",
           "weekly": 12,
-          "monthly": 12
+          "monthly": 12,
+          "annual": 12
         },
         {
           "rateLimitType": "4",
           "weekly": 2,
-          "monthly": 2
+          "monthly": 2,
+          "annual": 2
         }
       ],
       "employerRate": [
         {
           "rateLimitType": "1",
           "weekly": 0,
-          "monthly": 0
+          "monthly": 0,
+          "annual": 0
         },
         {
           "rateLimitType": "2",
           "weekly": 13.8,
-          "monthly": 13.8
+          "monthly": 13.8,
+          "annual": 13.8
         },
         {
           "rateLimitType": "3",
           "weekly": 13.8,
-          "monthly": 13.8
+          "monthly": 13.8,
+          "annual": 13.8
         },
         {
           "rateLimitType": "4",
           "weekly": 0,
-          "monthly": 0
+          "monthly": 0,
+          "annual": 0
         }
       ]
     },
@@ -76,68 +88,80 @@
         {
           "rateLimitType": "lower",
           "weekly": 112.00,
-          "monthly": 486.00
+          "monthly": 486.00,
+          "annual": 5824.00
         },
         {
           "rateLimitType": "upper",
           "weekly": 827.00,
-          "monthly": 3583.00
+          "monthly": 3583.00,
+          "annual": 43000.00
         }
       ],
       "threshold": [
         {
           "rateLimitType": "primary",
           "weekly": 155.00,
-          "monthly": 627.00
+          "monthly": 672.00,
+          "annual": 8060.00
         },
         {
           "rateLimitType": "secondary",
           "weekly": 156.00,
-          "monthly": 676.00
+          "monthly": 676.00,
+          "annual": 8112.00
         }
       ],
       "employeeRate": [
         {
           "rateLimitType": "1",
           "weekly": 12,
-          "monthly": 12
+          "monthly": 12,
+          "annual": 12
         },
         {
           "rateLimitType": "2",
           "weekly": 0,
-          "monthly": 0
+          "monthly": 0,
+          "annual": 0
         },
         {
           "rateLimitType": "3",
           "weekly": 12,
-          "monthly": 12
+          "monthly": 12,
+          "annual": 12
         },
         {
           "rateLimitType": "4",
           "weekly": 2,
-          "monthly": 2
+          "monthly": 2,
+          "annual": 2
         }
       ],
       "employerRate": [
         {
           "rateLimitType": "1",
           "weekly": 0,
-          "monthly": 0
+          "monthly": 0,
+          "annual": 0
         },
         {
           "rateLimitType": "2",
           "weekly": 13.8,
-          "monthly": 13.8
+          "monthly": 13.8,
+          "annual": 13.8
         },
         {
           "rateLimitType": "3",
           "weekly": 13.8,
-          "monthly": 13.8
+          "monthly": 13.8,
+          "annual": 13.8
         },
         {
           "rateLimitType": "4",
           "weekly": 0,
-          "monthly": 0
+          "monthly": 0,
+          "annual": 0
         }
       ]
     }
