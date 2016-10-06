@@ -26,10 +26,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 trait TaxCalculatorController extends BaseController with ErrorHandling {
   val service: TaxCalculatorService
 
-  def calculateTax(isStatePensionAge: Boolean, taxYear: Int, taxCode: String, grossPay: Long, payPeriod: String,  journeyId: Option[String]) = Action.async {
+  def calculateTax(isStatePensionAge: Boolean, taxYear: Int, taxCode: String, grossPay: Long, payPeriod: String, hours: Option[Int], journeyId: Option[String]) = Action.async {
     implicit request => {
       errorWrapper {
-        service.calculateTax(isStatePensionAge, taxYear, taxCode, grossPay, payPeriod).map {
+        service.calculateTax(isStatePensionAge, taxYear, taxCode, grossPay, payPeriod, hours).map {
           response => Ok(Json.toJson(response))
         }
       }
