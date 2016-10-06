@@ -63,6 +63,10 @@
             "throttlingTier":"UNLIMITED",
             "queryParameters": [
               {
+                "name": "hours",
+                "required": false
+              },
+              {
                 "name": "journeyId",
                 "required": false
               }
