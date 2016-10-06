@@ -18,7 +18,7 @@ package uk.gov.hmrc.taxcalc.services
 
 import java.time.LocalDate
 
-import uk.gov.hmrc.taxcalc.domain._
+import uk.gov.hmrc.taxcalc.domain.{Money, _}
 
 import scala.concurrent.Future
 import scala.math.BigDecimal
@@ -28,9 +28,9 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
   val payeTaxCalculatorService: PAYETaxCalculatorService
   val nicTaxCalculatorService: NICTaxCalculatorService
 
-  def calculateTax(isStatePensionAge: Boolean, taxYear: Int, taxCode: String, grossPayPence: Long, payPeriod: String): Future[TaxCalc] = {
+  def calculateTax(isStatePensionAge: Boolean, taxYear: Int, taxCode: String, grossPayPence: Long, payPeriod: String, hours: Option[Int]): Future[TaxCalc] = {
 
-    val grossPay = Money(grossPayPence/100)
+    val grossPay = calculateGrossPay(grossPayPence, hours, payPeriod)
     val payeTax  = payeTaxCalculatorService.calculatePAYETax(taxCode, payPeriod, grossPay)
     val nicTax   = nicTaxCalculatorService.calculateNICTax(isStatePensionAge, grossPay, payPeriod)
 
@@ -50,6 +50,21 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
     val taxCalResult = TaxCalc(isStatePensionAge, taxCode, taxBreakdown)
 
     Future.successful(taxCalResult)
+  }
+
+  def calculateGrossPay(grossPayPence: Long, hours: Option[Int], payPeriod: String): Money = {
+    hours match {
+      case Some(value: Int) => {
+        val weekly = Money(((BigDecimal.valueOf(grossPayPence) * value) / 100), 2, true)
+        val grossPay = payPeriod match {
+          case "weekly" => weekly
+          case "monthly" => Money(weekly / BigDecimal.valueOf(12), 2, true)
+          case "annual" => Money(weekly * BigDecimal.valueOf(52), 2, true)
+        }
+        grossPay
+      }
+      case _ => Money(grossPayPence/100, 2, true)
+    }
   }
 
   private def derivePeriodTaxBreakdowns(taxBreakdown: TaxBreakdown, payeTax: PAYETaxResult, nicTax: NICTaxResult, payeAggregation: Seq[Aggregation], isStatePensionAge: Boolean): Seq[TaxBreakdown] = {

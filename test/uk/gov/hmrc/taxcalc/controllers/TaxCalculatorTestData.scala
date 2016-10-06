@@ -1051,6 +1051,117 @@ val D1_taxCode_response = Json.parse("""{
                                        |  ]
                                        |}""".stripMargin)
 
+  val hour_rate_weekly_response = Json.parse("""{
+                                               |  "statePensionAge": false,
+                                               |  "taxCode": "1100L",
+                                               |  "taxBreakdown": [
+                                               |    {
+                                               |      "period": "annual",
+                                               |      "grossPay": 199992,
+                                               |      "taxFreePay": 11009.96,
+                                               |      "taxablePay": 188982.04,
+                                               |      "taxCategories": [
+                                               |        {
+                                               |          "taxType": "incomeTax",
+                                               |          "total": 71135.48,
+                                               |          "aggregation": [
+                                               |            {
+                                               |              "percentage": 20,
+                                               |              "amount": 6400.16
+                                               |            },
+                                               |            {
+                                               |              "percentage": 40,
+                                               |              "amount": 47199.88
+                                               |            },
+                                               |            {
+                                               |              "percentage": 45,
+                                               |              "amount": 17535.44
+                                               |            }
+                                               |          ]
+                                               |        },
+                                               |        {
+                                               |          "taxType": "employeeNationalInsurance",
+                                               |          "total": 7333.04,
+                                               |          "aggregation": [
+                                               |            {
+                                               |              "percentage": 12,
+                                               |              "amount": 4193.28
+                                               |            },
+                                               |            {
+                                               |              "percentage": 2,
+                                               |              "amount": 3139.76
+                                               |            }
+                                               |          ]
+                                               |        },
+                                               |        {
+                                               |          "taxType": "employerNationalInsurance",
+                                               |          "total": 26479.44,
+                                               |          "aggregation": [
+                                               |            {
+                                               |              "percentage": 13.8,
+                                               |              "amount": 26479.44
+                                               |            }
+                                               |          ]
+                                               |        }
+                                               |      ],
+                                               |      "totalDeductions": 78468.52,
+                                               |      "takeHomePay": 121523.48
+                                               |    },
+                                               |    {
+                                               |      "period": "weekly",
+                                               |      "grossPay": 3846,
+                                               |      "taxFreePay": 211.73,
+                                               |      "taxablePay": 3634.27,
+                                               |      "taxCategories": [
+                                               |        {
+                                               |          "taxType": "incomeTax",
+                                               |          "total": 1367.99,
+                                               |          "aggregation": [
+                                               |            {
+                                               |              "percentage": 20,
+                                               |              "amount": 123.08
+                                               |            },
+                                               |            {
+                                               |              "percentage": 40,
+                                               |              "amount": 907.69
+                                               |            },
+                                               |            {
+                                               |              "percentage": 45,
+                                               |              "amount": 337.22
+                                               |            }
+                                               |          ]
+                                               |        },
+                                               |        {
+                                               |          "taxType": "employeeNationalInsurance",
+                                               |          "total": 141.02,
+                                               |          "aggregation": [
+                                               |            {
+                                               |              "percentage": 12,
+                                               |              "amount": 80.64
+                                               |            },
+                                               |            {
+                                               |              "percentage": 2,
+                                               |              "amount": 60.38
+                                               |            }
+                                               |          ]
+                                               |        },
+                                               |        {
+                                               |          "taxType": "employerNationalInsurance",
+                                               |          "total": 509.22,
+                                               |          "aggregation": [
+                                               |            {
+                                               |              "percentage": 13.8,
+                                               |              "amount": 509.22
+                                               |            }
+                                               |          ]
+                                               |        }
+                                               |      ],
+                                               |      "totalDeductions": 1509.01,
+                                               |      "takeHomePay": 2336.99
+                                               |    }
+                                               |  ]
+                                               |}""".stripMargin)
+
   val nic_rates_limits = Json.parse("""{
                                       |  "rateLimits": [
                                       |    {
