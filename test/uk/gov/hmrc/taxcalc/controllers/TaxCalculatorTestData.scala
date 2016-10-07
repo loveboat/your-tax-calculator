@@ -23,6 +23,7 @@ object TaxCalculatorTestData {
                               |  "taxYearBands": [
                               |    {
                               |      "fromDate": "2016-04-05",
+                              |      "annualIncomeThreshold": 100000.00,
                               |      "taxBands": [
                               |        {
                               |          "band": 1,
@@ -128,6 +129,7 @@ object TaxCalculatorTestData {
                               |    },
                               |    {
                               |      "fromDate": "2017-04-05",
+                              |      "annualIncomeThreshold": 100000.00,
                               |      "taxBands": [
                               |        {
                               |          "band": 1,
@@ -238,7 +240,7 @@ object TaxCalculatorTestData {
   val taxCalculator_2016_response = Json.parse(
     """{
       |  "statePensionAge": false,
-      |  "taxCode": "1100L",
+      |  "taxCode": "1100T",
       |  "taxBreakdown": [
       |    {
       |      "period": "annual",
@@ -1054,16 +1056,18 @@ val D1_taxCode_response = Json.parse("""{
   val hour_rate_weekly_response = Json.parse("""{
                                                |  "statePensionAge": false,
                                                |  "taxCode": "1100L",
+                                               |  "payPerHour": 96.15,
+                                               |  "hours": 40,
                                                |  "taxBreakdown": [
                                                |    {
                                                |      "period": "annual",
                                                |      "grossPay": 199992,
-                                               |      "taxFreePay": 11009.96,
-                                               |      "taxablePay": 188982.04,
+                                               |      "taxFreePay": 0,
+                                               |      "taxablePay": 199992,
                                                |      "taxCategories": [
                                                |        {
                                                |          "taxType": "incomeTax",
-                                               |          "total": 71135.48,
+                                               |          "total": 76096.28,
                                                |          "aggregation": [
                                                |            {
                                                |              "percentage": 20,
@@ -1075,7 +1079,7 @@ val D1_taxCode_response = Json.parse("""{
                                                |            },
                                                |            {
                                                |              "percentage": 45,
-                                               |              "amount": 17535.44
+                                               |              "amount": 22496.24
                                                |            }
                                                |          ]
                                                |        },
@@ -1104,18 +1108,18 @@ val D1_taxCode_response = Json.parse("""{
                                                |          ]
                                                |        }
                                                |      ],
-                                               |      "totalDeductions": 78468.52,
-                                               |      "takeHomePay": 121523.48
+                                               |      "totalDeductions": 83429.32,
+                                               |      "takeHomePay": 116562.68
                                                |    },
                                                |    {
                                                |      "period": "weekly",
                                                |      "grossPay": 3846,
-                                               |      "taxFreePay": 211.73,
-                                               |      "taxablePay": 3634.27,
+                                               |      "taxFreePay": 0,
+                                               |      "taxablePay": 3846,
                                                |      "taxCategories": [
                                                |        {
                                                |          "taxType": "incomeTax",
-                                               |          "total": 1367.99,
+                                               |          "total": 1463.39,
                                                |          "aggregation": [
                                                |            {
                                                |              "percentage": 20,
@@ -1127,7 +1131,7 @@ val D1_taxCode_response = Json.parse("""{
                                                |            },
                                                |            {
                                                |              "percentage": 45,
-                                               |              "amount": 337.22
+                                               |              "amount": 432.62
                                                |            }
                                                |          ]
                                                |        },
@@ -1156,8 +1160,8 @@ val D1_taxCode_response = Json.parse("""{
                                                |          ]
                                                |        }
                                                |      ],
-                                               |      "totalDeductions": 1509.01,
-                                               |      "takeHomePay": 2336.99
+                                               |      "totalDeductions": 1604.41,
+                                               |      "takeHomePay": 2241.59
                                                |    }
                                                |  ]
                                                |}""".stripMargin)

@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.taxcalc.services
 
+import uk.gov.hmrc.domain.TaxCode
 import uk.gov.hmrc.taxcalc.domain.{Aggregation, Allowance, Money, TaxBand}
 
 trait CalculatorResponse {
@@ -35,3 +36,5 @@ case class TaxBandResponse(override val success: Boolean, override val result: T
 case class NICRateCalculatorResponse(override val success: Boolean, override val result: Money) extends CalculatorResponse
 
 case class RateCalculatorResponse(override val success: Boolean, override val result: Aggregation) extends CalculatorResponse
+
+case class TaperingResponse(override val success: Boolean, override val result: String) extends CalculatorResponse

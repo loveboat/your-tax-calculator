@@ -24,9 +24,14 @@ import uk.gov.hmrc.taxcalc.domain.{Money, _}
 trait TaxCalculatorHelper {
 
   def isValidTaxCode(taxCode: String): Boolean = {
-    taxCode.matches("([0-9]{1,4}[L-N,l-n,T,t,X,x]{1}){1}") ||
+    isStandardTaxCode(taxCode) ||
     !isTaxableCode(taxCode) ||
-    isBasicRateTaxCode(taxCode)
+    isBasicRateTaxCode(taxCode) ||
+    isEmergencyTaxCode(taxCode)
+  }
+
+  def isStandardTaxCode(taxCode: String): Boolean = {
+    taxCode.matches("([0-9]{1,4}[L-N,l-n,T,t,X,x]{1}){1}")
   }
 
   def isTaxableCode(taxCode: String): Boolean = {
@@ -36,6 +41,14 @@ trait TaxCalculatorHelper {
   def isBasicRateTaxCode(taxCode: String): Boolean = {
     taxCode.matches("([B,b][R,r]){1}") ||
     taxCode.matches("([D,d][0,1]){1}")
+  }
+
+  def isEmergencyTaxCode(taxCode: String): Boolean = {
+    taxCode.matches("([1]{2}[0]{2}[L,l]{1}){1}")
+  }
+
+  def isAdjustedTaxCode(taxCode: String): Boolean = {
+    taxCode.matches("([0-9]+[.]{1}[0-9]{2}[L,l]{1}){1}")
   }
 
   def loadTaxBands() : TaxYearBands = {
@@ -73,6 +86,12 @@ trait TaxCalculatorHelper {
       val limit = Money((rateLimit.getClass.getMethod(payPeriod).invoke(rateLimit)).asInstanceOf[BigDecimal])
       limit
     }
+  }
+
+  def splitTaxCode(taxCode: String): String = {
+    if(isStandardTaxCode(taxCode) || isAdjustedTaxCode(taxCode))
+      taxCode.stripSuffix(taxCode.substring(taxCode.length - 1, taxCode.length))
+    else taxCode
   }
 
 }

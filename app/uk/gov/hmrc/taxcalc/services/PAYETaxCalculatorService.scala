@@ -29,7 +29,7 @@ trait PAYETaxCalculatorService extends TaxCalculatorHelper {
 
     isValidTaxCode(taxCode) match {
       case true => {
-        val taxablePay = TaxablePayCalculator(taxCode, payPeriod, grossPay).calculate().result
+        val taxablePay = TaxablePayCalculator(LocalDate.now, taxCode, payPeriod, grossPay).calculate().result
         val taxBand = TaxBandCalculator(taxCode, LocalDate.now, payPeriod, taxablePay).calculate().result
         val excessPay = ExcessPayCalculator(taxCode, LocalDate.now, taxBand.band, payPeriod, taxablePay).calculate().result
         val finalBandTaxedAmount = Money(excessPay * (taxBand.rate / (100)), 2, true)

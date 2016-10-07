@@ -52,7 +52,7 @@ case class PAYEAggregateBuilder(taxCode: String, date: LocalDate, bandId: Int, p
   private def PAYEAggregationFunc() : PartialFunction[TaxBand, Aggregation] = {
     case taxBand if taxBand.band == bandId && payeTaxAmount != Money(0) && taxBand.band != 4 => {
       val sum = taxbands.taxBands.filter(_.band < bandId).collect(previousBandMaxTaxFunction()).foldLeft(BigDecimal.valueOf(0.0))(_ + _)
-      Aggregation(taxBand.rate, payeTaxAmount.value - sum)
+      Aggregation(taxBand.rate, (payeTaxAmount - sum).value)
     }
     case taxBand if taxBand.band < bandId && taxBand.band != 1 && payeTaxAmount != Money(0) => createPAYEAggregation(taxBand)
     case taxBand if taxBand.band != 1 && payeTaxAmount == Money(0) => Aggregation(taxBand.rate, BigDecimal.valueOf(0.0))

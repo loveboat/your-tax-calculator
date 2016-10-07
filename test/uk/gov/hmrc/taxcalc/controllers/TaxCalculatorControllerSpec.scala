@@ -25,8 +25,9 @@ class TaxCalculatorControllerSpec extends UnitSpec with WithFakeApplication with
 
   "LiveTaxCalculatorController calculate tax for 2016 tax year" should {
     "return a annual TaxCalc response" in new LiveTaxCalcSuccess {
-      val result = await(controller.calculateTax(false, 2016, "1100L", 20000000, "annual", None, Option(journeyId))(emptyRequest))
+      val result = await(controller.calculateTax(false, 2016, "1100T", 1000008, "annual", None, Option(journeyId))(emptyRequest))
       status(result) shouldBe 200
+      println(contentAsJson(result))
       contentAsJson(result) shouldBe Json.toJson(TaxCalculatorTestData.taxCalculator_2016_response);
     }
 
@@ -55,8 +56,15 @@ class TaxCalculatorControllerSpec extends UnitSpec with WithFakeApplication with
     }
 
     "return weekly tax calc response using an hourly rate input" in new LiveTaxCalcSuccess {
-      val result = await(controller.calculateTax(false, 2016, "1100L", 9615, "weekly", Option(40), Option(journeyId))(emptyRequest))
+      val result = await(controller.calculateTax(false, 2016, "1100T", 9615, "weekly", Option(40), Option(journeyId))(emptyRequest))
       status(result) shouldBe 200
+      contentAsJson(result) shouldBe Json.toJson(TaxCalculatorTestData.hour_rate_weekly_response);
+    }
+
+    "return weekly tax calc response using tapering with emergency taxcode input" in new LiveTaxCalcSuccess {
+      val result = await(controller.calculateTax(false, 2016, "1100L", 221200, "weekly", None, Option(journeyId))(emptyRequest))
+      status(result) shouldBe 200
+      println(contentAsJson(result))
       contentAsJson(result) shouldBe Json.toJson(TaxCalculatorTestData.hour_rate_weekly_response);
     }
   }
