@@ -24,6 +24,7 @@ object TaxCalculatorTestData {
                               |    {
                               |      "fromDate": "2016-04-05",
                               |      "annualIncomeThreshold": 100000.00,
+                              |      "scottishRate": 10,
                               |      "taxBands": [
                               |        {
                               |          "band": 1,
@@ -130,6 +131,7 @@ object TaxCalculatorTestData {
                               |    {
                               |      "fromDate": "2017-04-05",
                               |      "annualIncomeThreshold": 100000.00,
+                              |      "scottishRate": 10,
                               |      "taxBands": [
                               |        {
                               |          "band": 1,
