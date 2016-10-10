@@ -27,7 +27,8 @@ trait TaxCalculatorHelper {
     isStandardTaxCode(taxCode) ||
     !isTaxableCode(taxCode) ||
     isBasicRateTaxCode(taxCode) ||
-    isEmergencyTaxCode(taxCode)
+    isEmergencyTaxCode(taxCode) ||
+    isValidScottishTaxCode(taxCode)
   }
 
   def isStandardTaxCode(taxCode: String): Boolean = {
@@ -49,6 +50,13 @@ trait TaxCalculatorHelper {
 
   def isAdjustedTaxCode(taxCode: String): Boolean = {
     taxCode.matches("([0-9]+[.]{1}[0-9]{2}[L,l]{1}){1}")
+  }
+
+  def isValidScottishTaxCode(taxCode: String): Boolean = {
+    taxCode.matches("([S]{1}[0-9]{1,4}[L-N,l-n,T,t,X,x]{1}){1}") ||
+    taxCode.matches("([S,s][N,n][T,t]){1}") ||
+    taxCode.matches("([S,s][B,b][R,r]){1}") ||
+    taxCode.matches("([S,s][D,d][0,1]){1}")
   }
 
   def loadTaxBands() : TaxYearBands = {
@@ -92,6 +100,13 @@ trait TaxCalculatorHelper {
     if(isStandardTaxCode(taxCode) || isAdjustedTaxCode(taxCode))
       taxCode.stripSuffix(taxCode.substring(taxCode.length - 1, taxCode.length))
     else taxCode
+  }
+
+  def removeScottishElement(taxCode: String): String = {
+    isValidScottishTaxCode(taxCode) match {
+      case true => taxCode.substring(1,taxCode.length)
+      case false => taxCode
+    }
   }
 
 }

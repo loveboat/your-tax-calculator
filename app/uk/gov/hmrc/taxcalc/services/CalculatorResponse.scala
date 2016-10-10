@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.taxcalc.services
 
-import uk.gov.hmrc.domain.TaxCode
 import uk.gov.hmrc.taxcalc.domain.{Aggregation, Allowance, Money, TaxBand}
 
 trait CalculatorResponse {

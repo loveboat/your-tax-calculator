@@ -26,17 +26,23 @@ trait NICTaxCalculatorService extends TaxCalculatorHelper {
     isStatePensionAge match {
       case false => {
         val rateLimits = getRateLimits(LocalDate.now)
-        NICTaxResult(calculateEmployeeNIC(grossPay, payPeriod, rateLimits),calculateEmployerNIC(grossPay, payPeriod, rateLimits))
+        val employeeNICResult = calculateEmployeeNIC(grossPay, payPeriod, rateLimits)
+        NICTaxResult(employeeNICResult.nicBandRate, employeeNICResult.aggregation,calculateEmployerNIC(grossPay, payPeriod, rateLimits))
       }
-      case true => NICTaxResult(Seq(), Seq())
+      case true => NICTaxResult(BigDecimal.valueOf(0),Seq(), Seq())
     }
   }
 
-  def calculateEmployeeNIC(grossPay: Money, payPeriod: String, nicRateLimit: NICRateLimit): Seq[Aggregation] = {
+  def calculateEmployeeNIC(grossPay: Money, payPeriod: String, nicRateLimit: NICRateLimit): EmployeeNICResult = {
     val rate1 = EmployeeRateCalculator(LocalDate.now, grossPay, payPeriod, 1).calculate().result
     val rate3 = EmployeeRateCalculator(LocalDate.now, grossPay, payPeriod, 3).calculate().result
-    Seq(Aggregation(rate1.percentage, rate1.amount + rate3.amount),
-      EmployeeRateCalculator(LocalDate.now, grossPay, payPeriod, 4).calculate().result)
+    val rate4 = EmployeeRateCalculator(LocalDate.now, grossPay, payPeriod, 4).calculate().result
+    val result = Seq(Aggregation(rate1.percentage, rate1.amount + rate3.amount), rate4)
+    val nicBandRate = result.filter(_.amount > BigDecimal.valueOf(0)).size > 0 match {
+      case true => result.last.percentage
+      case false => BigDecimal(0)
+    }
+    EmployeeNICResult(result,nicBandRate)
   }
 
   def calculateEmployerNIC(grossPay: Money, payPeriod: String, nicRateLimit: NICRateLimit): Seq[Aggregation] = {
@@ -45,6 +51,8 @@ trait NICTaxCalculatorService extends TaxCalculatorHelper {
     Seq(Aggregation(rate2.percentage, rate2.amount + rate3.amount))
   }
 }
+
+case class EmployeeNICResult(aggregation: Seq[Aggregation], nicBandRate: BigDecimal)
 
 object LiveNICTaxCalculatorService extends NICTaxCalculatorService {
 }

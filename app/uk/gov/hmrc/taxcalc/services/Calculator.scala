@@ -83,7 +83,7 @@ case class TaxablePayCalculator(date: LocalDate, taxCode: String, payPeriod: Str
 
   override def calculate(): TaxablePayResponse = {
 
-    val updatedTaxCode = AnnualTaperingDeductionCalculator(taxCode, date, payPeriod, grossPay).calculate().result
+    val updatedTaxCode = AnnualTaperingDeductionCalculator(removeScottishElement(taxCode), date, payPeriod, grossPay).calculate().result
 
     val taxablePay: Seq[Money] = isBasicRateTaxCode(taxCode) match {
       case true   => Seq(grossPay)
