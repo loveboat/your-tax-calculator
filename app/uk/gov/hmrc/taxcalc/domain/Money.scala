@@ -64,6 +64,9 @@ class Money(amount: BigDecimal, decimalPlaces: Int, roundingUp: Boolean){
   def >(that: Money): Boolean = {
     value > that.value
   }
+  def >(that: BigDecimal): Boolean = {
+    value > that
+  }
 
   def <(that: Money): Boolean = {
     value < that.value

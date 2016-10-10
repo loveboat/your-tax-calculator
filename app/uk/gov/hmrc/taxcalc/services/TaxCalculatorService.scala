@@ -18,10 +18,11 @@ package uk.gov.hmrc.taxcalc.services
 
 import java.time.LocalDate
 
-import uk.gov.hmrc.taxcalc.domain.{Money, _}
+import uk.gov.hmrc.taxcalc.domain.{Money, TaxBreakdown, _}
 
 import scala.concurrent.Future
 import scala.math.BigDecimal
+import scala.math.BigDecimal.RoundingMode
 
 trait TaxCalculatorService extends TaxCalculatorHelper {
 
@@ -31,10 +32,11 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
   def calculateTax(isStatePensionAge: Boolean, taxYear: Int, taxCode: String, grossPayPence: Long, payPeriod: String, hours: Option[Int]): Future[TaxCalc] = {
 
     val grossPay = calculateGrossPay(grossPayPence, hours, payPeriod)
-    val payeTax  = payeTaxCalculatorService.calculatePAYETax(taxCode, payPeriod, grossPay)
+    val updatedTaxCode = removeScottishElement(taxCode)
+    val payeTax  = payeTaxCalculatorService.calculatePAYETax(updatedTaxCode, payPeriod, grossPay)
     val nicTax   = nicTaxCalculatorService.calculateNICTax(isStatePensionAge, grossPay, payPeriod)
 
-    val aggregation = PAYEAggregateBuilder(taxCode, LocalDate.now, payeTax.band, payPeriod, payeTax.payeTaxAmount).build().aggregation
+    val aggregation = PAYEAggregateBuilder(updatedTaxCode, LocalDate.now, payeTax.band, payPeriod, payeTax.payeTaxAmount).build().aggregation
 
     val nicTaxCategories = NICTaxCategoryBuilder(isStatePensionAge, nicTax).build().taxCategories
     val taxCategories = Seq(TaxCategory(taxType = "incomeTax", payeTax.payeTaxAmount.value , aggregation))++nicTaxCategories
@@ -42,12 +44,14 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
     val totalDeductions = taxCategories.collect(TotalDeductionsFunc).foldLeft(BigDecimal.valueOf(0.0))(_ + _)
 
     val calculatedTaxBreakdown = TaxBreakdown(payPeriod, grossPay.value, (grossPay-(payeTax.taxablePay)).value,
-                                              payeTax.taxablePay.value, taxCategories, totalDeductions,
+                                              payeTax.taxablePay.value, calculateScottishElement(payeTax.payeTaxAmount, taxCode, LocalDate.now), taxCategories, totalDeductions,
                                               (grossPay - totalDeductions).value)
 
-    val taxBreakdown = derivePeriodTaxBreakdowns(calculatedTaxBreakdown, payeTax, nicTax, aggregation, isStatePensionAge)
+    val taxBreakdown = derivePeriodTaxBreakdowns(LocalDate.now, payeTax.band, taxCode,calculatedTaxBreakdown, payeTax, nicTax, aggregation, isStatePensionAge)
 
-    val taxCalResult = TaxCalc(isStatePensionAge, taxCode, taxBreakdown)
+    val averageAnnualTaxRate = calculateAverageAnnualTaxRate(taxBreakdown.find(_.period == "annual"))
+
+    val taxCalResult = TaxCalc(isStatePensionAge, taxCode, getHourlyGrossPay(hours, grossPayPence), hours, averageAnnualTaxRate.value, payeTax.bandRate + nicTax.employeeNICBandRate, payeTax.bandRate, nicTax.employeeNICBandRate, taxBreakdown )
 
     Future.successful(taxCalResult)
   }
@@ -63,42 +67,58 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
         }
         grossPay
       }
-      case _ => Money(grossPayPence/100, 2, true)
+      case _ => Money(BigDecimal.valueOf(grossPayPence)/100 , 2, true)
     }
   }
 
-  private def derivePeriodTaxBreakdowns(taxBreakdown: TaxBreakdown, payeTax: PAYETaxResult, nicTax: NICTaxResult, payeAggregation: Seq[Aggregation], isStatePensionAge: Boolean): Seq[TaxBreakdown] = {
+  def calculateAverageAnnualTaxRate(annualTaxBreakdown: Option[TaxBreakdown]): Money = {
+    annualTaxBreakdown match {
+      case Some(taxBreakdown: TaxBreakdown) => Money((taxBreakdown.totalDeductions / taxBreakdown.grossPay) * BigDecimal.valueOf(100), 2, true)
+      case _ => Money(0, 2, true)
+    }
+  }
+
+  def calculateScottishElement(payeTaxAmount: Money, taxCode: String, date: LocalDate): Option[BigDecimal] = {
+    isValidScottishTaxCode(taxCode) match {
+      case true => Option((payeTaxAmount*getTaxBands(date).scottishRate/100).value)
+      case false => None
+    }
+  }
+
+  private def derivePeriodTaxBreakdowns(date: LocalDate, bandId: Int, taxCode: String,taxBreakdown: TaxBreakdown, payeTax: PAYETaxResult, nicTax: NICTaxResult, payeAggregation: Seq[Aggregation], isStatePensionAge: Boolean): Seq[TaxBreakdown] = {
     val grossPay = Money(taxBreakdown.grossPay)
     taxBreakdown.period match {
       case "annual" => {
-        Seq(taxBreakdown, deriveTaxBreakdown(payeTax.band, grossPay, "monthly", payeTax.taxablePay, nicTax, false, 12, payeAggregation, isStatePensionAge),
-        deriveTaxBreakdown(payeTax.band, grossPay, "weekly", payeTax.taxablePay, nicTax, false , 52, payeAggregation, isStatePensionAge))
+        Seq(taxBreakdown, deriveTaxBreakdown(date, bandId, taxCode, grossPay, "monthly", nicTax, false, 12, payeAggregation, isStatePensionAge),
+        deriveTaxBreakdown(date, bandId, taxCode, grossPay, "weekly", nicTax, false , 52, payeAggregation, isStatePensionAge))
       }
       case "monthly" => {
-        Seq(deriveTaxBreakdown(payeTax.band, grossPay, "annual", payeTax.taxablePay, nicTax, true, 12, payeAggregation, isStatePensionAge), taxBreakdown)
+        Seq(deriveTaxBreakdown(date, bandId, taxCode, grossPay, "annual", nicTax, true, 12, payeAggregation, isStatePensionAge), taxBreakdown)
       }
       case "weekly" => {
-        Seq(deriveTaxBreakdown(payeTax.band, grossPay, "annual", payeTax.taxablePay, nicTax, true, 52, payeAggregation, isStatePensionAge), taxBreakdown)
+        Seq(deriveTaxBreakdown(date, bandId, taxCode, grossPay, "annual", nicTax, true, 52, payeAggregation, isStatePensionAge), taxBreakdown)
       }
     }
   }
 
-  private def deriveTaxBreakdown(band: Int, grossPay: Money, payPeriod: String, taxablePay: Money, nicTax: NICTaxResult, isMultiplier: Boolean, rhs: Int, payeAggregation: Seq[Aggregation], isStatePensionAge: Boolean): TaxBreakdown = {
+  private def deriveTaxBreakdown(date: LocalDate, bandId: Int, taxCode:String, grossPay: Money, payPeriod: String, nicTax: NICTaxResult, isMultiplier: Boolean, rhs: Int, payeAggregation: Seq[Aggregation], isStatePensionAge: Boolean): TaxBreakdown = {
 
     val updatedGrossPay = performIsMultiplyFunction(grossPay, isMultiplier, rhs)
-    val updatedTaxablePay = performIsMultiplyFunction(taxablePay, isMultiplier, rhs)
-    val payeTotal = Money(payeAggregation.foldLeft(BigDecimal.valueOf(0.0))(if(isMultiplier) _ + _.amount*rhs else _ + _.amount/rhs), 2, true)
+    val updatedTaxablePay = TaxablePayCalculator(date, taxCode, payPeriod, updatedGrossPay).calculate().result
+    val payeTotal = payeAggregation.foldLeft(BigDecimal.valueOf(0.0))(if(isMultiplier) _ + _.amount.setScale(2, RoundingMode.HALF_UP)*rhs
+                                                                    else _ + _.amount.setScale(2, RoundingMode.HALF_UP)/rhs)
 
     val employeeNICAggregation = nicTax.employeeNIC.collect(NICAggregationFunc(isMultiplier, rhs))
 
     val employerNICAggregation = nicTax.employerNIC.collect(NICAggregationFunc(isMultiplier, rhs))
 
-    val nicTaxCategories = NICTaxCategoryBuilder(isStatePensionAge, NICTaxResult(employeeNICAggregation, employerNICAggregation)).build().taxCategories
-    val taxCategories = Seq(TaxCategory(taxType = "incomeTax", payeTotal.value, derivePAYEAggregation(isMultiplier, rhs, payeAggregation)))++nicTaxCategories
+    val nicTaxCategories = NICTaxCategoryBuilder(isStatePensionAge, NICTaxResult(nicTax.employeeNICBandRate,employeeNICAggregation, employerNICAggregation)).build().taxCategories
+    val taxCategories = Seq(TaxCategory(taxType = "incomeTax", payeTotal, derivePAYEAggregation(isMultiplier, rhs, payeAggregation)))++nicTaxCategories
 
     val totalDeductions = taxCategories.collect(TotalDeductionsFunc).foldLeft(BigDecimal.valueOf(0.0))(_ + _)
     TaxBreakdown(payPeriod, updatedGrossPay.value, (updatedGrossPay.-(updatedTaxablePay)).value,
-                 updatedTaxablePay.value, taxCategories, totalDeductions,(updatedGrossPay - totalDeductions).value)
+                 updatedTaxablePay.value, calculateScottishElement(Money(payeTotal, 2, true), taxCode, date),
+                 taxCategories, totalDeductions,(updatedGrossPay - totalDeductions).value)
   }
 
   private def derivePAYEAggregation(isMultiplier: Boolean, rhs: Int, payeAggregation: Seq[Aggregation]): Seq[Aggregation] = {
@@ -135,6 +155,13 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
     }
     else
       Money(amount./(rhs), 2, true)
+  }
+
+  private def getHourlyGrossPay(hours: Option[Int], grossPay: BigDecimal): Option[BigDecimal]  = {
+    hours match {
+      case Some(value: Int) => Option(grossPay/100)
+      case _ => None
+    }
   }
 }
 

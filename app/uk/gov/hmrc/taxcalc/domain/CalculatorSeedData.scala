@@ -16,16 +16,18 @@
 
 package uk.gov.hmrc.taxcalc.domain
 
+import uk.gov.hmrc.taxcalc.services.TaxCalculatorHelper
+
 import scala.math.BigDecimal.RoundingMode
 
-class PAYEAllowanceSeedData (taxCodeNumber: Int) {
+class PAYEAllowanceSeedData (taxCodeNumber: BigDecimal) {
   val recalculatedTaxCodeNumber = taxCodeNumber-1
-  val initQuotient = recalculatedTaxCodeNumber/500
+  val initQuotient = (recalculatedTaxCodeNumber/500).intValue()
   val initRemainder = recalculatedTaxCodeNumber%500
   val middleRemainder: BigDecimal = ((initRemainder+(1))*(10))+(9)
 }
 
-class AnnualAllowance(taxCode: String, taxCodeNumber: Int) extends Allowance {
+class AnnualAllowance(taxCode: String, taxCodeNumber: BigDecimal) extends Allowance with TaxCalculatorHelper {
   override val quotient = Money(0)
   override val remainder = Money(0)
   override val allowance = taxCode.matches("([0]{1}[L-N,l-n,T,t,X,x]{1}){1}") match {
@@ -46,6 +48,12 @@ class WeeklyAllowance(payeSeedData: PAYEAllowanceSeedData) extends Allowance {
   override val allowance = quotient.+(remainder)
 }
 
+class ZeroAllowance() extends Allowance {
+  override val quotient  = Money(0)
+  override val remainder = Money(0)
+  override val allowance = quotient.+(remainder)
+}
+
 trait Allowance {
   def quotient: Money = ???
   def remainder: Money = ???
@@ -53,7 +61,7 @@ trait Allowance {
 }
 
 object AnnualAllowance {
-  def apply(taxCode: String, taxCodeNumber: Int): AnnualAllowance = new AnnualAllowance(taxCode, taxCodeNumber)
+  def apply(taxCode: String, taxCodeNumber: BigDecimal): AnnualAllowance = new AnnualAllowance(taxCode, taxCodeNumber)
 }
 
 object MonthlyAllowance {
@@ -62,6 +70,10 @@ object MonthlyAllowance {
 
 object WeeklyAllowance {
   def apply(payeSeedData: PAYEAllowanceSeedData): WeeklyAllowance = new WeeklyAllowance(payeSeedData)
+}
+
+object ZeroAllowance {
+  def apply(): ZeroAllowance = new ZeroAllowance()
 }
 
 

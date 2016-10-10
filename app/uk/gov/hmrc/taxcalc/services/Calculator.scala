@@ -18,7 +18,7 @@ package uk.gov.hmrc.taxcalc.services
 
 import java.time.LocalDate
 
-import uk.gov.hmrc.taxcalc.controllers.TaxCalculatorConfigException
+import uk.gov.hmrc.taxcalc.controllers.{BadRequestException, TaxCalculatorConfigException}
 import uk.gov.hmrc.taxcalc.domain.{Money, _}
 
 
@@ -55,12 +55,23 @@ case class ExcessPayCalculator(taxCode: String, date: LocalDate, taxBandId : Int
   }
 }
 
-case class AllowanceCalculator(taxCode: String) extends Calculator {
+case class AllowanceCalculator(taxCode: String, payPeriod: String) extends Calculator with TaxCalculatorHelper{
 
   override def calculate(): AllowanceResponse = {
-    val taxCodeNumber = taxCode.stripSuffix(taxCode.substring(taxCode.length - 1, taxCode.length)).toInt
-    val seedData = new PAYEAllowanceSeedData(taxCodeNumber)
-    applyResponse(true,Seq("weekly" -> WeeklyAllowance(seedData), "monthly" -> MonthlyAllowance(seedData), "annual" -> AnnualAllowance(taxCode, taxCodeNumber)))
+  taxCode match{
+      case "ZERO" => applyResponse(true,Seq("weekly" -> ZeroAllowance(), "monthly" -> ZeroAllowance(), "annual" -> ZeroAllowance()))
+      case _ => {
+        val taxCodeNumber = BigDecimal.valueOf(splitTaxCode(taxCode).toDouble)
+        val seedData = new PAYEAllowanceSeedData(taxCodeNumber)
+        val response = payPeriod match {
+          case "weekly" => Seq("weekly" -> WeeklyAllowance(seedData))
+          case "monthly" => Seq("monthly" -> MonthlyAllowance(seedData))
+          case "annual" => Seq("annual" -> AnnualAllowance(taxCode, taxCodeNumber))
+
+        }
+        applyResponse(true,response)
+      }
+    }
   }
 
   def applyResponse(success: Boolean, allowances: Seq[(String, Allowance)]): AllowanceResponse = {
@@ -68,9 +79,11 @@ case class AllowanceCalculator(taxCode: String) extends Calculator {
   }
 }
 
-case class TaxablePayCalculator(taxCode: String, payPeriod: String, grossPay: Money) extends Calculator with TaxCalculatorHelper{
+case class TaxablePayCalculator(date: LocalDate, taxCode: String, payPeriod: String, grossPay: Money) extends Calculator with TaxCalculatorHelper{
 
   override def calculate(): TaxablePayResponse = {
+
+    val updatedTaxCode = AnnualTaperingDeductionCalculator(removeScottishElement(taxCode), date, payPeriod, grossPay).calculate().result
 
     val taxablePay: Seq[Money] = isBasicRateTaxCode(taxCode) match {
       case true   => Seq(grossPay)
@@ -78,7 +91,7 @@ case class TaxablePayCalculator(taxCode: String, payPeriod: String, grossPay: Mo
         isTaxableCode(taxCode) match {
           case true   => {
             for {
-              allowance <- AllowanceCalculator(taxCode).calculate().result.filter(_._1.equals(payPeriod))
+              allowance <- AllowanceCalculator(updatedTaxCode, payPeriod).calculate().result.filter(_._1.equals(payPeriod))
             } yield (Money(grossPay-allowance._2.allowance))
           }
           case false   => Seq(Money(0))
@@ -221,6 +234,39 @@ case class EmployerRateCalculator(date: LocalDate, grossPay: Money, payPeriod: S
   }
 
   private def zeroRate = RateResult(Money(0), Money(0), rate, payPeriod)
+}
+
+case class AnnualTaperingDeductionCalculator(taxCode: String, date: LocalDate, payPeriod: String, grossPay: Money) extends Calculator with TaxCalculatorHelper{
+
+  override def calculate(): TaperingResponse = {
+    val annualIncomeThreshold = getTaxBands(date).annualIncomeThreshold
+    isEmergencyTaxCode(taxCode) match {
+      case false => applyResponse(true, taxCode)
+      case true  => {
+        val annualIncome = grossPay * (payPeriod match {
+          case "annual" => BigDecimal.valueOf(1)
+          case "monthly" => BigDecimal.valueOf(12)
+          case "weekly" => BigDecimal.valueOf(52)
+          case _ => throw new BadRequestException(s"Pay period ${payPeriod} is not valid")
+        })
+        (annualIncome > annualIncomeThreshold) match {
+          case false => applyResponse(true, taxCode)
+          case true => {
+            val taperingDeduction = Money(((annualIncome.value - annualIncomeThreshold) / 2).intValue() / BigDecimal.valueOf(10), 2, true)
+            val taxCodeNumber = Money(BigDecimal.valueOf(splitTaxCode(taxCode).toInt), 2, true)
+            (taperingDeduction < taxCodeNumber) match {
+              case false => applyResponse(true, "ZERO")
+              case true => applyResponse(true, s"${(taxCodeNumber-taperingDeduction).value}L")
+            }
+          }
+        }
+      }
+    }
+  }
+
+  def applyResponse(success: Boolean, taxCode: String): TaperingResponse = {
+    TaperingResponse(success, taxCode)
+  }
 }
 
 

@@ -22,7 +22,7 @@ import play.api.libs.json.{Format, JsResult, JsValue, Json}
 
 case class TaxYearBands(taxYearBands: Seq[TaxBands])
 
-case class TaxBands(fromDate: LocalDate, taxBands: Seq[TaxBand])
+case class TaxBands(fromDate: LocalDate, annualIncomeThreshold: BigDecimal, scottishRate: BigDecimal,taxBands: Seq[TaxBand])
 
 case class TaxBand(band: Int, bandwidth: BigDecimal, rate: BigDecimal, periods: Seq[PeriodCalc])
 
