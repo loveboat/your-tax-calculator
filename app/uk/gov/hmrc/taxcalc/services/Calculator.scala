@@ -92,7 +92,7 @@ case class TaxablePayCalculator(date: LocalDate, taxCode: String, payPeriod: Str
           case true   => {
             for {
               allowance <- AllowanceCalculator(updatedTaxCode, payPeriod).calculate().result.filter(_._1.equals(payPeriod))
-            } yield (Money(grossPay-allowance._2.allowance))
+            } yield (if(isUnTaxedIncomeTaxCode(taxCode)) Money(grossPay+allowance._2.allowance) else Money(grossPay-allowance._2.allowance))
           }
           case false   => Seq(Money(0))
         }
