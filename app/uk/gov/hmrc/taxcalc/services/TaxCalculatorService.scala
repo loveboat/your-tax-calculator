@@ -79,7 +79,7 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
         val weekly = Money(((BigDecimal.valueOf(grossPayPence) * value) / 100), 2, true)
         val grossPay = payPeriod match {
           case "weekly" => weekly
-          case "monthly" => Money(weekly / BigDecimal.valueOf(12), 2, true)
+          case "monthly" => Money((weekly*BigDecimal.valueOf(52)) / BigDecimal.valueOf(12), 2, true)
           case "annual" => Money(weekly * BigDecimal.valueOf(52), 2, true)
         }
         grossPay
