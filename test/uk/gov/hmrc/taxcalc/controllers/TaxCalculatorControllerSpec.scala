@@ -62,7 +62,7 @@ class TaxCalculatorControllerSpec extends UnitSpec with WithFakeApplication with
 //    }
 //
 //    "return weekly tax calc response using tapering with emergency taxcode input" in new LiveTaxCalcSuccess {
-//      val result = await(controller.calculateTax(false, 2016, "S1100T", 221200, "weekly", None, Option(journeyId))(emptyRequest))
+//      val result = await(controller.calculateTax(false, 2016, "SK1100", 221200, "weekly", None, Option(journeyId))(emptyRequest))
 //      status(result) shouldBe 200
 //      println(contentAsJson(result))
 //      contentAsJson(result) shouldBe Json.toJson(TaxCalculatorTestData.hour_rate_weekly_response);

@@ -43,7 +43,12 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
 
     val totalDeductions = taxCategories.collect(TotalDeductionsFunc).foldLeft(BigDecimal.valueOf(0.0))(_ + _)
 
-    val calculatedTaxBreakdown = TaxBreakdown(payPeriod, grossPay.value, (grossPay-(payeTax.taxablePay)).value,
+    val taxFreePay = grossPay > payeTax.taxablePay match {
+      case true => grossPay-(payeTax.taxablePay)
+      case false => Money(0)
+    }
+
+    val calculatedTaxBreakdown = TaxBreakdown(payPeriod, grossPay.value, taxFreePay.value,
                                               payeTax.taxablePay.value, calculateScottishElement(payeTax.payeTaxAmount, taxCode, LocalDate.now), taxCategories, totalDeductions,
                                               (grossPay - totalDeductions).value)
 
@@ -115,8 +120,13 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
     val nicTaxCategories = NICTaxCategoryBuilder(isStatePensionAge, NICTaxResult(nicTax.employeeNICBandRate,employeeNICAggregation, employerNICAggregation)).build().taxCategories
     val taxCategories = Seq(TaxCategory(taxType = "incomeTax", payeTotal, derivePAYEAggregation(isMultiplier, rhs, payeAggregation)))++nicTaxCategories
 
+    val taxFreePay = updatedGrossPay > updatedTaxablePay match {
+      case true => updatedGrossPay-(updatedTaxablePay)
+      case false => Money(0)
+    }
+
     val totalDeductions = taxCategories.collect(TotalDeductionsFunc).foldLeft(BigDecimal.valueOf(0.0))(_ + _)
-    TaxBreakdown(payPeriod, updatedGrossPay.value, (updatedGrossPay.-(updatedTaxablePay)).value,
+    TaxBreakdown(payPeriod, updatedGrossPay.value, taxFreePay.value,
                  updatedTaxablePay.value, calculateScottishElement(Money(payeTotal, 2, true), taxCode, date),
                  taxCategories, totalDeductions,(updatedGrossPay - totalDeductions).value)
   }

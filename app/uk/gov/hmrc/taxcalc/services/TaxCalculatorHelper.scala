@@ -28,7 +28,8 @@ trait TaxCalculatorHelper {
     !isTaxableCode(taxCode) ||
     isBasicRateTaxCode(taxCode) ||
     isEmergencyTaxCode(taxCode) ||
-    isValidScottishTaxCode(taxCode)
+    isValidScottishTaxCode(taxCode) ||
+    isUnTaxedIncomeTaxCode(taxCode)
   }
 
   def isStandardTaxCode(taxCode: String): Boolean = {
@@ -57,6 +58,10 @@ trait TaxCalculatorHelper {
     taxCode.matches("([S,s][N,n][T,t]){1}") ||
     taxCode.matches("([S,s][B,b][R,r]){1}") ||
     taxCode.matches("([S,s][D,d][0,1]){1}")
+  }
+
+  def isUnTaxedIncomeTaxCode(taxCode: String): Boolean = {
+    taxCode matches("([S,s]?[K,k]{1}[0-9]{1,4}){1}")
   }
 
   def loadTaxBands() : TaxYearBands = {
@@ -99,6 +104,11 @@ trait TaxCalculatorHelper {
   def splitTaxCode(taxCode: String): String = {
     if(isStandardTaxCode(taxCode) || isAdjustedTaxCode(taxCode))
       taxCode.stripSuffix(taxCode.substring(taxCode.length - 1, taxCode.length))
+    else if(isUnTaxedIncomeTaxCode(taxCode))
+      taxCode.toUpperCase.contains("SK") match {
+        case true => taxCode.toUpperCase.stripPrefix("SK")
+        case false => taxCode.toUpperCase.stripPrefix("K")
+      }
     else taxCode
   }
 
