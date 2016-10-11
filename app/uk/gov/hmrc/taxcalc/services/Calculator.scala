@@ -164,11 +164,12 @@ case class EmployeeRateCalculator(date: LocalDate, grossPay: Money, payPeriod: S
     else {
       val result = limitId match {
         case 1 => {
-          grossPay > nicRateLimit.threshold.collect(rateLimit("primary", payPeriod)).head match {
+          grossPay > nicRateLimit.threshold.collect(rateLimit("secondary", payPeriod)).head match {
             case true => RateResult(nicRateLimit.threshold.collect(rateLimit("secondary", payPeriod)).head,
               nicRateLimit.threshold.collect(rateLimit("primary", payPeriod)).head, rate, payPeriod)
-            case false => grossPay <= nicRateLimit.threshold.collect(rateLimit("secondary", payPeriod)).head match {
-              case true => RateResult(grossPay, nicRateLimit.earningLimit.collect(rateLimit("upper", payPeriod)).head, rate, payPeriod)
+            case false => grossPay <= nicRateLimit.threshold.collect(rateLimit("secondary", payPeriod)).head  &&
+              grossPay > nicRateLimit.threshold.collect(rateLimit("primary", payPeriod)).head match {
+              case true => RateResult(grossPay, nicRateLimit.threshold.collect(rateLimit("primary", payPeriod)).head, rate, payPeriod)
               case false => zeroRate
             }
           }
