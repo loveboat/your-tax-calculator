@@ -61,7 +61,7 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
 
       val averageAnnualTaxRate = calculateAverageAnnualTaxRate(taxBreakdown.find(_.period == "annual"))
 
-      val taxCalResult = TaxCalc(isPensionAge, taxCode, getHourlyGrossPay(hours, grossPayPence), hours, averageAnnualTaxRate.value, payeTax.bandRate + nicTax.employeeNICBandRate, payeTax.bandRate, nicTax.employeeNICBandRate, taxBreakdown)
+      val taxCalResult = TaxCalc(isPensionAge, taxCode, getHourlyGrossPay(hours, grossPayPence), hours, averageAnnualTaxRate.value, payeTax.bandRate + nicTax.employeeNICBandRate, payeTax.bandRate, nicTax.employeeNICBandRate, payeTax.isTapered, taxBreakdown)
 
       Future.successful(taxCalResult)
     }

@@ -46,6 +46,7 @@ calculate-tax
   "marginalTaxRate": 42,
   "payeBand": 40,
   "employeeNICBand": 2,
+  "tapered": true,
   "taxBreakdown": [
     {
       "period": "annual",

@@ -83,7 +83,8 @@ case class TaxablePayCalculator(date: LocalDate, taxCode: String, payPeriod: Str
 
   override def calculate(): TaxablePayResponse = {
 
-    val updatedTaxCode = AnnualTaperingDeductionCalculator(removeScottishElement(taxCode), date, payPeriod, grossPay).calculate().result
+    val taperingDeductionCalc = AnnualTaperingDeductionCalculator(removeScottishElement(taxCode), date, payPeriod, grossPay).calculate()
+    val updatedTaxCode = taperingDeductionCalc.result
 
     val taxablePay: Seq[Money] = isBasicRateTaxCode(taxCode) match {
       case true   => Seq(grossPay)
@@ -98,12 +99,12 @@ case class TaxablePayCalculator(date: LocalDate, taxCode: String, payPeriod: Str
         }
       }
     }
-    applyResponse(true, taxablePay.head)
+    applyResponse(true, taxablePay.head, taperingDeductionCalc.isTapered)
   }
 
-  def applyResponse(success: Boolean, taxablePay: Money): TaxablePayResponse = {
+  def applyResponse(success: Boolean, taxablePay: Money, isTapered: Boolean): TaxablePayResponse = {
     val result = if(taxablePay < Money(0)) Money(0) else taxablePay
-    TaxablePayResponse(success, result)
+    TaxablePayResponse(success, result, isTapered)
   }
 }
 
@@ -242,7 +243,7 @@ case class AnnualTaperingDeductionCalculator(taxCode: String, date: LocalDate, p
   override def calculate(): TaperingResponse = {
     val annualIncomeThreshold = getTaxBands(date).annualIncomeThreshold
     isEmergencyTaxCode(taxCode) match {
-      case false => applyResponse(true, taxCode)
+      case false => applyResponse(true, taxCode, false)
       case true  => {
         val annualIncome = grossPay * (payPeriod match {
           case "annual" => BigDecimal.valueOf(1)
@@ -251,13 +252,13 @@ case class AnnualTaperingDeductionCalculator(taxCode: String, date: LocalDate, p
           case _ => throw new BadRequestException(s"Pay period ${payPeriod} is not valid")
         })
         (annualIncome > annualIncomeThreshold) match {
-          case false => applyResponse(true, taxCode)
+          case false => applyResponse(true, taxCode, false)
           case true => {
             val taperingDeduction = Money(((annualIncome.value - annualIncomeThreshold) / 2).intValue() / BigDecimal.valueOf(10), 2, true)
             val taxCodeNumber = Money(BigDecimal.valueOf(splitTaxCode(taxCode).toInt), 2, true)
             (taperingDeduction < taxCodeNumber) match {
-              case false => applyResponse(true, "ZERO")
-              case true => applyResponse(true, s"${(taxCodeNumber-taperingDeduction).value}L")
+              case false => applyResponse(true, "ZERO", false)
+              case true => applyResponse(true, s"${(taxCodeNumber-taperingDeduction).value}L", true)
             }
           }
         }
@@ -265,8 +266,8 @@ case class AnnualTaperingDeductionCalculator(taxCode: String, date: LocalDate, p
     }
   }
 
-  def applyResponse(success: Boolean, taxCode: String): TaperingResponse = {
-    TaperingResponse(success, taxCode)
+  def applyResponse(success: Boolean, taxCode: String, isTapered: Boolean): TaperingResponse = {
+    TaperingResponse(success, taxCode, isTapered)
   }
 }
 
