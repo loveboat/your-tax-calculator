@@ -17,7 +17,6 @@
 package uk.gov.hmrc.taxcalc.services
 
 import uk.gov.hmrc.play.test.UnitSpec
-import uk.gov.hmrc.taxcalc.controllers.Setup
 
 class AllowanceCalculatorSpec extends UnitSpec {
 

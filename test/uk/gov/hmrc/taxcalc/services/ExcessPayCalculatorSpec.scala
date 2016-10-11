@@ -35,7 +35,7 @@ package uk.gov.hmrc.taxcalc.services
 import java.time.LocalDate
 
 import uk.gov.hmrc.play.test.UnitSpec
-import uk.gov.hmrc.taxcalc.controllers.{ExcessPayCalculatorFullTaxableAmountSetup, ExcessPayCalculatorSetup, Setup}
+import uk.gov.hmrc.taxcalc.controllers.{ExcessPayCalculatorFullTaxableAmountSetup, ExcessPayCalculatorSetup}
 import uk.gov.hmrc.taxcalc.domain.Money
 
 class ExcessPayCalculatorSpec extends UnitSpec {

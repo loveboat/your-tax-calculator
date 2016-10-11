@@ -43,7 +43,7 @@ class TaxExpenditureBreakdownControllerSpec extends UnitSpec with WithFakeApplic
   "taxExpenditureCategoryBreakdown for 2016 tax year with JourneyId" should {
     "return a CategoryBreakdown response" in new LiveTaxExpenditureSuccess {
 
-      val result = await(controller.taxExpenditureCategoryBreakdown(2016, Option(journeyId))(emptyRequest))
+      val result = await(controller.taxExpenditureCategoryBreakdown(2016, Option(expectedJourneyId))(emptyRequest))
       status(result) shouldBe 200
       contentAsJson(result) shouldBe Json.toJson(TaxExpenditureTestData.pesa_2016_response);
     }
