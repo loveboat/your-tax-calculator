@@ -20,13 +20,14 @@ import play.api.libs.json.Json
 import play.api.mvc.Action
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.taxcalc.services._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
 trait TaxCalculatorController extends BaseController with ErrorHandling {
   val service: TaxCalculatorService
 
-  def calculateTax(isStatePensionAge: Boolean, taxYear: Int, taxCode: String, grossPay: Long, payPeriod: String, hours: Option[Int], journeyId: Option[String]) = Action.async {
+  def calculateTax(isStatePensionAge: String, taxYear: Int, taxCode: String, grossPay: Long, payPeriod: String, hours: Option[Int], journeyId: Option[String]) = Action.async {
     implicit request => {
       errorWrapper {
         service.calculateTax(isStatePensionAge, taxYear, taxCode, grossPay, payPeriod.toLowerCase(), hours).map {

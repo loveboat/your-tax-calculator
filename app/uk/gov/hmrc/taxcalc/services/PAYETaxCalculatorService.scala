@@ -25,8 +25,7 @@ import uk.gov.hmrc.taxcalc.domain._
 trait PAYETaxCalculatorService extends TaxCalculatorHelper {
 
 
-  def calculatePAYETax(taxCode: String, payPeriod: String, grossPay: Money) : PAYETaxResult = {
-
+  def calculatePAYETax(taxCode: String, payPeriod: String, grossPay: Money): PAYETaxResult = {
     isValidTaxCode(taxCode) match {
       case true => {
         val today = LocalDate.now

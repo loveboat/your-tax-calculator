@@ -19,6 +19,7 @@ package uk.gov.hmrc.taxcalc.services
 import java.time.LocalDate
 
 import uk.gov.hmrc.taxcalc.config.TaxCalculatorStartup
+import uk.gov.hmrc.taxcalc.controllers.TaxCalculatorConfigException
 import uk.gov.hmrc.taxcalc.domain.{Money, _}
 
 trait TaxCalculatorHelper {
@@ -67,14 +68,14 @@ trait TaxCalculatorHelper {
   def loadTaxBands() : TaxYearBands = {
     TaxCalculatorStartup.taxCalcData.get("taxYearBands") match {
       case Some(taxYearBands: TaxYearBands) => taxYearBands
-      case _ => throw new Exception("Error, no tax bands configured")
+      case _ => throw new TaxCalculatorConfigException("Error, no tax bands configured")
     }
   }
 
   def loadNICRateLimits() : NICRateLimits = {
     TaxCalculatorStartup.taxCalcData.get("nicRateLimits") match {
       case Some(nicRateLimits: NICRateLimits) => nicRateLimits
-      case _ => throw new Exception("Error, no national insurance rates and limits configured")
+      case _ => throw new TaxCalculatorConfigException("Error, no national insurance rates and limits configured")
     }
   }
 
