@@ -130,18 +130,18 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
 
     val updatedGrossPay = performIsMultiplyFunction(grossPay, isMultiplier, rhs)
     val updatedTaxablePay = TaxablePayCalculator(date, taxCode, payPeriod, updatedGrossPay).calculate().result
-    val payeTotal = payeAggregation.foldLeft(BigDecimal.valueOf(0.0))(if(isMultiplier) _ + _.amount.setScale(2, RoundingMode.HALF_UP)*rhs
-                                                                    else _ + _.amount.setScale(2, RoundingMode.HALF_UP)/rhs)
+    val payeTotal = Money(payeAggregation.foldLeft(BigDecimal.valueOf(0.0))(if(isMultiplier) _ + _.amount.setScale(2, RoundingMode.HALF_UP)*rhs
+                                                                    else _ + _.amount.setScale(2, RoundingMode.HALF_UP)/rhs), 2, true)
 
     val employeeNICAggregation = nicTax.employeeNIC.collect(NICAggregationFunc(isMultiplier, rhs))
 
     val employerNICAggregation = nicTax.employerNIC.collect(NICAggregationFunc(isMultiplier, rhs))
 
     val nicTaxCategories = NICTaxCategoryBuilder(isStatePensionAge, NICTaxResult(nicTax.employeeNICBandRate,employeeNICAggregation, employerNICAggregation)).build().taxCategories
-    val taxCategories = Seq(TaxCategory(taxType = "incomeTax", payeTotal, derivePAYEAggregation(isMultiplier, rhs, payeAggregation)))++nicTaxCategories
+    val taxCategories = Seq(TaxCategory(taxType = "incomeTax", payeTotal.value, derivePAYEAggregation(isMultiplier, rhs, payeAggregation)))++nicTaxCategories
 
     val taxFreePay = updatedGrossPay > updatedTaxablePay match {
-      case true => updatedGrossPay-(updatedTaxablePay)
+      case true => Money(updatedGrossPay-(updatedTaxablePay), 2, true)
       case false => Money(0)
     }
 
