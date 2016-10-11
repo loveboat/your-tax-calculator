@@ -19,6 +19,7 @@ package uk.gov.hmrc.taxcalc.services
 import java.time.LocalDate
 
 import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.taxcalc.controllers.{BadRequestException, TaxCalculatorConfigException}
 import uk.gov.hmrc.taxcalc.domain.{Money, TaxBreakdown, _}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,43 +33,50 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
 
   def calculateTax(isStatePensionAge: String, taxYear: Int, taxCode: String, grossPayPence: Long, payPeriod: String, hours: Option[Int])(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[TaxCalc] = {
 
-    val isPensionAge =  convertToBoolean(isStatePensionAge)
+    try {
+      val isPensionAge = convertToBoolean(isStatePensionAge)
 
-    val grossPay = calculateGrossPay(grossPayPence, hours, payPeriod)
-    val updatedTaxCode = removeScottishElement(taxCode)
-    val payeTax  = payeTaxCalculatorService.calculatePAYETax(updatedTaxCode, payPeriod, grossPay)
-    val nicTax   = nicTaxCalculatorService.calculateNICTax(isPensionAge, grossPay, payPeriod)
+      val grossPay = calculateGrossPay(grossPayPence, hours, payPeriod)
+      val updatedTaxCode = removeScottishElement(taxCode)
+      val payeTax = payeTaxCalculatorService.calculatePAYETax(updatedTaxCode, payPeriod, grossPay)
+      val nicTax = nicTaxCalculatorService.calculateNICTax(isPensionAge, grossPay, payPeriod)
 
-    val aggregation = PAYEAggregateBuilder(updatedTaxCode, LocalDate.now, payeTax.band, payPeriod, payeTax.payeTaxAmount).build().aggregation
+      val aggregation = PAYEAggregateBuilder(updatedTaxCode, LocalDate.now, payeTax.band, payPeriod, payeTax.payeTaxAmount).build().aggregation
 
-    val nicTaxCategories = NICTaxCategoryBuilder(isPensionAge, nicTax).build().taxCategories
-    val taxCategories = Seq(TaxCategory(taxType = "incomeTax", payeTax.payeTaxAmount.value , aggregation))++nicTaxCategories
+      val nicTaxCategories = NICTaxCategoryBuilder(isPensionAge, nicTax).build().taxCategories
+      val taxCategories = Seq(TaxCategory(taxType = "incomeTax", payeTax.payeTaxAmount.value, aggregation)) ++ nicTaxCategories
 
-    val totalDeductions = taxCategories.collect(TotalDeductionsFunc).foldLeft(BigDecimal.valueOf(0.0))(_ + _)
+      val totalDeductions = taxCategories.collect(TotalDeductionsFunc).foldLeft(BigDecimal.valueOf(0.0))(_ + _)
 
-    val taxFreePay = grossPay > payeTax.taxablePay match {
-      case true => grossPay-(payeTax.taxablePay)
-      case false => Money(0)
+      val taxFreePay = grossPay > payeTax.taxablePay match {
+        case true => grossPay - (payeTax.taxablePay)
+        case false => Money(0)
+      }
+
+      val calculatedTaxBreakdown = TaxBreakdown(payPeriod, grossPay.value, taxFreePay.value,
+        payeTax.taxablePay.value, calculateScottishElement(payeTax.payeTaxAmount, taxCode, LocalDate.now), taxCategories, totalDeductions,
+        (grossPay - totalDeductions).value)
+
+      val taxBreakdown = derivePeriodTaxBreakdowns(LocalDate.now, payeTax.band, taxCode, calculatedTaxBreakdown, payeTax, nicTax, aggregation, isPensionAge)
+
+      val averageAnnualTaxRate = calculateAverageAnnualTaxRate(taxBreakdown.find(_.period == "annual"))
+
+      val taxCalResult = TaxCalc(isPensionAge, taxCode, getHourlyGrossPay(hours, grossPayPence), hours, averageAnnualTaxRate.value, payeTax.bandRate + nicTax.employeeNICBandRate, payeTax.bandRate, nicTax.employeeNICBandRate, taxBreakdown)
+
+      Future.successful(taxCalResult)
     }
-
-    val calculatedTaxBreakdown = TaxBreakdown(payPeriod, grossPay.value, taxFreePay.value,
-                                              payeTax.taxablePay.value, calculateScottishElement(payeTax.payeTaxAmount, taxCode, LocalDate.now), taxCategories, totalDeductions,
-                                              (grossPay - totalDeductions).value)
-
-    val taxBreakdown = derivePeriodTaxBreakdowns(LocalDate.now, payeTax.band, taxCode,calculatedTaxBreakdown, payeTax, nicTax, aggregation, isPensionAge)
-
-    val averageAnnualTaxRate = calculateAverageAnnualTaxRate(taxBreakdown.find(_.period == "annual"))
-
-    val taxCalResult = TaxCalc(isPensionAge, taxCode, getHourlyGrossPay(hours, grossPayPence), hours, averageAnnualTaxRate.value, payeTax.bandRate + nicTax.employeeNICBandRate, payeTax.bandRate, nicTax.employeeNICBandRate, taxBreakdown )
-
-    Future.successful(taxCalResult)
+    catch {
+      case ex: TaxCalculatorConfigException => Future.failed(ex)
+      case ex: BadRequestException => Future.failed(ex)
+      case ex: Throwable => Future.failed(ex)
+    }
   }
 
   def convertToBoolean(isStatePensionAge: String): Boolean = {
     isStatePensionAge.toLowerCase() match {
       case "true" => true
       case "false" => false
-      case _ => throw new Exception("isStatePensionAge can only be true or false")
+      case _ => throw new BadRequestException("Invalid value")
 
     }
   }
