@@ -28,9 +28,10 @@ import scala.concurrent.{ExecutionContext, Future}
 trait VersionCheckService {
   val connector: VersionCheckConnector
 
-  def preFlightCheck(inputRequest:JsValue)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PreFlightCheckResponse] = {
+  def preFlightCheck(inputRequest:JsValue, journeyId: Option[String] = None)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PreFlightCheckResponse] = {
+    val existingOrNewId = journeyId.getOrElse(UUID.randomUUID().toString)
     connector.requiresUpgrade(inputRequest, hc)
-      .map(Option(_).collect{ case false => UUID.randomUUID() })
+      .map(Option(_).collect{ case false => existingOrNewId })
       .map{id => PreFlightCheckResponse(id.isEmpty, id)}
   }
 }

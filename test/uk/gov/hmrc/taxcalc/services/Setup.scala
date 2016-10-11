@@ -51,7 +51,8 @@ class TestVersionCheckService(versionCheckConnector: VersionCheckConnector) exte
 
 trait Setup {
   implicit val hc = HeaderCarrier()
-  val journeyId = UUID.randomUUID().toString
+  val newJourneyId = UUID.randomUUID().toString
+  val existingJourneyId = Some("123-foo-456-bar")
   val emptyRequest = FakeRequest()
   val request: JsValue = Json.parse("""{"os":"unicorn", "version":"1.2.3"}""")
 }

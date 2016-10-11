@@ -16,11 +16,9 @@
 
 package uk.gov.hmrc.taxcalc.domain
 
-import java.util.UUID
-
 import play.api.libs.json.Json
 
-case class PreFlightCheckResponse(upgradeRequired: Boolean, journeyId: Option[UUID])
+case class PreFlightCheckResponse(upgradeRequired: Boolean, journeyId: Option[String])
 
 object PreFlightCheckResponse {
 

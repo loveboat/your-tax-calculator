@@ -77,16 +77,17 @@ trait ExcessPayCalculatorFullTaxableAmountSetup extends ExcessPayCalculatorSetup
   override val taxablePay: Money = Money(BigDecimal.valueOf(60000.00))
 }
 
-class TestVersionCheckService(updateRequired: Boolean, testJourneyId: Option[UUID]) extends VersionCheckService {
+class TestVersionCheckService(updateRequired: Boolean, testJourneyId: Option[String]) extends VersionCheckService {
   override val connector = VersionCheckConnector
-  override def preFlightCheck(inputRequest:JsValue)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PreFlightCheckResponse] = {
-    Future(PreFlightCheckResponse(updateRequired, testJourneyId))
+  override def preFlightCheck(inputRequest:JsValue, journeyId:Option[String])(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PreFlightCheckResponse] = {
+    val id = journeyId.orElse(testJourneyId)
+    Future(PreFlightCheckResponse(updateRequired, id))
   }
 }
 
 trait VersionCheckControllerNoUpgradeRequired extends Setup {
   val controller = new VersionCheckController {
-    override val service: VersionCheckService = new TestVersionCheckService(false, Option(journeyId))
+    override val service: VersionCheckService = new TestVersionCheckService(false, Option(expectedJourneyId))
     override val app: String = "TestVersionCheckController"
   }
 }

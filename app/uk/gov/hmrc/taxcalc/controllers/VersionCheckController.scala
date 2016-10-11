@@ -29,7 +29,7 @@ trait VersionCheckController extends BaseController with ErrorHandling {
   def preFlightCheck(journeyId: Option[String] = None) = Action.async(BodyParsers.parse.json) {
     implicit request => {
       errorWrapper {
-        service.preFlightCheck(request.body).map {
+        service.preFlightCheck(request.body, journeyId).map {
           response => Ok(Json.toJson(response))
         }
       }

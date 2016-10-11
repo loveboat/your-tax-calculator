@@ -24,14 +24,22 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class VersionCheckServiceSpec  extends UnitSpec with WithFakeApplication with ScalaFutures {
 
   "VersionCheckService preFlightCheck" should {
-    "return a new journeyId given a request that does not require an upgrade" in new TestVersionCheckServiceNoUpgradeRequired {
+    "return a new journeyId given a version that does not require an upgrade and no journeyId is provided" in new TestVersionCheckServiceNoUpgradeRequired {
       val result = service.preFlightCheck(request).futureValue
 
       result.upgradeRequired shouldBe false
       result.journeyId.isDefined shouldBe true
+      result.journeyId shouldNot be (existingJourneyId)
     }
 
-    "not return a new journeyId given a request that does require an upgrade" in new TestVersionCheckServiceUpgradeRequired {
+    "return the journeyId provided given a version that does not require an upgrade" in new TestVersionCheckServiceNoUpgradeRequired {
+      val result = service.preFlightCheck(request, existingJourneyId).futureValue
+
+      result.upgradeRequired shouldBe false
+      result.journeyId shouldBe existingJourneyId
+    }
+
+    "not return a new journeyId given a version that does require an upgrade" in new TestVersionCheckServiceUpgradeRequired {
       val result = service.preFlightCheck(request).futureValue
 
       result.upgradeRequired shouldBe true
