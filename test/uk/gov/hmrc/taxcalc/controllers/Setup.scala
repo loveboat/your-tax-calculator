@@ -85,6 +85,13 @@ class TestVersionCheckService(updateRequired: Boolean, testJourneyId: Option[Str
   }
 }
 
+class ThrowingVersionCheckService() extends VersionCheckService {
+  override val connector = VersionCheckConnector
+  override def preFlightCheck(inputRequest:JsValue, journeyId:Option[String])(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PreFlightCheckResponse] = {
+    Future{ throw new Throwable("something bad has happened...") }
+  }
+}
+
 trait VersionCheckControllerNoUpgradeRequired extends Setup {
   val controller = new VersionCheckController {
     override val service: VersionCheckService = new TestVersionCheckService(false, Option(expectedJourneyId))
@@ -95,6 +102,13 @@ trait VersionCheckControllerNoUpgradeRequired extends Setup {
 trait VersionCheckControllerUpgradeRequired extends Setup {
   val controller = new VersionCheckController {
     override val service: VersionCheckService = new TestVersionCheckService(true, None)
+    override val app: String = "TestVersionCheckController"
+  }
+}
+
+trait VersionCheckControllerProblem extends Setup {
+  val controller = new VersionCheckController {
+    override val service: VersionCheckService = new ThrowingVersionCheckService
     override val app: String = "TestVersionCheckController"
   }
 }
