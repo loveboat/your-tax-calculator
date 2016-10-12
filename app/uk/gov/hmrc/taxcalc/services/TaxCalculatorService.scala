@@ -101,6 +101,7 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
       case Some(taxBreakdown: TaxBreakdown) => Money((taxBreakdown.totalDeductions / taxBreakdown.grossPay) * BigDecimal.valueOf(100), 2, true)
       case _ => Money(0, 2, true)
     }
+    
   }
 
   def calculateScottishElement(payeTaxAmount: Money, taxCode: String, date: LocalDate): Option[BigDecimal] = {
@@ -129,7 +130,7 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
   private def deriveTaxBreakdown(date: LocalDate, bandId: Int, taxCode:String, grossPay: Money, payPeriod: String, nicTax: NICTaxResult, isMultiplier: Boolean, rhs: Int, payeAggregation: Seq[Aggregation], isStatePensionAge: Boolean): TaxBreakdown = {
 
     val updatedGrossPay = performIsMultiplyFunction(grossPay, isMultiplier, rhs)
-    val updatedTaxablePay = TaxablePayCalculator(date, taxCode, payPeriod, updatedGrossPay).calculate().result
+    val updatedTaxablePay = TaxablePayCalculator(date, removeScottishElement(taxCode), payPeriod, updatedGrossPay).calculate().result
     val payeTotal = Money(payeAggregation.foldLeft(BigDecimal.valueOf(0.0))(if(isMultiplier) _ + _.amount.setScale(2, RoundingMode.HALF_UP)*rhs
                                                                     else _ + _.amount.setScale(2, RoundingMode.HALF_UP)/rhs), 2, true)
 

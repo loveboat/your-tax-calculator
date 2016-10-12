@@ -30,7 +30,7 @@ trait TaxCalculatorController extends BaseController with ErrorHandling {
   def calculateTax(isStatePensionAge: String, taxYear: Int, taxCode: String, grossPay: Long, payPeriod: String, hours: Option[Int], journeyId: Option[String]) = Action.async {
     implicit request => {
       errorWrapper {
-        service.calculateTax(isStatePensionAge, taxYear, taxCode, grossPay, payPeriod.toLowerCase(), hours).map {
+        service.calculateTax(isStatePensionAge, taxYear, taxCode.toUpperCase, grossPay, payPeriod.toLowerCase(), hours).map {
           response => Ok(Json.toJson(response))
         }
       }

@@ -34,35 +34,35 @@ trait TaxCalculatorHelper {
   }
 
   def isStandardTaxCode(taxCode: String): Boolean = {
-    taxCode.matches("([0-9]{1,4}[L-N,l-n,T,t,X,x]{1}){1}")
+    taxCode.matches("([0-9]{1,4}[L-N,T,X]{1}){1}")
   }
 
   def isTaxableCode(taxCode: String): Boolean = {
-    !taxCode.matches("([N,n][T,t]){1}") && !isBasicRateTaxCode(taxCode)
+    !taxCode.matches("([N][T]){1}") && !isBasicRateTaxCode(taxCode)
   }
 
   def isBasicRateTaxCode(taxCode: String): Boolean = {
-    taxCode.matches("([B,b][R,r]){1}") ||
-    taxCode.matches("([D,d][0,1]){1}")
+    taxCode.matches("([B][R]){1}") ||
+    taxCode.matches("([D][0,1]){1}")
   }
 
   def isEmergencyTaxCode(taxCode: String): Boolean = {
-    taxCode.matches("([1]{2}[0]{2}[L,l]{1}){1}")
+    taxCode.matches("([1]{2}[0]{2}[L]{1}){1}")
   }
 
   def isAdjustedTaxCode(taxCode: String): Boolean = {
-    taxCode.matches("([0-9]+[.]{1}[0-9]{2}[L,l]{1}){1}")
+    taxCode.matches("([0-9]+[.]{1}[0-9]{2}[L]{1}){1}")
   }
 
   def isValidScottishTaxCode(taxCode: String): Boolean = {
-    taxCode.matches("([S]{1}[0-9]{1,4}[L-N,l-n,T,t,X,x]{1}){1}") ||
-    taxCode.matches("([S,s][N,n][T,t]){1}") ||
-    taxCode.matches("([S,s][B,b][R,r]){1}") ||
-    taxCode.matches("([S,s][D,d][0,1]){1}")
+    taxCode.matches("([S]{1}[0-9]{1,4}[L-N,T,X]{1}){1}") ||
+    taxCode.matches("([S][N][T]){1}") ||
+    taxCode.matches("([S][B][R]){1}") ||
+    taxCode.matches("([S][D][0,1]){1}")
   }
 
   def isUnTaxedIncomeTaxCode(taxCode: String): Boolean = {
-    taxCode matches("([S,s]?[K,k]{1}[0-9]{1,4}){1}")
+    taxCode matches("([S]?[K]{1}[0-9]{1,4}){1}")
   }
 
   def loadTaxBands() : TaxYearBands = {
