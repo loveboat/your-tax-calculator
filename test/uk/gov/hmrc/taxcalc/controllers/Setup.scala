@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.taxcalc.controllers
 
+import java.time.LocalDate
 import java.util.UUID
 
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.http._
+import uk.gov.hmrc.taxcalc.domain.Money
 import uk.gov.hmrc.taxcalc.services._
 
 trait Setup {
@@ -53,4 +55,18 @@ trait LiveNICTaxCalcServiceSuccess extends Setup {
   val service = new NICTaxCalculatorService {
 
   }
+}
+
+trait ExcessPayCalculatorSetup extends Setup {
+  val taxCode:String
+  val payPeriod: String
+  val date: LocalDate
+  val taxablePay: Money
+  val bandId: Int
+}
+
+trait ExcessPayCalculatorFullTaxableAmountSetup extends ExcessPayCalculatorSetup {
+  override val date: LocalDate = LocalDate.now
+  override val bandId: Int = 1
+  override val taxablePay: Money = Money(BigDecimal.valueOf(60000.00))
 }

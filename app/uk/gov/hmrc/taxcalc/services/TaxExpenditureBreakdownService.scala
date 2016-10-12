@@ -53,7 +53,7 @@ trait TaxExpenditureBreakdownService {
   }
 
   private def calculatePercentage(totalExpenditureOfServices: BigDecimal, allocation: BigDecimal) : BigDecimal = {
-   (allocation./(totalExpenditureOfServices)).*(BigDecimal.valueOf(100)).setScale(2, BigDecimal.RoundingMode.HALF_UP)
+   (allocation./(totalExpenditureOfServices)).*(BigDecimal(100)).setScale(2, BigDecimal.RoundingMode.HALF_UP)
   }
 
   private def convertToCategoryUsage(category: Category, totalExpenditureOfServices: BigDecimal) : CategoryUsage = {

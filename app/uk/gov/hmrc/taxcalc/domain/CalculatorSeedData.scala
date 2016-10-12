@@ -76,4 +76,8 @@ object ZeroAllowance {
   def apply(): ZeroAllowance = new ZeroAllowance()
 }
 
+object PAYEAllowanceSeedData {
+  def apply(taxCodeNumber: BigDecimal): PAYEAllowanceSeedData = new PAYEAllowanceSeedData(taxCodeNumber)
+}
+
 

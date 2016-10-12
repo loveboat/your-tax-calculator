@@ -61,8 +61,8 @@ class NICTaxCalculatorServiceSpec extends UnitSpec with WithFakeApplication with
 //        result.size shouldBe 2
 //        result.map{
 //          aggregation => aggregation.percentage.intValue() match {
-//            case 12 => aggregation.amount shouldBe BigDecimal.valueOf(4191.84)
-//            case 2 => aggregation.amount shouldBe BigDecimal.valueOf(1140.12)
+//            case 12 => aggregation.amount shouldBe BigDecimal(4191.84)
+//            case 2 => aggregation.amount shouldBe BigDecimal(1140.12)
 //          }
 //        }
 ////      }
@@ -72,8 +72,8 @@ class NICTaxCalculatorServiceSpec extends UnitSpec with WithFakeApplication with
 //        result.size shouldBe 2
 //        result.map{
 //          aggregation => aggregation.percentage.intValue() match {
-//            case 12 => aggregation.amount shouldBe BigDecimal.valueOf(349.32)
-//            case 2 => aggregation.amount shouldBe BigDecimal.valueOf(95.01)
+//            case 12 => aggregation.amount shouldBe BigDecimal(349.32)
+//            case 2 => aggregation.amount shouldBe BigDecimal(95.01)
 //          }
 //        }
 //      }
@@ -83,8 +83,8 @@ class NICTaxCalculatorServiceSpec extends UnitSpec with WithFakeApplication with
 //        result.size shouldBe 2
 //        result.map{
 //          aggregation => aggregation.percentage.intValue() match {
-//            case 12 => aggregation.amount shouldBe BigDecimal.valueOf(80.64)
-//            case 2 => aggregation.amount shouldBe BigDecimal.valueOf(21.92)
+//            case 12 => aggregation.amount shouldBe BigDecimal(80.64)
+//            case 2 => aggregation.amount shouldBe BigDecimal(21.92)
 //          }
 //        }
 //      }
@@ -99,7 +99,7 @@ class NICTaxCalculatorServiceSpec extends UnitSpec with WithFakeApplication with
     //      result.map{
     //        aggregation =>
     //          aggregation.percentage shouldBe 13.8
-    //          aggregation.amount shouldBe BigDecimal.valueOf(12680.52)
+    //          aggregation.amount shouldBe BigDecimal(12680.52)
     //        }
     //      }
     //    }
@@ -110,7 +110,7 @@ class NICTaxCalculatorServiceSpec extends UnitSpec with WithFakeApplication with
       result.map {
         aggregation =>
           aggregation.percentage shouldBe 13.8
-          aggregation.amount shouldBe BigDecimal.valueOf(1056.71)
+          aggregation.amount shouldBe BigDecimal(1056.71)
       }
     }
     "should calculate at the weekly rate" in new LiveNICTaxCalcServiceSuccess {
@@ -120,7 +120,7 @@ class NICTaxCalculatorServiceSpec extends UnitSpec with WithFakeApplication with
       result.map {
         aggregation =>
           aggregation.percentage shouldBe 13.8
-          aggregation.amount shouldBe BigDecimal.valueOf(243.86)
+          aggregation.amount shouldBe BigDecimal(243.86)
       }
     }
   }

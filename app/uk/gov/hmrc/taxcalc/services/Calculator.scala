@@ -59,10 +59,10 @@ case class AllowanceCalculator(taxCode: String, payPeriod: String) extends Calcu
 
   override def calculate(): AllowanceResponse = {
   taxCode match{
-      case "ZERO" => applyResponse(true,Seq("weekly" -> ZeroAllowance(), "monthly" -> ZeroAllowance(), "annual" -> ZeroAllowance()))
+      case "ZERO" | "K0" | "0L" => applyResponse(true,Seq("weekly" -> ZeroAllowance(), "monthly" -> ZeroAllowance(), "annual" -> ZeroAllowance()))
       case _ => {
-        val taxCodeNumber = BigDecimal.valueOf(splitTaxCode(taxCode).toDouble)
-        val seedData = new PAYEAllowanceSeedData(taxCodeNumber)
+        val taxCodeNumber = BigDecimal(splitTaxCode(taxCode).toDouble)
+        val seedData = PAYEAllowanceSeedData(taxCodeNumber)
         val response = payPeriod match {
           case "weekly" => Seq("weekly" -> WeeklyAllowance(seedData))
           case "monthly" => Seq("monthly" -> MonthlyAllowance(seedData))
@@ -246,16 +246,16 @@ case class AnnualTaperingDeductionCalculator(taxCode: String, date: LocalDate, p
       case false => applyResponse(true, taxCode, false)
       case true  => {
         val annualIncome = grossPay * (payPeriod match {
-          case "annual" => BigDecimal.valueOf(1)
-          case "monthly" => BigDecimal.valueOf(12)
-          case "weekly" => BigDecimal.valueOf(52)
+          case "annual" => BigDecimal(1)
+          case "monthly" => BigDecimal(12)
+          case "weekly" => BigDecimal(52)
           case _ => throw new BadRequestException(s"Pay period ${payPeriod} is not valid")
         })
         (annualIncome > annualIncomeThreshold) match {
           case false => applyResponse(true, taxCode, false)
           case true => {
-            val taperingDeduction = Money(((annualIncome.value - annualIncomeThreshold) / 2).intValue() / BigDecimal.valueOf(10), 2, true)
-            val taxCodeNumber = Money(BigDecimal.valueOf(splitTaxCode(taxCode).toInt), 2, true)
+            val taperingDeduction = Money(((annualIncome.value - annualIncomeThreshold) / 2).intValue() / BigDecimal(10), 2, true)
+            val taxCodeNumber = Money(BigDecimal(splitTaxCode(taxCode).toInt), 2, true)
             (taperingDeduction < taxCodeNumber) match {
               case false => applyResponse(true, "ZERO", false)
               case true => applyResponse(true, s"${(taxCodeNumber-taperingDeduction).value}L", true)

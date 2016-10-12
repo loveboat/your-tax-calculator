@@ -28,8 +28,8 @@ trait Builder {
 
   protected def calculateAggregationTotal(aggregation: Seq[Aggregation]) : BigDecimal = {
     aggregation match {
-      case aggregate: Seq[Aggregation] => aggregate.foldLeft(BigDecimal.valueOf(0.0))(_ + _.amount)
-      case _ => BigDecimal.valueOf(0.0)
+      case aggregate: Seq[Aggregation] => aggregate.foldLeft(BigDecimal(0.0))(_ + _.amount)
+      case _ => BigDecimal(0.0)
     }
   }
 }
@@ -51,12 +51,12 @@ case class PAYEAggregateBuilder(taxCode: String, date: LocalDate, bandId: Int, p
 
   private def PAYEAggregationFunc() : PartialFunction[TaxBand, Aggregation] = {
     case taxBand if taxBand.band == bandId && payeTaxAmount != Money(0) && taxBand.band != 4 => {
-      val sum = taxbands.taxBands.filter(_.band < bandId).collect(previousBandMaxTaxFunction()).foldLeft(BigDecimal.valueOf(0.0))(_ + _)
+      val sum = taxbands.taxBands.filter(_.band < bandId).collect(previousBandMaxTaxFunction()).foldLeft(BigDecimal(0.0))(_ + _)
       Aggregation(taxBand.rate, (payeTaxAmount - sum).value)
     }
     case taxBand if taxBand.band < bandId && taxBand.band != 1 && payeTaxAmount != Money(0) => createPAYEAggregation(taxBand)
-    case taxBand if taxBand.band != 1 && payeTaxAmount == Money(0) => Aggregation(taxBand.rate, BigDecimal.valueOf(0.0))
-    case taxBand if taxBand.band > bandId && taxBand.band != 4 => Aggregation(taxBand.rate, BigDecimal.valueOf(0.0))
+    case taxBand if taxBand.band != 1 && payeTaxAmount == Money(0) => Aggregation(taxBand.rate, BigDecimal(0.0))
+    case taxBand if taxBand.band > bandId && taxBand.band != 4 => Aggregation(taxBand.rate, BigDecimal(0.0))
   }
 
   private def previousBandMaxTaxFunction() : PartialFunction[TaxBand, BigDecimal] = {
@@ -82,7 +82,7 @@ case class PAYEAggregateBuilder(taxCode: String, date: LocalDate, bandId: Int, p
 
   private def BasicRatePAYEAggregationFunc(): PartialFunction[TaxBand, Aggregation] = {
     case taxBand if taxBand.band == bandId => Aggregation(taxBand.rate, payeTaxAmount.value)
-    case taxBand if taxBand.band != bandId => Aggregation(taxBand.rate, BigDecimal.valueOf(0.0))
+    case taxBand if taxBand.band != bandId => Aggregation(taxBand.rate, BigDecimal(0.0))
   }
 }
 
@@ -104,7 +104,7 @@ case class TaxCategoryBuilder() extends Builder {
 }
 
 
-trait BuildResult{}
+trait BuildResult
 
 case class AggregationBuildResult(aggregation: Seq[Aggregation]) extends BuildResult
 

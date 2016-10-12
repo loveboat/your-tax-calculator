@@ -29,7 +29,7 @@ trait NICTaxCalculatorService extends TaxCalculatorHelper {
         val employeeNICResult = calculateEmployeeNIC(grossPay, payPeriod, rateLimits)
         NICTaxResult(employeeNICResult.nicBandRate, employeeNICResult.aggregation,calculateEmployerNIC(grossPay, payPeriod, rateLimits))
       }
-      case true => NICTaxResult(BigDecimal.valueOf(0),Seq(), Seq())
+      case true => NICTaxResult(BigDecimal(0),Seq(), Seq())
     }
   }
 
