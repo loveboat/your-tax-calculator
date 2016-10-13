@@ -70,6 +70,19 @@
                 "required": false
               }
             ]
+          },
+          {
+            "uriPattern":"/tax-calc/version-check",
+            "endpointName":"Version Check",
+            "method":"POST",
+            "authType":"NONE",
+            "throttlingTier":"UNLIMITED",
+            "queryParameters": [
+              {
+                "name": "journeyId",
+                "required": false
+              }
+            ]
           }
         ]
       }

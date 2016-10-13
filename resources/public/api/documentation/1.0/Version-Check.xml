@@ -1,0 +1,89 @@
+<endpoint>
+  <name>Version Check</name>
+  <description>This endpoint validates the app version, and returns a journey id if no upgrade is necessary.</description>
+  <section id="resource">
+    <title>Resource</title>
+    <resource>POST /tax-calc/version-check</resource>
+  </section>
+  <section id="path-parameters">
+    <title>Path Parameters</title>
+    <table>
+      <headings>
+        <cell>Name</cell>
+        <cell>Type</cell>
+        <cell>Example</cell>
+        <cell>Description</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell><code></code></cell>
+          <cell><code></code></cell>
+          <cell><code></code></cell>
+          <cell></cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+  <section id="authorisation">
+    <title>Authorisation</title>
+    <authorisation>
+      <type>NONE</type>
+      <scope>read:your-tax-calculator</scope>
+    </authorisation>
+  </section>
+  <section id="content-types">
+    <title>Accepted Media Types</title>
+    <list>
+      <item>
+        <code>application/vnd.hmrc.1.0+json</code>
+      </item>
+    </list>
+  </section>
+  <section id="sample-response">
+    <title>Response</title>
+    <httpStatus>200 (OK)</httpStatus>
+    <json><![CDATA[{
+  "upgradeRequired": false,
+  "journeyId": "c54f75da-12b5-4354-881c-9fe5339fa355"
+}]]></json>
+    <table>
+      <headings>
+        <cell>Name</cell>
+        <cell>Type</cell>
+        <cell>Example</cell>
+        <cell>Description</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell><code>upgradeRequired</code></cell>
+          <cell><code>Boolean</code></cell>
+          <cell><code>false</code></cell>
+          <cell>True if the application needs to be upgraded, otherwise false.</cell>
+        </row>
+        <row>
+          <cell><code>journeyId</code></cell>
+          <cell><code>String</code></cell>
+          <cell><code>c54f75da-12b5-4354-881c-9fe5339fa355</code></cell>
+          <cell>The unique journey id created for this 'session'.</cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+  <section id="error-responses">
+    <title>Error Scenarios</title>
+    <table>
+      <headings>
+        <cell>Error Scenario</cell>
+        <cell>HTTP Status</cell>
+        <cell>Code</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell></cell>
+          <cell><code></code></cell>
+          <cell><code></code></cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+</endpoint>

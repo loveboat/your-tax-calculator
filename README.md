@@ -19,6 +19,7 @@ API
 | ```/tax-calc/tax-expenditure-categories/:taxYear``` | GET | Returns a list of all of the Tax Expenditure Categories  [More...](docs/tax-expenditure-categories.md) |
 | ```/tax-calc/tax-expenditure-category-percentage/:taxYear``` | GET | Returns a list of Tax Expenditure Categories and the allocated funds to these categories and percentage of the overall allocated funds [More...](docs/tax-expenditure-percentage.md) |
 | ```/tax-calc/calculate-tax/:isStatePensionAge/:taxYear/:taxCode/:grossPay/:payPeriod``` | GET | Calculates income tax and national insurance contributions  [More...](docs/calculate-tax.md) |
+| ```/tax-calc/version-check``` | POST | Validates the mobile application version [More...](docs/version-check.md) |
 
 
 ### License
