@@ -10,7 +10,6 @@
     "name":"Your Tax Calculator",
     "description":"The API for viewing the tax expenditure breakdown for a tax period",
     "context":"your-tax-calculator",
-    "requiresTrust": true,
     "versions":[
       {
         "version":"1.0",
