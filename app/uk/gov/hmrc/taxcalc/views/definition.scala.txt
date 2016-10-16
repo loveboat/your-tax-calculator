@@ -1,3 +1,7 @@
+@import uk.gov.hmrc.taxcalc.domain.APIAccess
+@import play.api.libs.json.Json
+
+@(access: APIAccess)
 {
   "scopes":[
     {
@@ -8,13 +12,14 @@
   ],
   "api":{
     "name":"Your Tax Calculator",
-    "description":"The API for viewing the tax expenditure breakdown for a tax period",
-    "context":"your-tax-calculator",
+    "description":"The API for viewing the tax expenditure breakdown for a tax period, and calculating you income tax and national insurance contributions.",
+    "context":"you-tax-calculator",
     "requiresTrust": true,
     "versions":[
       {
         "version":"1.0",
         "status":"PUBLISHED",
+        "access" : @Json.toJson(access),
         "endpoints":[
           {
             "uriPattern":"/tax-calc/tax-expenditure-breakdown/{taxYear}",

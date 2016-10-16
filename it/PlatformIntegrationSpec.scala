@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
+import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
 import play.api.test.FakeRequest
-import uk.gov.hmrc.api.controllers.DocumentationController
-import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.taxcalc.controllers.DocumentationController
 import uk.gov.hmrc.play.test.UnitSpec
-import utils.{MicroserviceLocalRunSugar, WiremockServiceLocatorSugar}
-import com.github.tomakehurst.wiremock.client.WireMock._
+import  utils.{MicroserviceLocalRunSugar, WiremockServiceLocatorSugar}
 
 /**
  * Testcase to verify the capability of integration with the API platform.
@@ -49,7 +48,7 @@ class PlatformIntegrationSpec extends UnitSpec with MockitoSugar with ScalaFutur
   }
 
   trait Setup {
-    val documentationController = new DocumentationController {}
+    val documentationController = DocumentationController
     val request = FakeRequest()
   }
 

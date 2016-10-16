@@ -34,7 +34,8 @@ trait PAYETaxCalculatorService extends TaxCalculatorHelper {
         val excessPay = ExcessPayCalculator(taxCode, today, taxBand.band, payPeriod, taxablePay.result).calculate().result
         val finalBandTaxedAmount = Money(excessPay * (taxBand.rate / (100)), 2, true)
         val previousBandMaxTax = if (taxBand.band > 1 && !isBasicRateTaxCode(taxCode)) Money(getPreviousBandMaxTaxAmount(payPeriod, taxBand.band).get, 2, true) else Money(0)
-        PAYETaxResult(taxablePay.result, excessPay, finalBandTaxedAmount, taxBand.band, previousBandMaxTax, taxBand.rate, taxablePay.isTapered)
+        val rate = if(taxablePay.result.value == 0) BigDecimal(0) else taxBand.rate
+        PAYETaxResult(taxablePay.result, excessPay, finalBandTaxedAmount, taxBand.band, previousBandMaxTax, rate, taxablePay.isTapered)
       }
       case false => throw new BadRequestException("Invalid Tax Code!")
     }

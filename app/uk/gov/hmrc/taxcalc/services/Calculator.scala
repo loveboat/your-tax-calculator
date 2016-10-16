@@ -257,7 +257,7 @@ case class AnnualTaperingDeductionCalculator(taxCode: String, date: LocalDate, p
             val taperingDeduction = Money(((annualIncome.value - annualIncomeThreshold) / 2).intValue() / BigDecimal(10), 2, true)
             val taxCodeNumber = Money(BigDecimal(splitTaxCode(taxCode).toInt), 2, true)
             (taperingDeduction < taxCodeNumber) match {
-              case false => applyResponse(true, "ZERO", false)
+              case false => applyResponse(true, "ZERO", true)
               case true => applyResponse(true, s"${(taxCodeNumber-taperingDeduction).value}L", true)
             }
           }

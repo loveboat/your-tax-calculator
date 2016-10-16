@@ -56,9 +56,9 @@ trait TaxCalculatorHelper {
 
   def isValidScottishTaxCode(taxCode: String): Boolean = {
     taxCode.matches("([S]{1}[0-9]{1,4}[L-N,T,X]{1}){1}") ||
-    taxCode.matches("([S][N][T]){1}") ||
     taxCode.matches("([S][B][R]){1}") ||
-    taxCode.matches("([S][D][0,1]){1}")
+    taxCode.matches("([S][D][0,1]){1}") ||
+    taxCode.matches("([S][K][0-9]{1,4}){1}")
   }
 
   def isUnTaxedIncomeTaxCode(taxCode: String): Boolean = {

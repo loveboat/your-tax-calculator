@@ -54,7 +54,7 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
       }
 
       val calculatedTaxBreakdown = TaxBreakdown(updatedPayPeriod, grossPay.value, taxFreePay.value,
-        payeTax.taxablePay.value, calculateScottishElement(payeTax.payeTaxAmount, taxCode, LocalDate.now), taxCategories, totalDeductions,
+        payeTax.taxablePay.value, calculateScottishElement(payeTax.taxablePay, taxCode, LocalDate.now), taxCategories, totalDeductions,
         (grossPay - totalDeductions).value)
 
       val taxBreakdown = derivePeriodTaxBreakdowns(LocalDate.now, payeTax.band, taxCode, calculatedTaxBreakdown, payeTax, nicTax, aggregation, isPensionAge)
@@ -96,9 +96,9 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
 
   }
 
-  def calculateScottishElement(payeTaxAmount: Money, taxCode: String, date: LocalDate): Option[BigDecimal] = {
+  def calculateScottishElement(taxablePay: Money, taxCode: String, date: LocalDate): Option[BigDecimal] = {
     isValidScottishTaxCode(taxCode) match {
-      case true => Option((payeTaxAmount*getTaxBands(date).scottishRate/100).value)
+      case true => Option((taxablePay*getTaxBands(date).scottishRate/100).value)
       case false => None
     }
   }
@@ -140,7 +140,7 @@ trait TaxCalculatorService extends TaxCalculatorHelper {
 
     val totalDeductions = taxCategories.collect(TotalDeductionsFunc).foldLeft(BigDecimal(0.0))(_ + _)
     TaxBreakdown(payPeriod, updatedGrossPay.value, taxFreePay.value,
-                 updatedTaxablePay.value, calculateScottishElement(Money(payeTotal, 2, true), taxCode, date),
+                 updatedTaxablePay.value, calculateScottishElement(updatedTaxablePay, taxCode, date),
                  taxCategories, totalDeductions,(updatedGrossPay - totalDeductions).value)
   }
 
