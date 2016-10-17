@@ -56,7 +56,7 @@ object Documentation {
 
   def applyTemplate(apiName: String, version: String): Option[Xml] = {
     (apiName, version) match {
-      case (`calculateTax`, `version1_0`) => Some(xml.CalculateTax())
+      case (`calculateTax`, `version1_0`) => Some(xml.calculateTax())
       case (`taxExpenditureBreakdown`, `version1_0`) => Some(xml.TaxExpenditureBreakdown())
       case (`taxExpenditureCategories`, `version1_0`) => Some(xml.TaxExpenditureCategories())
       case (`taxExpenditureCategoryPercentage`, `version1_0`) => Some(xml.TaxExpenditureCategoryPercentage())
