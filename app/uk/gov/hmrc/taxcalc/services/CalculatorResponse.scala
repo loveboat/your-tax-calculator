@@ -28,7 +28,7 @@ case class ExcessPayResponse(override val success: Boolean, override val result:
 
 case class AllowanceResponse(override val success: Boolean, override val result: Seq[(String, Allowance)]) extends CalculatorResponse
 
-case class TaxablePayResponse(override val success: Boolean, override val result: Money, isTapered: Boolean) extends CalculatorResponse
+case class TaxablePayResponse(override val success: Boolean, override val result: Money, isTapered: Boolean, additionalTaxablePay: Money) extends CalculatorResponse
 
 case class TaxBandResponse(override val success: Boolean, override val result: TaxBand) extends CalculatorResponse
 

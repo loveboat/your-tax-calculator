@@ -34,7 +34,7 @@ trait TaxCalculatorHelper {
   }
 
   def isStandardTaxCode(taxCode: String): Boolean = {
-    taxCode.matches("([0-9]{1,4}[L-N,T,X]{1}){1}")
+    taxCode.matches("([0-9]{1,4}[L-N,T]{1}){1}")
   }
 
   def isTaxableCode(taxCode: String): Boolean = {
@@ -55,7 +55,7 @@ trait TaxCalculatorHelper {
   }
 
   def isValidScottishTaxCode(taxCode: String): Boolean = {
-    taxCode.matches("([S]{1}[0-9]{1,4}[L-N,T,X]{1}){1}") ||
+    taxCode.matches("([S]{1}[0-9]{1,4}[L-N,T]{1}){1}") ||
     taxCode.matches("([S][B][R]){1}") ||
     taxCode.matches("([S][D][0,1]){1}") ||
     taxCode.matches("([S][K][0-9]{1,4}){1}")

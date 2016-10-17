@@ -64,7 +64,7 @@ class PAYETaxCalculatorServiceSpec extends UnitSpec with WithFakeApplication wit
     }
 
     "return true for 0X which matched the pattern ([0-9]{1,4}[L-N,l-n,T,t,X,x]{1}){1}" in new LivePAYETaxCalcServiceSuccess {
-      service.isValidTaxCode("0X") shouldBe true
+      service.isValidTaxCode("0X") shouldBe false
     }
   }
 //

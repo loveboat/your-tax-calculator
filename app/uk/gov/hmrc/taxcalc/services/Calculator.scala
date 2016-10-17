@@ -99,12 +99,14 @@ case class TaxablePayCalculator(date: LocalDate, taxCode: String, payPeriod: Str
         }
       }
     }
-    applyResponse(true, taxablePay.head, taperingDeductionCalc.isTapered)
+
+    val additionalTaxablePay = if(isUnTaxedIncomeTaxCode(taxCode)) taxablePay.head - grossPay else Money(0)
+    applyResponse(true, taxablePay.head, taperingDeductionCalc.isTapered, additionalTaxablePay)
   }
 
-  def applyResponse(success: Boolean, taxablePay: Money, isTapered: Boolean): TaxablePayResponse = {
+  def applyResponse(success: Boolean, taxablePay: Money, isTapered: Boolean, additionalTaxablePay: Money): TaxablePayResponse = {
     val result = if(taxablePay < Money(0)) Money(0) else taxablePay
-    TaxablePayResponse(success, result, isTapered)
+    TaxablePayResponse(success, result, isTapered, additionalTaxablePay)
   }
 }
 

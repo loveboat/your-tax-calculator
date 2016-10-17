@@ -18,7 +18,7 @@ package uk.gov.hmrc.taxcalc.domain
 
 import play.api.libs.json.Json
 
-case class PAYETaxResult(taxablePay: Money, excessPay: Money, finalBandTaxedAmount: Money, band: Int, previousBandMaxTax: Money, bandRate: BigDecimal, isTapered: Boolean){
+case class PAYETaxResult(taxablePay: Money, excessPay: Money, finalBandTaxedAmount: Money, band: Int, previousBandMaxTax: Money, bandRate: BigDecimal, isTapered: Boolean, additionalTaxablePay: Money){
   val payeTaxAmount = if(band > 1) finalBandTaxedAmount+previousBandMaxTax else finalBandTaxedAmount
 }
 
@@ -27,7 +27,7 @@ case class NICTaxResult(employeeNICBandRate: BigDecimal, employeeNIC: Seq[Aggreg
 case class TaxCalc(statePensionAge: Boolean, taxCode: String, payPerHour: Option[BigDecimal], hours: Option[Int], averageAnnualTaxRate: BigDecimal,
                    marginalTaxRate: BigDecimal, payeBand: BigDecimal, employeeNICBand: BigDecimal, tapered: Boolean, taxBreakdown: Seq[TaxBreakdown])
 
-case class TaxBreakdown(period: String, grossPay: BigDecimal, taxFreePay: BigDecimal, taxablePay: BigDecimal, scottishElement: Option[BigDecimal],
+case class TaxBreakdown(period: String, grossPay: BigDecimal, taxFreePay: BigDecimal, taxablePay: BigDecimal, additionalTaxablePay: BigDecimal, scottishElement: Option[BigDecimal],
                         taxCategories: Seq[TaxCategory], totalDeductions: BigDecimal, takeHomePay: BigDecimal)
 
 case class TaxCategory(taxType: String, total: BigDecimal, aggregation: Seq[Aggregation])

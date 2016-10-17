@@ -13,7 +13,7 @@
   "api":{
     "name":"Your Tax Calculator",
     "description":"The API for viewing the tax expenditure breakdown for a tax period, and calculating you income tax and national insurance contributions.",
-    "context":"you-tax-calculator",
+    "context":"your-tax-calculator",
     "requiresTrust": true,
     "versions":[
       {
