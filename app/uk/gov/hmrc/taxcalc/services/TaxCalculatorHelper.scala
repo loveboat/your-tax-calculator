@@ -95,10 +95,17 @@ trait TaxCalculatorHelper {
     Option(getTaxBands(LocalDate.now()).taxBands.filter(_.band == band-1).head.periods.filter(_.periodType.equals(payPeriod)).head.cumulativeMaxTax)
   }
 
+  def resolveRateLimitByPeriod(rateLimit:RateLimit, period:String) = {
+    period match {
+      case "annual" => rateLimit.annual
+      case "monthly" => rateLimit.monthly
+      case "weekly" => rateLimit.weekly
+    }
+  }
+
   def rateLimit(limitType: String, payPeriod: String): PartialFunction[RateLimit, Money] = {
     case rateLimit: RateLimit if rateLimit.rateLimitType.equals(limitType) => {
-      val limit = Money((rateLimit.getClass.getMethod(payPeriod).invoke(rateLimit)).asInstanceOf[BigDecimal])
-      limit
+      Money(resolveRateLimitByPeriod(rateLimit, payPeriod))
     }
   }
 
