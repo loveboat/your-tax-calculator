@@ -16,21 +16,23 @@
 
 package uk.gov.hmrc.taxcalc.controllers
 
+import controllers.AssetsBuilder
 import play.api.mvc.{Action, AnyContent}
 import play.twirl.api.Xml
+import uk.gov.hmrc.play.microservice.controller.BaseController
 import uk.gov.hmrc.taxcalc.config.{APIAccessConfig, AppContext}
 import uk.gov.hmrc.taxcalc.domain.APIAccess
 import uk.gov.hmrc.taxcalc.views._
 
 import scala.language.dynamics
 
-trait DocumentationController extends uk.gov.hmrc.api.controllers.DocumentationController {
+trait DocumentationController extends AssetsBuilder with BaseController {
 
-  override def definition(): Action[AnyContent] = Action {
+  def definition(): Action[AnyContent] = Action {
     Ok(txt.definition(buildAccess())).withHeaders("Content-Type" -> "application/json")
   }
 
-  override def documentation(version: String, endpointName: String): Action[AnyContent] = Action {
+  def documentation(version: String, endpointName: String): Action[AnyContent] = Action {
     Documentation.findDocumentation(endpointName, version) match {
       case Some(docs) => Ok(docs).withHeaders("Content-Type" -> "application/xml")
       case None => NotFound

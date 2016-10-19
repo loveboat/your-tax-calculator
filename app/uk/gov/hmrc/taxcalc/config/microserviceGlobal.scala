@@ -21,33 +21,24 @@ import net.ceedubs.ficus.Ficus._
 import play.api._
 import play.api.libs.json.Json
 import play.api.mvc.Results._
-import play.api.mvc.{EssentialAction, Filters, RequestHeader, Result}
+import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.api.config.{ServiceLocatorConfig, ServiceLocatorRegistration}
 import uk.gov.hmrc.api.connector.ServiceLocatorConnector
 import uk.gov.hmrc.api.controllers._
-import uk.gov.hmrc.msasync.config.CookieSessionFilter
 import uk.gov.hmrc.play.audit.filters.AuditFilter
-import uk.gov.hmrc.play.auth.controllers.AuthParamsControllerConfig
-import uk.gov.hmrc.play.auth.microservice.filters.AuthorisationFilter
 import uk.gov.hmrc.play.config.{AppName, ControllerConfig, RunMode}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
 import uk.gov.hmrc.play.microservice.bootstrap.DefaultMicroserviceGlobal
-import uk.gov.hmrc.taxcalc.controllers.BadRequestException
-import uk.gov.hmrc.taxcalc.domain.{NICRateLimits, TaxBands, TaxCalc, TaxYearBands}
+import uk.gov.hmrc.taxcalc.domain.{NICRateLimits,TaxYearBands}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.io.Source._
 import scala.tools.nsc.interpreter._
-import scala.util.Success
 
 object ControllerConfiguration extends ControllerConfig {
   lazy val controllerConfigs = Play.current.configuration.underlying.as[Config]("controllers")
-}
-
-object AuthParamsControllerConfiguration extends AuthParamsControllerConfig {
-  lazy val controllerConfigs = ControllerConfiguration.controllerConfigs
 }
 
 object MicroserviceAuditFilter extends AuditFilter with AppName {
@@ -58,13 +49,6 @@ object MicroserviceAuditFilter extends AuditFilter with AppName {
 
 object MicroserviceLoggingFilter extends LoggingFilter {
   override def controllerNeedsLogging(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsLogging
-}
-
-object MicroserviceAuthFilter extends AuthorisationFilter {
-  override lazy val authParamsConfig = AuthParamsControllerConfiguration
-  override lazy val authConnector = MicroserviceAuthConnector
-
-  override def controllerNeedsAuth(controllerName: String): Boolean = ControllerConfiguration.paramsForController(controllerName).needsAuth
 }
 
 object TaxCalculatorStartup {
@@ -98,7 +82,7 @@ object MicroserviceGlobal extends DefaultMicroserviceGlobal with RunMode with Se
 
   override val microserviceAuditFilter = MicroserviceAuditFilter
 
-  override val authFilter = Some(MicroserviceAuthFilter)
+  override val authFilter = None
 
   override val slConnector: ServiceLocatorConnector = ServiceLocatorConnector(WSHttp)
 
