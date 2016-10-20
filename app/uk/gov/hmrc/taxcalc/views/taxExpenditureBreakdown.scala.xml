@@ -3,7 +3,7 @@
   <description>The tax expenditure breakdown for a tax year</description>
   <section id="resource">
     <title>Resource</title>
-    <resource>GET /tax-calc/tax-expenditure-breakdown</resource>
+    <resource>GET /tax-calc/tax-expenditure-breakdown/{taxYear}</resource>
   </section>
   <section id="path-parameters">
     <title>Path Parameters</title>
@@ -16,10 +16,29 @@
       </headings>
       <rows>
         <row>
-          <cell><code></code></cell>
-          <cell><code></code></cell>
-          <cell><code></code></cell>
-          <cell></cell>
+          <cell><code>taxYear</code></cell>
+          <cell><code>String</code></cell>
+          <cell><code>2014-15</code></cell>
+          <cell>The tax year for the benefits being retrieved, in the format CCYY-YY.</cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+  <section id="query-parameters">
+    <title>Query Parameters</title>
+    <table>
+      <headings>
+        <cell>Name</cell>
+        <cell>Type</cell>
+        <cell>Example</cell>
+        <cell>Description</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell><code>journeyId</code></cell>
+          <cell><code>String</code></cell>
+          <cell><code>randomGeneratedString</code></cell>
+          <cell>A random generated String for tracing requests for a particular request.</cell>
         </row>
       </rows>
     </table>

@@ -21,7 +21,7 @@ import org.scalatest.mock.MockitoSugar
 import play.api.test.FakeRequest
 import uk.gov.hmrc.taxcalc.controllers.DocumentationController
 import uk.gov.hmrc.play.test.UnitSpec
-import  utils.{MicroserviceLocalRunSugar, WiremockServiceLocatorSugar}
+import utils.{MicroserviceLocalRunSugar, WiremockServiceLocatorSugar}
 
 /**
  * Testcase to verify the capability of integration with the API platform.
@@ -103,6 +103,22 @@ class PlatformIntegrationSpec extends UnitSpec with MockitoSugar with ScalaFutur
               verifyDocumentationPresent(version, endpointName)
             }
           }
+        }
+      }
+    }
+
+    "provide raml documentation" in new MicroserviceLocalRunSugar with Setup {
+      override val additionalConfiguration: Map[String, Any] = Map(
+        "Test.microservice.services.service-locator.host" -> stubHost,
+        "Test.microservice.services.service-locator.port" -> stubPort
+      )
+      run {
+        () => {
+
+          val result = documentationController.raml("1.0", "application.raml")(request)
+
+          status(result) shouldBe 200
+          bodyOf(result).futureValue should startWith("#%RAML 1.0")
         }
       }
     }

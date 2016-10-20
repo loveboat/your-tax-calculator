@@ -1,4 +1,5 @@
 GET        /api/definition                                  uk.gov.hmrc.taxcalc.controllers.DocumentationController.definition()
 
-GET        /api/documentation/:version/:endpointName        uk.gov.hmrc.taxcalc.controllers.DocumentationController.documentation(version:String,endpointName:String)
+GET        /api/documentation/:version/:endpointName        uk.gov.hmrc.taxcalc.controllers.DocumentationController.documentation(version:String, endpointName:String)
 
+GET        /api/conf/:version/*file                         uk.gov.hmrc.taxcalc.controllers.DocumentationController.raml(version, file)

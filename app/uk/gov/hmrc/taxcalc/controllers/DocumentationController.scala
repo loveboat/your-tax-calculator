@@ -39,6 +39,10 @@ trait DocumentationController extends AssetsBuilder with BaseController {
     }
   }
 
+  def raml(version: String, file: String) = {
+    super.at(s"/public/api/conf/$version", file)
+  }
+
   private def buildAccess() = {
     val access = APIAccessConfig(AppContext.access)
     APIAccess(access.accessType, access.whiteListedApplicationIds)

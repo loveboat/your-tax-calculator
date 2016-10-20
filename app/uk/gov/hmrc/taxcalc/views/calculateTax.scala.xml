@@ -1,10 +1,9 @@
-
 <endpoint>
   <name>Calculate Tax</name>
   <description>Calculate Tax</description>
   <section id="resource">
     <title>Resource</title>
-    <resource>GET /tax-calc/calculate-tax</resource>
+    <resource>GET /tax-calc/calculate-tax/{isStatePensionAge}/{taxYear}/{taxCode}/{grossPay}/{payPeriod}</resource>
   </section>
   <section id="path-parameters">
     <title>Path Parameters</title>
@@ -17,10 +16,59 @@
       </headings>
       <rows>
         <row>
-          <cell><code></code></cell>
-          <cell><code></code></cell>
-          <cell><code></code></cell>
-          <cell></cell>
+          <cell><code>isStatePensionAge</code></cell>
+          <cell><code>String</code></cell>
+          <cell><code>true/false</code></cell>
+          <cell>Indicates whether the user is receiving a state pension.</cell>
+        </row>
+        <row>
+          <cell><code>taxYear</code></cell>
+          <cell><code>String</code></cell>
+          <cell><code>2014-15</code></cell>
+          <cell>The tax year for the benefits being retrieved, in the format CCYY-YY.</cell>
+        </row>
+        <row>
+          <cell><code>taxCode</code></cell>
+          <cell><code>String</code></cell>
+          <cell><code>1100T</code></cell>
+          <cell>HMRC valid tax code.</cell>
+        </row>
+        <row>
+          <cell><code>grossPay</code></cell>
+          <cell><code>Long</code></cell>
+          <cell><code>4000000</code></cell>
+          <cell>Gross pay pence value, for annual, monthly, weekly, hourly gross pay amount.</cell>
+        </row>
+        <row>
+          <cell><code>payPeriod</code></cell>
+          <cell><code>String</code></cell>
+          <cell><code>annual/monthly/weekly</code></cell>
+          <cell>The pay period for which you can calculate tax for.</cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+  <section id="query-parameters">
+    <title>Query Parameters</title>
+    <table>
+      <headings>
+        <cell>Name</cell>
+        <cell>Type</cell>
+        <cell>Example</cell>
+        <cell>Description</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell><code>hours</code></cell>
+          <cell><code>Integer</code></cell>
+          <cell><code>40</code></cell>
+          <cell>Hours to be supplied when tax calculations are to be performed on an hourly rate.</cell>
+        </row>
+        <row>
+          <cell><code>journeyId</code></cell>
+          <cell><code>String</code></cell>
+          <cell><code>randomGeneratedString</code></cell>
+          <cell>A random generated String for tracing requests for a particular request.</cell>
         </row>
       </rows>
     </table>

@@ -1,0 +1,166 @@
+#%RAML 1.0
+---
+
+title: Your Tax Calculator
+version: 1.0
+protocols: [ HTTPS ]
+baseUri: https://api.service.hmrc.gov.uk/
+
+documentation:
+ - title: Overview
+   content: !include docs/overview.md
+ - title: Versioning
+   content: !include docs/versioning.md
+ - title: Errors
+   content: !include docs/errors.md
+
+mediaType: [ application/json, application/hal+json ]
+
+uses:
+  sec: modules/securitySchemes.raml
+
+annotationTypes:
+  config: object
+  group:
+    type: object
+    properties:
+      name: string
+      description: string
+  scope:
+
+traits:
+  commonHeaders:
+    headers:
+      Accept:
+        description: API version
+        type: string
+        required: true
+        example: application/vnd.hmrc.1.0+json
+
+/your-tax-calculator:
+  /tax-calc:
+    /tax-expenditure-breakdown:
+      /{taxYear}:
+        uriParameters:
+          taxYear:
+            description: The tax year for the benefits being retrieved, in the format CCYY-YY.
+            type: string
+            example: 2014-15
+        get:
+          displayName: Tax expenditure breakdown
+          description: The tax expenditure breakdown for a tax year
+          is: [commonHeaders]
+          queryParameters:
+            journeyId:
+              description: A random generated String for tracing requests for a particular request.
+              type: string
+              example: randomGeneratedString
+              required: false
+          responses:
+            200:
+              body:
+                application/json:
+                  examples:
+                    example-1:
+                      value: !include examples/tax-expenditure-breakdown-example-1.json
+    /tax-expenditure-categories:
+      /{taxYear}:
+        uriParameters:
+          taxYear:
+            description: The tax year for the benefits being retrieved, in the format CCYY-YY.
+            type: string
+            example: 2014-15
+        get:
+          displayName: Tax expenditure categories
+          description: The tax expenditure categories for a tax year
+          is: [commonHeaders]
+          queryParameters:
+            journeyId:
+              description: A random generated String for tracing requests for a particular request.
+              type: string
+              example: randomGeneratedString
+              required: false
+          responses:
+            200:
+              body:
+                application/json:
+                  examples:
+                    example-1:
+                      value: !include examples/tax-expenditure-categories-example-1.json
+    /tax-expenditure-category-percentage:
+      /{taxYear}:
+        uriParameters:
+          taxYear:
+            description: The tax year for the benefits being retrieved, in the format CCYY-YY.
+            type: string
+            example: 2014-15
+        get:
+          displayName: Tax expenditure category percentage
+          description: The tax expenditure category percentage for a tax year
+          is: [commonHeaders]
+          queryParameters:
+            journeyId:
+              description: A random generated String for tracing requests for a particular request.
+              type: string
+              example: randomGeneratedString
+              required: false
+          responses:
+            200:
+              body:
+                application/json:
+                  examples:
+                    example-1:
+                      value: !include examples/tax-expenditure-category-percentage-example-1.json
+    /calculate-tax:
+      /{isStatePensionAge}:
+        uriParameters:
+          isStatePensionAge:
+            description: Indicates whether the user is receiving a state pension.
+            type: string
+            example: true/false
+        /{taxYear}:
+          uriParameters:
+            taxYear:
+              description: The tax year for the benefits being retrieved, in the format CCYY-YY.
+              type: string
+              example: 2014-15
+          /{taxCode}:
+            uriParameters:
+              taxCode:
+                description: HMRC valid tax code.
+                type: string
+                example: 1100T
+            /{grossPay}:
+              uriParameters:
+                grossPay:
+                  description: Gross pay pence value, for annual, monthly, weekly, hourly gross pay amount.
+                  type: long
+                  example: "4000000"
+              /{payPeriod}:
+                uriParameters:
+                  payPeriod:
+                    description: The pay period for which you can calculate tax for.
+                    type: string
+                    example: annual/monthly/weekly
+                get:
+                  displayName: Calculate tax
+                  description: Calculate Tax
+                  is: [commonHeaders]
+                  queryParameters:
+                    hours:
+                      description: Hours to be supplied when tax calculations are to be performed on an hourly rate.
+                      type: integer
+                      example: "40"
+                      required: false
+                    journeyId:
+                      description: A random generated String for tracing requests for a particular request.
+                      type: string
+                      example: randomGeneratedString
+                      required: false
+                  responses:
+                    200:
+                      body:
+                        application/json:
+                          examples:
+                            example-1:
+                              value: !include examples/calculate-tax-example-1.json

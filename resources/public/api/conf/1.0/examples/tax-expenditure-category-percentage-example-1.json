@@ -1,0 +1,23 @@
+{
+  "category-breakdown": [
+    {
+      "category": "General public services",
+      "allocation": 58708000.00,
+      "sub-category": [
+        {
+          "category": "Executive and legislative organs, financial and fiscal affairs, external affairs",
+          "allocation": 10101000.00,
+          "sub-category": [],
+          "percentage": 1.45
+        },
+        {
+          "category": "Foreign economic aid",
+          "allocation": 8173000.00,
+          "sub-category": [],
+          "percentage": 1.17
+        }
+      ],
+      "percentage": 8.41
+    }
+  ]
+}
