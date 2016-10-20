@@ -47,7 +47,7 @@ traits:
             type: string
             example: 2014-15
         get:
-          displayName: Tax expenditure breakdown
+          displayName: Get tax expenditure breakdown
           description: The tax expenditure breakdown for a tax year
           is: [commonHeaders]
           queryParameters:
@@ -71,7 +71,7 @@ traits:
             type: string
             example: 2014-15
         get:
-          displayName: Tax expenditure categories
+          displayName: Get tax expenditure categories
           description: The tax expenditure categories for a tax year
           is: [commonHeaders]
           queryParameters:
@@ -95,7 +95,7 @@ traits:
             type: string
             example: 2014-15
         get:
-          displayName: Tax expenditure category percentage
+          displayName: Get tax expenditure category percentage
           description: The tax expenditure category percentage for a tax year
           is: [commonHeaders]
           queryParameters:
@@ -134,8 +134,8 @@ traits:
               uriParameters:
                 grossPay:
                   description: Gross pay pence value, for annual, monthly, weekly, hourly gross pay amount.
-                  type: long
-                  example: "4000000"
+                  type: integer
+                  example: 4000000
               /{payPeriod}:
                 uriParameters:
                   payPeriod:
@@ -150,7 +150,7 @@ traits:
                     hours:
                       description: Hours to be supplied when tax calculations are to be performed on an hourly rate.
                       type: integer
-                      example: "40"
+                      example: 40
                       required: false
                     journeyId:
                       description: A random generated String for tracing requests for a particular request.
